@@ -1,0 +1,280 @@
+/* components/Documentation/Documentation.css */
+.documentation-page {
+  width: 100%;
+  padding-bottom: 3rem;
+}
+
+.documentation-header {
+  text-align: center;
+  padding: 2rem 0;
+  background-color: #f8fafc;
+  margin-bottom: 2rem;
+}
+
+.documentation-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.documentation-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
+.documentation-content {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Sidebar */
+.documentation-sidebar {
+  flex: 0 0 250px;
+  position: sticky;
+  top: 2rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.sidebar-nav {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav-list li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #4a5568;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav-list button:hover {
+  background-color: #edf2f7;
+  color: #3498db;
+}
+
+.sidebar-nav-list button.active {
+  background-color: #3498db;
+  color: white;
+  font-weight: 500;
+}
+
+/* Main content */
+.documentation-main {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.doc-section {
+  max-width: 800px;
+}
+
+.doc-section h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doc-section h3 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.doc-section h4 {
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.doc-section p {
+  line-height: 1.6;
+  color: #4a5568;
+  margin-bottom: 1rem;
+}
+
+.doc-section ul,
+.doc-section ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.doc-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+/* Note box */
+.note-box {
+  background-color: #ebf8ff;
+  border-left: 4px solid #4299e1;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.note-box h4 {
+  color: #2b6cb0;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.note-box p {
+  margin-bottom: 0;
+}
+
+/* Tables */
+.format-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.format-table th,
+.format-table td {
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.format-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.format-table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Report type cards */
+.report-type-card {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #3498db;
+}
+
+.report-type-card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+/* FAQ items */
+.faq-item {
+  margin-bottom: 2rem;
+}
+
+.faq-item h3 {
+  margin-bottom: 0.5rem;
+}
+
+.faq-item h4 {
+  color: #4a5568;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+/* Contact support */
+.contact-support {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.contact-support a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.contact-support a:hover {
+  text-decoration: underline;
+}
+
+/* Code blocks */
+.code-block {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.code-block code {
+  font-family: "Courier New", Courier, monospace;
+  line-height: 1.5;
+}
+
+/* API Endpoints */
+.endpoint {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.endpoint h4 {
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.endpoint p {
+  margin-bottom: 0.5rem;
+}
+
+.endpoint p strong {
+  color: #3498db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .documentation-content {
+    flex-direction: column;
+  }
+
+  .documentation-sidebar {
+    flex: 0 0 auto;
+    position: static;
+    height: auto;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .documentation-header h1 {
+    font-size: 2rem;
+  }
+
+  .doc-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .doc-section h3 {
+    font-size: 1.35rem;
+  }
+}
