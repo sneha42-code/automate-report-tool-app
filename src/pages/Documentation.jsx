@@ -10,8 +10,8 @@ const Documentation = () => {
         <div className="documentation-header">
           <h1>Attrition Analysis Tool Documentation</h1>
           <p>
-            Everything you need to know about using our tool to gain insights into employee
-            attrition patterns
+            Everything you need to know about using our tool to gain insights
+            into employee attrition patterns
           </p>
         </div>
 
@@ -27,7 +27,9 @@ const Documentation = () => {
               <a href="#faq">Frequently Asked Questions</a>
             </nav>
             <div className="sidebar-cta">
-              <Link to="/report-tool" className="cta-button">Generate Report Now</Link>
+              <Link to="/tool" className="cta-button">
+                Generate Report Now
+              </Link>
             </div>
           </aside>
 
@@ -35,24 +37,25 @@ const Documentation = () => {
             <section id="getting-started" className="doc-section">
               <h2>Getting Started</h2>
               <p>
-                The Attrition Analysis Tool helps HR professionals and business leaders
-                understand employee departure patterns and make data-driven decisions to
-                improve retention. This documentation will guide you through using the tool
-                effectively.
+                The Attrition Analysis Tool helps HR professionals and business
+                leaders understand employee departure patterns and make
+                data-driven decisions to improve retention. This documentation
+                will guide you through using the tool effectively.
               </p>
               <p>
-                Our tool analyzes your HRIS data to provide insights across multiple 
-                dimensions including gender, location, function, tenure, and grade levels.
-                The generated report includes visualizations and statistics to help you
-                identify concerning trends and focus areas.
+                Our tool analyzes your HRIS data to provide insights across
+                multiple dimensions including gender, location, function,
+                tenure, and grade levels. The generated report includes
+                visualizations and statistics to help you identify concerning
+                trends and focus areas.
               </p>
             </section>
 
             <section id="data-requirements" className="doc-section">
               <h2>Data Requirements</h2>
               <p>
-                To generate an accurate attrition report, your Excel file must contain
-                the following columns:
+                To generate an accurate attrition report, your Excel file must
+                contain the following columns:
               </p>
               <div className="requirements-table-wrapper">
                 <table className="requirements-table">
@@ -111,10 +114,21 @@ const Documentation = () => {
               <div className="info-box">
                 <h4>Important Notes:</h4>
                 <ul>
-                  <li>Your file must be in Excel (.xlsx) format with a maximum size of 10MB</li>
-                  <li>Date columns must be in a standard date format recognized by Excel</li>
-                  <li>The "Action Type" column should clearly indicate departures with terms like "Exit", "Resignation", or "Termination"</li>
-                  <li>For best results, ensure your data is clean and consistent</li>
+                  <li>
+                    Your file must be in Excel (.xlsx) format with a maximum
+                    size of 10MB
+                  </li>
+                  <li>
+                    Date columns must be in a standard date format recognized by
+                    Excel
+                  </li>
+                  <li>
+                    The "Action Type" column should clearly indicate departures
+                    with terms like "Exit", "Resignation", or "Termination"
+                  </li>
+                  <li>
+                    For best results, ensure your data is clean and consistent
+                  </li>
                 </ul>
               </div>
             </section>
@@ -128,13 +142,14 @@ const Documentation = () => {
                   <div className="step-content">
                     <h3>Upload Your HRIS File</h3>
                     <p>
-                      Click the "Upload HRIS File" button in the tool interface and select
-                      your Excel file. The system will validate your file to ensure it meets
-                      the requirements.
+                      Click the "Upload HRIS File" button in the tool interface
+                      and select your Excel file. The system will validate your
+                      file to ensure it meets the requirements.
                     </p>
                     <p>
-                      If there are any issues with your file, validation errors will be 
-                      displayed. Fix these issues and try uploading again.
+                      If there are any issues with your file, validation errors
+                      will be displayed. Fix these issues and try uploading
+                      again.
                     </p>
                   </div>
                 </div>
@@ -144,13 +159,14 @@ const Documentation = () => {
                   <div className="step-content">
                     <h3>Generate Attrition Report</h3>
                     <p>
-                      Once your file is successfully uploaded, click the "Generate Attrition 
-                      Report" button. The system will process your data and create 
-                      visualizations and analytics.
+                      Once your file is successfully uploaded, click the
+                      "Generate Attrition Report" button. The system will
+                      process your data and create visualizations and analytics.
                     </p>
                     <p>
-                      This process may take a few moments depending on the size of your dataset.
-                      The status will be shown during processing.
+                      This process may take a few moments depending on the size
+                      of your dataset. The status will be shown during
+                      processing.
                     </p>
                   </div>
                 </div>
@@ -160,9 +176,9 @@ const Documentation = () => {
                   <div className="step-content">
                     <h3>Download Your Report</h3>
                     <p>
-                      When the report is ready, click the "Download Report" button to get your
-                      Word document. You can now share it with stakeholders or use it for
-                      presentations.
+                      When the report is ready, click the "Download Report"
+                      button to get your Word document. You can now share it
+                      with stakeholders or use it for presentations.
                     </p>
                   </div>
                 </div>
@@ -172,80 +188,87 @@ const Documentation = () => {
             <section id="understanding-reports" className="doc-section">
               <h2>Understanding Your Attrition Report</h2>
               <p>
-                Your generated report contains several sections providing comprehensive
-                analysis of attrition patterns. Here's what to look for in each section:
+                Your generated report contains several sections providing
+                comprehensive analysis of attrition patterns. Here's what to
+                look for in each section:
               </p>
 
               <div className="report-sections">
                 <div className="report-section-item">
                   <h3>1. Overall Attrition Statistics</h3>
                   <p>
-                    This section provides a high-level view of your organization's attrition,
-                    including total employee count, total exits, and overall attrition rate.
-                    The pie chart visualizes the proportion of active vs. exited employees.
+                    This section provides a high-level view of your
+                    organization's attrition, including total employee count,
+                    total exits, and overall attrition rate. The pie chart
+                    visualizes the proportion of active vs. exited employees.
                   </p>
                   <p>
-                    <strong>Key insight:</strong> Compare your overall attrition rate with
-                    industry benchmarks to understand if your retention is better or worse
-                    than average.
+                    <strong>Key insight:</strong> Compare your overall attrition
+                    rate with industry benchmarks to understand if your
+                    retention is better or worse than average.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>2. Gender-wise Attrition</h3>
                   <p>
-                    This analysis breaks down attrition by gender, showing if there are
-                    disproportionate departure rates between different genders. The section
-                    includes counts, rates, and visualizations.
+                    This analysis breaks down attrition by gender, showing if
+                    there are disproportionate departure rates between different
+                    genders. The section includes counts, rates, and
+                    visualizations.
                   </p>
                   <p>
-                    <strong>Key insight:</strong> Significant differences in attrition rates
-                    between genders may indicate potential diversity and inclusion issues
-                    that need addressing.
+                    <strong>Key insight:</strong> Significant differences in
+                    attrition rates between genders may indicate potential
+                    diversity and inclusion issues that need addressing.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>3. Location-wise Attrition</h3>
                   <p>
-                    This section analyzes attrition by job location, focusing on locations
-                    with significant employee populations (≥50 employees). It helps identify
-                    if certain locations experience higher turnover.
+                    This section analyzes attrition by job location, focusing on
+                    locations with significant employee populations (≥50
+                    employees). It helps identify if certain locations
+                    experience higher turnover.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>4. Function-wise Attrition</h3>
                   <p>
-                    This analysis examines attrition by functional area or department,
-                    showing which areas experience higher turnover. It's limited to functions
-                    with ≥20 employees for statistical relevance.
+                    This analysis examines attrition by functional area or
+                    department, showing which areas experience higher turnover.
+                    It's limited to functions with ≥20 employees for statistical
+                    relevance.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>5. Tenure Analysis</h3>
                   <p>
-                    This section examines how long employees stay before leaving, grouped
-                    into tenure bands (&lt;1 year, 1-2 years, etc.). It helps identify
-                    critical retention periods where focused interventions might be needed.
+                    This section examines how long employees stay before
+                    leaving, grouped into tenure bands (&lt;1 year, 1-2 years,
+                    etc.). It helps identify critical retention periods where
+                    focused interventions might be needed.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>6. Grade-wise Attrition</h3>
                   <p>
-                    The grade analysis shows attrition patterns across employee levels,
-                    helping you understand if turnover is higher at certain career stages.
+                    The grade analysis shows attrition patterns across employee
+                    levels, helping you understand if turnover is higher at
+                    certain career stages.
                   </p>
                 </div>
 
                 <div className="report-section-item">
                   <h3>7. Quarterly & Monthly Trends</h3>
                   <p>
-                    This time-series analysis shows how attrition rates change over time,
-                    helping identify seasonal patterns or concerning trends that may require
-                    attention.
+                    This time-series analysis shows how attrition rates change
+                    over time, helping identify seasonal patterns or concerning
+                    trends that may require attention.
                   </p>
                 </div>
               </div>
@@ -257,31 +280,59 @@ const Documentation = () => {
               <div className="troubleshooting-list">
                 <div className="troubleshooting-item">
                   <h3>File Upload Issues</h3>
-                  <p><strong>Problem:</strong> Your file fails to upload or returns validation errors.</p>
-                  <p><strong>Solutions:</strong></p>
+                  <p>
+                    <strong>Problem:</strong> Your file fails to upload or
+                    returns validation errors.
+                  </p>
+                  <p>
+                    <strong>Solutions:</strong>
+                  </p>
                   <ul>
                     <li>Ensure your file is in .xlsx format and under 10MB</li>
-                    <li>Check that all required columns are present and named correctly</li>
-                    <li>Verify there are no formatting issues with date columns</li>
-                    <li>Make sure the file isn't corrupted or password-protected</li>
+                    <li>
+                      Check that all required columns are present and named
+                      correctly
+                    </li>
+                    <li>
+                      Verify there are no formatting issues with date columns
+                    </li>
+                    <li>
+                      Make sure the file isn't corrupted or password-protected
+                    </li>
                   </ul>
                 </div>
 
                 <div className="troubleshooting-item">
                   <h3>Report Generation Failures</h3>
-                  <p><strong>Problem:</strong> The system fails to generate a report after uploading.</p>
-                  <p><strong>Solutions:</strong></p>
+                  <p>
+                    <strong>Problem:</strong> The system fails to generate a
+                    report after uploading.
+                  </p>
+                  <p>
+                    <strong>Solutions:</strong>
+                  </p>
                   <ul>
-                    <li>Check that your data contains actual attrition events with proper "Action Type" values</li>
-                    <li>Ensure there's sufficient data to analyze (minimum 10-20 employees)</li>
+                    <li>
+                      Check that your data contains actual attrition events with
+                      proper "Action Type" values
+                    </li>
+                    <li>
+                      Ensure there's sufficient data to analyze (minimum 10-20
+                      employees)
+                    </li>
                     <li>Try refreshing the page and uploading again</li>
                   </ul>
                 </div>
 
                 <div className="troubleshooting-item">
                   <h3>Download Issues</h3>
-                  <p><strong>Problem:</strong> Unable to download the generated report.</p>
-                  <p><strong>Solutions:</strong></p>
+                  <p>
+                    <strong>Problem:</strong> Unable to download the generated
+                    report.
+                  </p>
+                  <p>
+                    <strong>Solutions:</strong>
+                  </p>
                   <ul>
                     <li>Ensure your browser allows downloads from this site</li>
                     <li>Check if your browser is blocking pop-ups</li>
@@ -298,47 +349,52 @@ const Documentation = () => {
                 <div className="faq-item">
                   <h3>Is my data secure when using this tool?</h3>
                   <p>
-                    Yes, all data processing happens locally on the server, and your
-                    HRIS data is not shared with third parties. Files are automatically
-                    deleted after processing to ensure privacy.
+                    Yes, all data processing happens locally on the server, and
+                    your HRIS data is not shared with third parties. Files are
+                    automatically deleted after processing to ensure privacy.
                   </p>
                 </div>
 
                 <div className="faq-item">
-                  <h3>What if my data doesn't have all the required columns?</h3>
+                  <h3>
+                    What if my data doesn't have all the required columns?
+                  </h3>
                   <p>
-                    The tool requires all the specified columns to function properly. 
-                    If your data is missing certain fields, consider enriching your 
-                    dataset before uploading. You might need to consult with your 
-                    HR information system administrator.
+                    The tool requires all the specified columns to function
+                    properly. If your data is missing certain fields, consider
+                    enriching your dataset before uploading. You might need to
+                    consult with your HR information system administrator.
                   </p>
                 </div>
 
                 <div className="faq-item">
                   <h3>How can I interpret the attrition percentages?</h3>
                   <p>
-                    Attrition percentages represent the proportion of employees who have 
-                    left relative to the total employees in that category. Industry benchmarks 
-                    vary, but typically annual attrition rates of 10-15% are considered average 
-                    in many sectors. Rates significantly above this may indicate retention issues.
+                    Attrition percentages represent the proportion of employees
+                    who have left relative to the total employees in that
+                    category. Industry benchmarks vary, but typically annual
+                    attrition rates of 10-15% are considered average in many
+                    sectors. Rates significantly above this may indicate
+                    retention issues.
                   </p>
                 </div>
 
                 <div className="faq-item">
                   <h3>Can I customize the report sections?</h3>
                   <p>
-                    The current version generates a standard report with all sections.
-                    In future updates, we plan to add customization options to allow
-                    users to select specific sections.
+                    The current version generates a standard report with all
+                    sections. In future updates, we plan to add customization
+                    options to allow users to select specific sections.
                   </p>
                 </div>
 
                 <div className="faq-item">
                   <h3>How large can my dataset be?</h3>
                   <p>
-                    The tool is optimized to handle datasets of up to 10,000 employees.
-                    Larger datasets may require additional processing time or custom
-                    solutions. Contact us if you need to analyze very large datasets.
+                    The tool is optimized to handle datasets of up to 10,000
+                    employees. Larger datasets may require additional processing
+                    time or custom solutions. Contact us if you need to analyze
+                    very large datasets.
                   </p>
                 </div>
               </div>
