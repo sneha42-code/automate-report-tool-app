@@ -8,6 +8,7 @@ import {
 } from "../utils/fileValidation";
 
 const ReportTool = () => {
+  // State variables
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -15,9 +16,10 @@ const ReportTool = () => {
   const [generatedReport, setGeneratedReport] = useState(null);
   const [error, setError] = useState(null);
   const [fileErrors, setFileErrors] = useState([]);
+  const [fileId, setFileId] = useState(null);
 
-  // API base URL - replace with your actual API endpoint
-  const API_BASE_URL = "https://192.168.0.193:8000";
+  // API base URL - update with your FastAPI endpoint
+  const API_BASE_URL = "http://127.0.0.1:8000";
 
   // Check for any previously generated reports
   const fetchReports = async () => {
@@ -35,6 +37,7 @@ const ReportTool = () => {
       // Don't set error state here - this is just an initial check
     }
   };
+
   useEffect(() => {
     //fetchReports();
   }, []);
@@ -74,15 +77,13 @@ const ReportTool = () => {
       setIsUploading(true);
       setUploadProgress(0);
 
-      // Create form data for file upload
+      // Create form data for file upload - use the first file only for attrition report
       const formData = new FormData();
-      filesArray.forEach((file) => {
-        formData.append("files", file);
-      });
+      formData.append("file", filesArray[0]);
 
       try {
-        // Upload files to the server
-        await axios.post(`${API_BASE_URL}/upload`, formData, {
+        // Upload file to the server using the FastAPI endpoint
+        const response = await axios.post(`${API_BASE_URL}/upload/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -94,11 +95,14 @@ const ReportTool = () => {
           },
         });
 
+        // Store the file_id returned from the backend
+        setFileId(response.data.file_id);
+
         // File upload completed - update status
         setSelectedFiles((prev) =>
           prev.map((file, index) => {
             if (index >= prev.length - filesArray.length) {
-              return { ...file, status: "uploaded" };
+              return { ...file, status: "uploaded", id: response.data.file_id };
             }
             return file;
           })
@@ -125,7 +129,7 @@ const ReportTool = () => {
   };
 
   const handleGenerate = async () => {
-    if (selectedFiles.length === 0) {
+    if (selectedFiles.length === 0 || !fileId) {
       setError("Please upload files before generating a report");
       return;
     }
@@ -134,24 +138,19 @@ const ReportTool = () => {
     setError(null);
 
     try {
-      // Call API to generate report
-      const response = await axios.post(`${API_BASE_URL}/generate`, {
-        fileIds: selectedFiles.map((file) => file.id || file.name), // Use file IDs if available
-        options: {
-          format: "pdf",
-          includeCharts: true,
-          includeSummary: true,
-        },
+      // Call API to generate report using the file_id
+      const response = await axios.post(`${API_BASE_URL}/generate-report/`, {
+        file_id: fileId,
       });
 
       // Report generation succeeded
       setIsGenerating(false);
       setGeneratedReport({
-        id: response.data.reportId,
-        name: response.data.name || "Generated_Report.pdf",
-        size: response.data.size || "2.4 MB",
+        id: response.data.file_id,
+        name: response.data.report_file || "Attrition_Report.docx",
+        size: "Unknown", // Size info not provided by backend
         date: new Date().toLocaleDateString(),
-        url: response.data.downloadUrl,
+        url: response.data.download_url,
       });
     } catch (err) {
       console.error("Error generating report:", err);
@@ -172,25 +171,11 @@ const ReportTool = () => {
 
     try {
       if (generatedReport.url) {
-        // If we have a direct download URL, use it
-        window.open(generatedReport.url, "_blank");
-      } else {
-        // Otherwise request the file from the API
-        const response = await axios.get(
-          `${API_BASE_URL}/download/${generatedReport.id}`,
-          {
-            responseType: "blob",
-          }
-        );
+        // Format the download URL to match backend endpoint
+        const downloadUrl = `${API_BASE_URL}/download/?file_id=${generatedReport.id}&filename=${generatedReport.name}`;
 
-        // Create a download link for the file
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", generatedReport.name);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        // Open in new tab or initiate download
+        window.open(downloadUrl, "_blank");
       }
     } catch (err) {
       console.error("Error downloading report:", err);
@@ -204,14 +189,9 @@ const ReportTool = () => {
     // Remove from UI immediately
     setSelectedFiles((files) => files.filter((_, i) => i !== index));
 
-    // If the file has an ID (was successfully uploaded), remove it from the server
-    if (fileToRemove.id) {
-      try {
-        await axios.delete(`${API_BASE_URL}/files/${fileToRemove.id}`);
-      } catch (err) {
-        console.error("Error removing file from server:", err);
-        // We don't update UI here since we already removed it above
-      }
+    // If the file had the fileId, clear it
+    if (fileToRemove.id === fileId) {
+      setFileId(null);
     }
   };
 
@@ -219,30 +199,32 @@ const ReportTool = () => {
     <div className="report-tool-container">
       <div className="tool-content">
         <div className="tool-description">
-          <h1>Report Generation Tool</h1>
+          <h1>Attrition Analysis Report Tool</h1>
           <div className="description-text">
             <p>
               This powerful tool allows you to quickly generate comprehensive
-              reports from your data files. Simply upload your files, click
-              generate, and download your professionally formatted report.
+              attrition analysis reports from your HRIS data. Simply upload your
+              Excel file, click generate, and download your professionally
+              formatted report.
             </p>
             <p>
               Our advanced analytics engine processes your data to provide
               meaningful insights and visualizations that help you make informed
-              decisions.
+              decisions about employee retention.
             </p>
             <h3>Key Features:</h3>
             <ul>
-              <li>Support for multiple file formats (CSV, XLSX, JSON)</li>
-              <li>Customizable report templates</li>
-              <li>Automatic data validation and cleaning</li>
-              <li>Interactive charts and graphs</li>
-              <li>Export options in PDF, DOCX, and HTML formats</li>
+              <li>Comprehensive attrition analysis</li>
+              <li>Gender-wise attrition breakdown</li>
+              <li>Location and function-based analysis</li>
+              <li>Tenure and grade-wise attrition statistics</li>
+              <li>Quarterly and monthly trend analysis</li>
+              <li>Professional Word document output with charts</li>
             </ul>
 
             <div className="file-support-info">
               <h4>Supported File Types:</h4>
-              <p>{getAllowedFileExtensionsForDisplay()}</p>
+              <p>Excel files (.xlsx) containing HRIS data</p>
             </div>
           </div>
 
@@ -282,9 +264,7 @@ const ReportTool = () => {
                   {selectedFiles.map((file, index) => (
                     <li key={index} className="file-item">
                       <span className="file-name">{file.name}</span>
-                      <span className="file-size">
-                        ({Math.round(file.size / 1024)} KB)
-                      </span>
+                      <span className="file-size">({file.formattedSize})</span>
                       <button
                         className="remove-file-btn"
                         onClick={() => handleRemoveFile(index)}
@@ -304,7 +284,7 @@ const ReportTool = () => {
               <div className="report-info">
                 <span className="report-name">{generatedReport.name}</span>
                 <span className="report-details">
-                  Size: {generatedReport.size} | Date: {generatedReport.date}
+                  Date: {generatedReport.date}
                 </span>
               </div>
             </div>
@@ -320,11 +300,11 @@ const ReportTool = () => {
             >
               <span className="button-icon">📤</span>
               <span className="button-label">
-                {isUploading ? "Uploading..." : "Upload Files"}
+                {isUploading ? "Uploading..." : "Upload HRIS File"}
               </span>
               <input
                 type="file"
-                multiple
+                accept=".xlsx"
                 className="file-input"
                 onChange={handleFileUpload}
                 disabled={isUploading}
@@ -336,11 +316,11 @@ const ReportTool = () => {
                 isGenerating ? "generating" : ""
               }`}
               onClick={handleGenerate}
-              disabled={isGenerating || selectedFiles.length === 0}
+              disabled={isGenerating || selectedFiles.length === 0 || !fileId}
             >
               <span className="button-icon">⚙️</span>
               <span className="button-label">
-                {isGenerating ? "Generating..." : "Generate Report"}
+                {isGenerating ? "Generating..." : "Generate Attrition Report"}
               </span>
             </button>
 

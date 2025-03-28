@@ -1,562 +1,348 @@
 // components/Documentation/Documentation.js
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/Documentation.css";
 
 const Documentation = () => {
-  const [activeSection, setActiveSection] = useState("getting-started");
-
   return (
     <div className="documentation-page">
       <div className="container">
         <div className="documentation-header">
-          <h1>Documentation</h1>
-          <p>Learn how to use our Report Generation Tool effectively</p>
+          <h1>Attrition Analysis Tool Documentation</h1>
+          <p>
+            Everything you need to know about using our tool to gain insights into employee
+            attrition patterns
+          </p>
         </div>
 
         <div className="documentation-content">
-          <aside className="documentation-sidebar">
+          <aside className="sidebar">
+            <h3>Contents</h3>
             <nav className="sidebar-nav">
-              <ul className="sidebar-nav-list">
-                <li>
-                  <button
-                    className={
-                      activeSection === "getting-started" ? "active" : ""
-                    }
-                    onClick={() => setActiveSection("getting-started")}
-                  >
-                    Getting Started
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={activeSection === "file-formats" ? "active" : ""}
-                    onClick={() => setActiveSection("file-formats")}
-                  >
-                    Supported File Formats
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={activeSection === "report-types" ? "active" : ""}
-                    onClick={() => setActiveSection("report-types")}
-                  >
-                    Report Types
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={
-                      activeSection === "customization" ? "active" : ""
-                    }
-                    onClick={() => setActiveSection("customization")}
-                  >
-                    Customization Options
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={
-                      activeSection === "troubleshooting" ? "active" : ""
-                    }
-                    onClick={() => setActiveSection("troubleshooting")}
-                  >
-                    Troubleshooting
-                  </button>
-                </li>
-                {/* <li>
-                  <button
-                    className={activeSection === "api" ? "active" : ""}
-                    onClick={() => setActiveSection("api")}
-                  >
-                    API Reference
-                  </button>
-                </li> */}
-              </ul>
+              <a href="#getting-started">Getting Started</a>
+              <a href="#data-requirements">Data Requirements</a>
+              <a href="#using-the-tool">Using the Tool</a>
+              <a href="#understanding-reports">Understanding Reports</a>
+              <a href="#troubleshooting">Troubleshooting</a>
+              <a href="#faq">Frequently Asked Questions</a>
             </nav>
+            <div className="sidebar-cta">
+              <Link to="/report-tool" className="cta-button">Generate Report Now</Link>
+            </div>
           </aside>
 
-          <main className="documentation-main">
-            {activeSection === "getting-started" && (
-              <section className="doc-section">
-                <h2>Getting Started</h2>
-                <p>
-                  Welcome to the Report Generator documentation! This guide will
-                  help you understand how to use our tool to create professional
-                  reports from your data.
-                </p>
+          <main className="main-content">
+            <section id="getting-started" className="doc-section">
+              <h2>Getting Started</h2>
+              <p>
+                The Attrition Analysis Tool helps HR professionals and business leaders
+                understand employee departure patterns and make data-driven decisions to
+                improve retention. This documentation will guide you through using the tool
+                effectively.
+              </p>
+              <p>
+                Our tool analyzes your HRIS data to provide insights across multiple 
+                dimensions including gender, location, function, tenure, and grade levels.
+                The generated report includes visualizations and statistics to help you
+                identify concerning trends and focus areas.
+              </p>
+            </section>
 
-                <h3>Quick Start Guide</h3>
-                <ol>
-                  <li>
-                    <strong>Upload Your Data:</strong> Click the "Upload" button
-                    and select your data files. We support CSV, Excel, JSON, and
-                    many other formats.
-                  </li>
-                  <li>
-                    <strong>Choose Report Settings:</strong> Select the type of
-                    report you want to generate and customize its appearance.
-                  </li>
-                  <li>
-                    <strong>Generate Report:</strong> Click the "Generate"
-                    button to process your data and create your report.
-                  </li>
-                  <li>
-                    <strong>Download:</strong> Once processing is complete,
-                    click "Download" to save your report in your preferred
-                    format.
-                  </li>
-                </ol>
-
-                <h3>System Requirements</h3>
-                <p>
-                  Our tool runs in the browser and works on all modern web
-                  browsers including Chrome, Firefox, Safari, and Edge. There's
-                  no need to install any software.
-                </p>
-
-                <div className="note-box">
-                  <h4>Note</h4>
-                  <p>
-                    For large files (over 100MB), we recommend using Chrome or
-                    Firefox for the best performance.
-                  </p>
-                </div>
-              </section>
-            )}
-
-            {activeSection === "file-formats" && (
-              <section className="doc-section">
-                <h2>Supported File Formats</h2>
-                <p>
-                  Our Report Generator supports a wide range of file formats for
-                  data input. Here's a complete list of the formats we currently
-                  support:
-                </p>
-
-                <h3>Spreadsheets</h3>
-                <ul>
-                  <li>
-                    <strong>CSV</strong> (.csv) - Comma-separated values
-                  </li>
-                  <li>
-                    <strong>Excel</strong> (.xlsx, .xls) - Microsoft Excel
-                    workbooks
-                  </li>
-                  <li>
-                    <strong>ODS</strong> (.ods) - OpenDocument Spreadsheet
-                  </li>
-                  <li>
-                    <strong>TSV</strong> (.tsv) - Tab-separated values
-                  </li>
-                </ul>
-
-                <h3>Data Formats</h3>
-                <ul>
-                  <li>
-                    <strong>JSON</strong> (.json) - JavaScript Object Notation
-                  </li>
-                  <li>
-                    <strong>XML</strong> (.xml) - Extensible Markup Language
-                  </li>
-                  <li>
-                    <strong>YAML</strong> (.yml, .yaml) - YAML Ain't Markup
-                    Language
-                  </li>
-                </ul>
-
-                <h3>Database Exports</h3>
-                <ul>
-                  <li>
-                    <strong>SQL</strong> (.sql) - SQL database dumps
-                  </li>
-                  <li>
-                    <strong>SQLite</strong> (.db, .sqlite) - SQLite database
-                    files
-                  </li>
-                </ul>
-
-                <h3>File Size Limits</h3>
-                <table className="format-table">
+            <section id="data-requirements" className="doc-section">
+              <h2>Data Requirements</h2>
+              <p>
+                To generate an accurate attrition report, your Excel file must contain
+                the following columns:
+              </p>
+              <div className="requirements-table-wrapper">
+                <table className="requirements-table">
                   <thead>
                     <tr>
-                      <th>Format</th>
-                      <th>Maximum Size</th>
+                      <th>Column Name</th>
+                      <th>Description</th>
+                      <th>Required</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>CSV, TSV</td>
-                      <td>50MB</td>
+                      <td>Employee Name</td>
+                      <td>Full name of the employee</td>
+                      <td>Yes</td>
                     </tr>
                     <tr>
-                      <td>Excel, ODS</td>
-                      <td>25MB</td>
+                      <td>Gender</td>
+                      <td>Employee's gender</td>
+                      <td>Yes</td>
                     </tr>
                     <tr>
-                      <td>JSON, XML, YAML</td>
-                      <td>20MB</td>
+                      <td>Job Location</td>
+                      <td>Primary work location</td>
+                      <td>Yes</td>
                     </tr>
                     <tr>
-                      <td>SQL, SQLite</td>
-                      <td>100MB</td>
+                      <td>Function</td>
+                      <td>Department or functional area</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td>Grade</td>
+                      <td>Employee's grade or level</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td>Date of Joining</td>
+                      <td>When the employee joined (DATE format)</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td>Action Type</td>
+                      <td>Type of HR action (e.g., "Exit", "Resignation")</td>
+                      <td>Yes</td>
+                    </tr>
+                    <tr>
+                      <td>Action Date</td>
+                      <td>When the action occurred (DATE format)</td>
+                      <td>Yes</td>
                     </tr>
                   </tbody>
                 </table>
-              </section>
-            )}
+              </div>
 
-            {activeSection === "report-types" && (
-              <section className="doc-section">
-                <h2>Report Types</h2>
-                <p>
-                  Our system offers several report types to meet different
-                  needs. Each type has its own set of customization options and
-                  is designed for specific use cases.
-                </p>
-
-                <div className="report-type-card">
-                  <h3>Financial Reports</h3>
-                  <p>
-                    Ideal for financial data, these reports include balance
-                    sheets, income statements, cash flow statements, and other
-                    financial analyses.
-                  </p>
-                  <ul>
-                    <li>Automatic calculation of financial ratios</li>
-                    <li>Trend analysis over time periods</li>
-                    <li>Comparison against industry benchmarks</li>
-                    <li>Customizable currency formats</li>
-                  </ul>
-                </div>
-
-                <div className="report-type-card">
-                  <h3>Sales Reports</h3>
-                  <p>
-                    Track and analyze sales performance with detailed breakdowns
-                    by product, region, time period, or sales representative.
-                  </p>
-                  <ul>
-                    <li>Sales funnel visualization</li>
-                    <li>Conversion rate analysis</li>
-                    <li>Revenue forecasting</li>
-                    <li>Customer segmentation</li>
-                  </ul>
-                </div>
-
-                <div className="report-type-card">
-                  <h3>Performance Analytics</h3>
-                  <p>
-                    Measure and track KPIs, goals, and performance metrics
-                    across your organization.
-                  </p>
-                  <ul>
-                    <li>KPI dashboards with target tracking</li>
-                    <li>Performance comparisons</li>
-                    <li>Goal achievement visualization</li>
-                    <li>Team and individual metrics</li>
-                  </ul>
-                </div>
-
-                <div className="report-type-card">
-                  <h3>Custom Reports</h3>
-                  <p>
-                    Build your own report structure from scratch with our
-                    flexible report builder.
-                  </p>
-                  <ul>
-                    <li>Drag-and-drop report builder</li>
-                    <li>Custom calculations and formulas</li>
-                    <li>Conditional formatting</li>
-                    <li>Save report templates for future use</li>
-                  </ul>
-                </div>
-              </section>
-            )}
-
-            {activeSection === "customization" && (
-              <section className="doc-section">
-                <h2>Customization Options</h2>
-                <p>
-                  Personalize your reports with our wide range of customization
-                  options.
-                </p>
-
-                <h3>Visual Customization</h3>
+              <div className="info-box">
+                <h4>Important Notes:</h4>
                 <ul>
-                  <li>
-                    <strong>Themes and Colors:</strong> Choose from pre-defined
-                    color schemes or create your own
-                  </li>
-                  <li>
-                    <strong>Fonts:</strong> Select from our library of web-safe
-                    fonts
-                  </li>
-                  <li>
-                    <strong>Logo and Branding:</strong> Add your company logo
-                    and branding elements
-                  </li>
-                  <li>
-                    <strong>Page Layout:</strong> Customize page orientation,
-                    margins, and headers/footers
-                  </li>
+                  <li>Your file must be in Excel (.xlsx) format with a maximum size of 10MB</li>
+                  <li>Date columns must be in a standard date format recognized by Excel</li>
+                  <li>The "Action Type" column should clearly indicate departures with terms like "Exit", "Resignation", or "Termination"</li>
+                  <li>For best results, ensure your data is clean and consistent</li>
                 </ul>
+              </div>
+            </section>
 
-                <h3>Data Visualization</h3>
-                <ul>
-                  <li>
-                    <strong>Chart Types:</strong> Bar charts, line graphs, pie
-                    charts, scatter plots, and more
-                  </li>
-                  <li>
-                    <strong>Data Tables:</strong> Customize column visibility,
-                    sorting, and formatting
-                  </li>
-                  <li>
-                    <strong>Conditional Formatting:</strong> Highlight important
-                    data with color coding
-                  </li>
-                  <li>
-                    <strong>Interactive Elements:</strong> Add filters,
-                    tooltips, and drill-down capabilities
-                  </li>
-                </ul>
+            <section id="using-the-tool" className="doc-section">
+              <h2>Using the Tool</h2>
 
-                <h3>Content Customization</h3>
-                <ul>
-                  <li>
-                    <strong>Section Order:</strong> Drag and drop sections to
-                    reorder your report
-                  </li>
-                  <li>
-                    <strong>Custom Text:</strong> Add executive summaries,
-                    analysis, and notes
-                  </li>
-                  <li>
-                    <strong>Page Breaks:</strong> Control where new pages begin
-                  </li>
-                  <li>
-                    <strong>Appendices:</strong> Include supporting information
-                    at the end of your report
-                  </li>
-                </ul>
-              </section>
-            )}
+              <div className="step-by-step">
+                <div className="step">
+                  <div className="step-number">1</div>
+                  <div className="step-content">
+                    <h3>Upload Your HRIS File</h3>
+                    <p>
+                      Click the "Upload HRIS File" button in the tool interface and select
+                      your Excel file. The system will validate your file to ensure it meets
+                      the requirements.
+                    </p>
+                    <p>
+                      If there are any issues with your file, validation errors will be 
+                      displayed. Fix these issues and try uploading again.
+                    </p>
+                  </div>
+                </div>
 
-            {activeSection === "troubleshooting" && (
-              <section className="doc-section">
-                <h2>Troubleshooting</h2>
-                <p>
-                  Encountering issues with our Report Generator? Here are
-                  solutions to common problems.
-                </p>
+                <div className="step">
+                  <div className="step-number">2</div>
+                  <div className="step-content">
+                    <h3>Generate Attrition Report</h3>
+                    <p>
+                      Once your file is successfully uploaded, click the "Generate Attrition 
+                      Report" button. The system will process your data and create 
+                      visualizations and analytics.
+                    </p>
+                    <p>
+                      This process may take a few moments depending on the size of your dataset.
+                      The status will be shown during processing.
+                    </p>
+                  </div>
+                </div>
 
-                <div className="faq-item">
+                <div className="step">
+                  <div className="step-number">3</div>
+                  <div className="step-content">
+                    <h3>Download Your Report</h3>
+                    <p>
+                      When the report is ready, click the "Download Report" button to get your
+                      Word document. You can now share it with stakeholders or use it for
+                      presentations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="understanding-reports" className="doc-section">
+              <h2>Understanding Your Attrition Report</h2>
+              <p>
+                Your generated report contains several sections providing comprehensive
+                analysis of attrition patterns. Here's what to look for in each section:
+              </p>
+
+              <div className="report-sections">
+                <div className="report-section-item">
+                  <h3>1. Overall Attrition Statistics</h3>
+                  <p>
+                    This section provides a high-level view of your organization's attrition,
+                    including total employee count, total exits, and overall attrition rate.
+                    The pie chart visualizes the proportion of active vs. exited employees.
+                  </p>
+                  <p>
+                    <strong>Key insight:</strong> Compare your overall attrition rate with
+                    industry benchmarks to understand if your retention is better or worse
+                    than average.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>2. Gender-wise Attrition</h3>
+                  <p>
+                    This analysis breaks down attrition by gender, showing if there are
+                    disproportionate departure rates between different genders. The section
+                    includes counts, rates, and visualizations.
+                  </p>
+                  <p>
+                    <strong>Key insight:</strong> Significant differences in attrition rates
+                    between genders may indicate potential diversity and inclusion issues
+                    that need addressing.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>3. Location-wise Attrition</h3>
+                  <p>
+                    This section analyzes attrition by job location, focusing on locations
+                    with significant employee populations (≥50 employees). It helps identify
+                    if certain locations experience higher turnover.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>4. Function-wise Attrition</h3>
+                  <p>
+                    This analysis examines attrition by functional area or department,
+                    showing which areas experience higher turnover. It's limited to functions
+                    with ≥20 employees for statistical relevance.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>5. Tenure Analysis</h3>
+                  <p>
+                    This section examines how long employees stay before leaving, grouped
+                    into tenure bands (&lt;1 year, 1-2 years, etc.). It helps identify
+                    critical retention periods where focused interventions might be needed.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>6. Grade-wise Attrition</h3>
+                  <p>
+                    The grade analysis shows attrition patterns across employee levels,
+                    helping you understand if turnover is higher at certain career stages.
+                  </p>
+                </div>
+
+                <div className="report-section-item">
+                  <h3>7. Quarterly & Monthly Trends</h3>
+                  <p>
+                    This time-series analysis shows how attrition rates change over time,
+                    helping identify seasonal patterns or concerning trends that may require
+                    attention.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section id="troubleshooting" className="doc-section">
+              <h2>Troubleshooting</h2>
+
+              <div className="troubleshooting-list">
+                <div className="troubleshooting-item">
                   <h3>File Upload Issues</h3>
-                  <h4>Problem: File upload fails or times out</h4>
-                  <p>
-                    <strong>Solutions:</strong>
-                  </p>
+                  <p><strong>Problem:</strong> Your file fails to upload or returns validation errors.</p>
+                  <p><strong>Solutions:</strong></p>
                   <ul>
-                    <li>
-                      Check that your file is under the size limit for its
-                      format
-                    </li>
-                    <li>Try compressing the file before uploading</li>
-                    <li>Use a wired internet connection for more stability</li>
-                    <li>
-                      Try a different browser (Chrome or Firefox recommended)
-                    </li>
+                    <li>Ensure your file is in .xlsx format and under 10MB</li>
+                    <li>Check that all required columns are present and named correctly</li>
+                    <li>Verify there are no formatting issues with date columns</li>
+                    <li>Make sure the file isn't corrupted or password-protected</li>
                   </ul>
+                </div>
+
+                <div className="troubleshooting-item">
+                  <h3>Report Generation Failures</h3>
+                  <p><strong>Problem:</strong> The system fails to generate a report after uploading.</p>
+                  <p><strong>Solutions:</strong></p>
+                  <ul>
+                    <li>Check that your data contains actual attrition events with proper "Action Type" values</li>
+                    <li>Ensure there's sufficient data to analyze (minimum 10-20 employees)</li>
+                    <li>Try refreshing the page and uploading again</li>
+                  </ul>
+                </div>
+
+                <div className="troubleshooting-item">
+                  <h3>Download Issues</h3>
+                  <p><strong>Problem:</strong> Unable to download the generated report.</p>
+                  <p><strong>Solutions:</strong></p>
+                  <ul>
+                    <li>Ensure your browser allows downloads from this site</li>
+                    <li>Check if your browser is blocking pop-ups</li>
+                    <li>Try using a different browser</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section id="faq" className="doc-section">
+              <h2>Frequently Asked Questions</h2>
+
+              <div className="faq-list">
+                <div className="faq-item">
+                  <h3>Is my data secure when using this tool?</h3>
+                  <p>
+                    Yes, all data processing happens locally on the server, and your
+                    HRIS data is not shared with third parties. Files are automatically
+                    deleted after processing to ensure privacy.
+                  </p>
                 </div>
 
                 <div className="faq-item">
-                  <h3>Data Processing Errors</h3>
-                  <h4>Problem: "Invalid data format" error message</h4>
+                  <h3>What if my data doesn't have all the required columns?</h3>
                   <p>
-                    <strong>Solutions:</strong>
+                    The tool requires all the specified columns to function properly. 
+                    If your data is missing certain fields, consider enriching your 
+                    dataset before uploading. You might need to consult with your 
+                    HR information system administrator.
                   </p>
-                  <ul>
-                    <li>
-                      Check that your file matches the format you selected
-                    </li>
-                    <li>
-                      Ensure your spreadsheet has headers in the first row
-                    </li>
-                    <li>Remove any special characters from column names</li>
-                    <li>Check for and fix any corrupt data in your file</li>
-                  </ul>
                 </div>
 
                 <div className="faq-item">
-                  <h3>Report Generation Issues</h3>
-                  <h4>Problem: Report generation takes too long or fails</h4>
+                  <h3>How can I interpret the attrition percentages?</h3>
                   <p>
-                    <strong>Solutions:</strong>
+                    Attrition percentages represent the proportion of employees who have 
+                    left relative to the total employees in that category. Industry benchmarks 
+                    vary, but typically annual attrition rates of 10-15% are considered average 
+                    in many sectors. Rates significantly above this may indicate retention issues.
                   </p>
-                  <ul>
-                    <li>
-                      Reduce the amount of data by filtering unnecessary rows or
-                      columns
-                    </li>
-                    <li>
-                      Simplify your report by reducing the number of
-                      visualizations
-                    </li>
-                    <li>Try generating the report during off-peak hours</li>
-                    <li>Clear your browser cache and try again</li>
-                  </ul>
                 </div>
 
                 <div className="faq-item">
-                  <h3>Download Problems</h3>
-                  <h4>Problem: Can't download the generated report</h4>
+                  <h3>Can I customize the report sections?</h3>
                   <p>
-                    <strong>Solutions:</strong>
-                  </p>
-                  <ul>
-                    <li>Check if your browser is blocking downloads</li>
-                    <li>Try a different browser</li>
-                    <li>Ensure you have enough disk space</li>
-                    <li>
-                      Try downloading in a different format (PDF instead of
-                      Excel, etc.)
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="contact-support">
-                  <h3>Still Having Issues?</h3>
-                  <p>
-                    Contact our support team at{" "}
-                    <a href="mailto:support@reportgenerator.com">
-                      support@reportgenerator.com
-                    </a>{" "}
-                    or use the chat bubble in the bottom right corner of your
-                    screen.
+                    The current version generates a standard report with all sections.
+                    In future updates, we plan to add customization options to allow
+                    users to select specific sections.
                   </p>
                 </div>
-              </section>
-            )}
-            {/* 
-            {activeSection === "api" && (
-              <section className="doc-section">
-                <h2>API Reference</h2>
-                <p>
-                  Our Report Generator offers a robust API for integrating
-                  reporting capabilities into your applications.
-                </p>
 
-                <h3>Authentication</h3>
-                <p>
-                  All API requests require an API key which should be included
-                  in the Authorization header.
-                </p>
-                <pre className="code-block">
-                  <code>Authorization: Bearer YOUR_API_KEY</code>
-                </pre>
-
-                <h3>Endpoints</h3>
-                <div className="endpoint">
-                  <h4>Upload File</h4>
+                <div className="faq-item">
+                  <h3>How large can my dataset be?</h3>
                   <p>
-                    <strong>POST</strong> /api/files/upload
+                    The tool is optimized to handle datasets of up to 10,000 employees.
+                    Larger datasets may require additional processing time or custom
+                    solutions. Contact us if you need to analyze very large datasets.
                   </p>
-                  <p>Upload a data file for processing.</p>
-                  <h5>Request:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`curl -X POST "https://api.reportgenerator.com/api/files/upload" \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -F "file=@data.csv"`}
-                    </code>
-                  </pre>
-                  <h5>Response:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`{
-  "fileId": "f1a2b3c4d5",
-  "fileName": "data.csv",
-  "fileSize": 1024,
-  "uploadDate": "2025-03-25T12:34:56Z"
-}`}
-                    </code>
-                  </pre>
                 </div>
-
-                <div className="endpoint">
-                  <h4>Generate Report</h4>
-                  <p>
-                    <strong>POST</strong> /api/reports/generate
-                  </p>
-                  <p>Generate a report from uploaded files.</p>
-                  <h5>Request:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`curl -X POST "https://api.reportgenerator.com/api/reports/generate" \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "fileIds": ["f1a2b3c4d5"],
-    "reportType": "financial",
-    "format": "pdf",
-    "options": {
-      "includeCharts": true,
-      "theme": "corporate"
-    }
-  }'`}
-                    </code>
-                  </pre>
-                  <h5>Response:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`{
-  "reportId": "r9z8y7x6w5",
-  "status": "processing",
-  "estimatedCompletionTime": "30 seconds"
-}`}
-                    </code>
-                  </pre>
-                </div>
-
-                <div className="endpoint">
-                  <h4>Get Report Status</h4>
-                  <p>
-                    <strong>GET</strong> /api/reports/{"{reportId}"}/status
-                  </p>
-                  <p>Check the status of a report generation job.</p>
-                  <h5>Request:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`curl "https://api.reportgenerator.com/api/reports/r9z8y7x6w5/status" \\
-  -H "Authorization: Bearer YOUR_API_KEY"`}
-                    </code>
-                  </pre>
-                  <h5>Response:</h5>
-                  <pre className="code-block">
-                    <code>
-                      {`{
-  "reportId": "r9z8y7x6w5",
-  "status": "completed",
-  "completionTime": "2025-03-25T12:35:30Z",
-  "downloadUrl": "https://api.reportgenerator.com/api/reports/r9z8y7x6w5/download"
-}`}
-                    </code>
-                  </pre>
-                </div>
-
-                <h3>Rate Limits</h3>
-                <p>Our API has the following rate limits:</p>
-                <ul>
-                  <li>100 requests per minute</li>
-                  <li>1,000 requests per hour</li>
-                  <li>10,000 requests per day</li>
-                </ul>
-                <p>
-                  If you need higher limits, please contact our sales team to
-                  discuss enterprise options.
-                </p>
-              </section>
-            )} */}
+              </div>
+            </section>
           </main>
         </div>
       </div>
