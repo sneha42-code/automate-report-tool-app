@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/create-automate-report-tool-application/static/css/main.3e4740c5.css",
+    "main.js": "/create-automate-report-tool-application/static/js/main.14e7a6f3.js",
+    "static/js/453.ca7ef2ab.chunk.js": "/create-automate-report-tool-application/static/js/453.ca7ef2ab.chunk.js",
+    "static/media/logo.svg": "/create-automate-report-tool-application/static/media/logo.5b52e3c277ac725ddaed6bfcb55efbab.svg",
+    "static/media/notfound.svg": "/create-automate-report-tool-application/static/media/notfound.fd7c439169dd6be97fcb21273c64b14f.svg",
+    "index.html": "/create-automate-report-tool-application/index.html",
+    "main.3e4740c5.css.map": "/create-automate-report-tool-application/static/css/main.3e4740c5.css.map",
+    "main.14e7a6f3.js.map": "/create-automate-report-tool-application/static/js/main.14e7a6f3.js.map",
+    "453.ca7ef2ab.chunk.js.map": "/create-automate-report-tool-application/static/js/453.ca7ef2ab.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3e4740c5.css",
+    "static/js/main.14e7a6f3.js"
+  ]
+}
