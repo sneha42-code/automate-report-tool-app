@@ -1,0 +1,63 @@
+/* src/styles/colors.css */
+
+:root {
+  /* Primary Colors from Logo */
+  --primary-coral: #f08080;
+  --primary-peach: #f9c889;
+  --primary-wheat: wheat;
+
+  /* Variations for Hover States */
+  --primary-coral-light: #f5a3a3;
+  --primary-coral-dark: #e86363;
+  --primary-peach-light: #fad6ad;
+  --primary-peach-dark: #f7b966;
+
+  /* Neutral Colors */
+  --neutral-dark: #2d3748; /* Dark text color */
+  --neutral-medium: #4a5568; /* Medium text color */
+  --neutral-light: #718096; /* Light text color */
+
+  /* Background Colors */
+  --bg-white: #ffffff;
+  --bg-light: #f7fafc;
+  --bg-off-white: #f1f5f9;
+
+  /* Border Colors */
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e0;
+
+  /* Status Colors */
+  --success: #2f855a;
+  --warning: #dd6b20;
+  --error: #e53e3e;
+  --info: #3182ce;
+
+  /* Shadow Colors */
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Helper Classes */
+.text-coral {
+  color: var(--primary-coral);
+}
+
+.text-peach {
+  color: var(--primary-peach);
+}
+
+.bg-coral {
+  background-color: var(--primary-coral);
+}
+
+.bg-peach {
+  background-color: var(--primary-peach);
+}
+
+.border-coral {
+  border-color: var(--primary-coral);
+}
+
+.border-peach {
+  border-color: var(--primary-peach);
+}

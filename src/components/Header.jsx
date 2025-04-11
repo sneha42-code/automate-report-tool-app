@@ -1,7 +1,8 @@
 // components/Header/Header.js
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import "../styles//Header.css";
+import "../styles/Header.css";
+import logoImg from "../image/logo.svg";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -16,11 +17,7 @@ const Header = () => {
         <div className="header-content">
           <div className="logo">
             <NavLink to="/">
-              <img
-                src="/logo.png"
-                alt="Report Generator"
-                className="logo-img"
-              />
+              <img src={logoImg} alt="Report Generator" className="logo-img" />
               <span className="logo-text">Report Generator</span>
             </NavLink>
           </div>
@@ -79,12 +76,12 @@ const Header = () => {
               </li>
             </ul>
             <div className="header-actions">
-              <a href="/login" className="btn btn-secondary">
+              <NavLink to="/login" className="btn btn-secondary">
                 Log In
-              </a>
-              <a href="/signup" className="btn">
+              </NavLink>
+              <NavLink to="/signup" className="btn btn-primary">
                 Sign Up
-              </a>
+              </NavLink>
             </div>
           </nav>
         </div>

@@ -19,7 +19,7 @@ const ReportTool = () => {
   const [fileId, setFileId] = useState(null);
 
   // API base URL - update with your FastAPI endpoint
-  const API_BASE_URL = "http://127.0.0.1:8000";
+  const API_BASE_URL = "http://127.0.0.1:8000/api";
 
   // Check for any previously generated reports
   const fetchReports = async () => {
@@ -196,44 +196,65 @@ const ReportTool = () => {
   };
 
   return (
-    <div className="report-tool-container">
-      <div className="tool-content">
-        <div className="tool-description">
-          <h1>Attrition Analysis Report Tool</h1>
-          <div className="description-text">
-            <p>
-              This powerful tool allows you to quickly generate comprehensive
-              attrition analysis reports from your HRIS data. Simply upload your
-              Excel file, click generate, and download your professionally
-              formatted report.
+    <div className="analytics-platform">
+      <div className="platform-modules">
+        <section className="data-module">
+          <div className="module-header">
+            <h3>Data Input</h3>
+            <p className="module-description">
+              Upload HRIS Excel file containing employee data
             </p>
-            <p>
-              Our advanced analytics engine processes your data to provide
-              meaningful insights and visualizations that help you make informed
-              decisions about employee retention.
-            </p>
-            <h3>Key Features:</h3>
-            <ul>
-              <li>Comprehensive attrition analysis</li>
-              <li>Gender-wise attrition breakdown</li>
-              <li>Location and function-based analysis</li>
-              <li>Tenure and grade-wise attrition statistics</li>
-              <li>Quarterly and monthly trend analysis</li>
-              <li>Professional Word document output with charts</li>
-            </ul>
+          </div>
 
-            <div className="file-support-info">
-              <h4>Supported File Types:</h4>
-              <p>Excel files (.xlsx) containing HRIS data</p>
+          <div className="file-input-section">
+            <div className="file-dropzone">
+              <div className="dropzone-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                    stroke="#2D3748"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 16V8"
+                    stroke="#2D3748"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M9 11L12 8L15 11"
+                    stroke="#2D3748"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <p className="dropzone-text">Select HRIS Excel file</p>
+              <p className="dropzone-subtext">Excel format (.xlsx) required</p>
+              <input
+                type="file"
+                className="file-input"
+                onChange={handleFileUpload}
+                accept=".xlsx"
+                disabled={isUploading}
+              />
             </div>
           </div>
 
-          {error && <div className="error-message">{error}</div>}
-
           {fileErrors.length > 0 && (
-            <div className="file-errors">
-              <h4>File Validation Errors:</h4>
-              <ul>
+            <div className="validation-alert">
+              <div className="alert-header">File Validation Errors:</div>
+              <ul className="alert-list">
                 {fileErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
@@ -241,102 +262,166 @@ const ReportTool = () => {
             </div>
           )}
 
-          <div className="file-list-container">
-            <h3>Selected Files:</h3>
-            {selectedFiles.length === 0 ? (
-              <p className="no-files">No files selected</p>
-            ) : (
-              <>
-                {isUploading && (
-                  <div className="upload-progress">
-                    <div className="progress-bar">
-                      <div
-                        className="progress-bar-fill"
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
-                    </div>
-                    <span className="progress-text">
-                      {uploadProgress}% Uploaded
-                    </span>
-                  </div>
-                )}
-                <ul className="file-list">
-                  {selectedFiles.map((file, index) => (
-                    <li key={index} className="file-item">
-                      <span className="file-name">{file.name}</span>
-                      <span className="file-size">({file.formattedSize})</span>
-                      <button
-                        className="remove-file-btn"
-                        onClick={() => handleRemoveFile(index)}
-                      >
-                        ✕
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
+          {error && <div className="system-alert">{error}</div>}
 
-          {generatedReport && (
-            <div className="generated-report">
-              <h3>Generated Report:</h3>
-              <div className="report-info">
-                <span className="report-name">{generatedReport.name}</span>
-                <span className="report-details">
-                  Date: {generatedReport.date}
-                </span>
-              </div>
+          {selectedFiles.length > 0 && (
+            <div className="selected-files-panel">
+              <div className="panel-header">Selected Files</div>
+              {isUploading && (
+                <div className="upload-progress-indicator">
+                  <div className="progress-bar">
+                    <div
+                      className="progress-completed"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                  <div className="progress-percentage">
+                    {uploadProgress}% Complete
+                  </div>
+                </div>
+              )}
+              <table className="files-table">
+                <thead>
+                  <tr>
+                    <th>Filename</th>
+                    <th>Size</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedFiles.map((file, index) => (
+                    <tr key={index} className={file.status}>
+                      <td className="file-name">{file.name}</td>
+                      <td className="file-size">{file.formattedSize}</td>
+                      <td className="file-status">
+                        {file.status === "uploaded"
+                          ? "Uploaded"
+                          : file.status === "failed"
+                          ? "Failed"
+                          : "Pending"}
+                      </td>
+                      <td className="file-action">
+                        <button
+                          className="remove-file-btn"
+                          onClick={() => handleRemoveFile(index)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-        </div>
+        </section>
 
-        <div className="tool-actions">
-          <div className="action-button-container">
-            <div
-              className={`action-button upload ${
-                isUploading ? "uploading" : ""
-              }`}
-            >
-              <span className="button-icon">📤</span>
-              <span className="button-label">
-                {isUploading ? "Uploading..." : "Upload HRIS File"}
-              </span>
-              <input
-                type="file"
-                accept=".xlsx"
-                className="file-input"
-                onChange={handleFileUpload}
-                disabled={isUploading}
-              />
+        <section className="analysis-module">
+          <div className="module-header">
+            <h3>Analysis Controls</h3>
+            <p className="module-description">
+              Generate and retrieve attrition analysis reports
+            </p>
+          </div>
+
+          <div className="control-panel">
+            <div className="control-actions">
+              <button
+                className={`control-btn analyze-btn ${
+                  isGenerating ? "processing" : ""
+                } ${!fileId ? "disabled" : ""}`}
+                onClick={handleGenerate}
+                disabled={isGenerating || selectedFiles.length === 0 || !fileId}
+              >
+                {isGenerating
+                  ? "Processing Data..."
+                  : "Generate Attrition Analysis"}
+              </button>
+
+              <button
+                className={`control-btn retrieve-btn ${
+                  !generatedReport ? "disabled" : ""
+                }`}
+                onClick={handleDownload}
+                disabled={!generatedReport}
+              >
+                Retrieve Analysis Document
+              </button>
             </div>
 
-            <button
-              className={`action-button generate ${
-                isGenerating ? "generating" : ""
-              }`}
-              onClick={handleGenerate}
-              disabled={isGenerating || selectedFiles.length === 0 || !fileId}
-            >
-              <span className="button-icon">⚙️</span>
-              <span className="button-label">
-                {isGenerating ? "Generating..." : "Generate Attrition Report"}
-              </span>
-            </button>
+            {generatedReport && (
+              <div className="analysis-complete">
+                <div className="complete-header">Analysis Summary</div>
+                <div className="report-metadata">
+                  <div className="metadata-item">
+                    <span className="metadata-label">Document:</span>
+                    <span className="metadata-value">
+                      {generatedReport.name}
+                    </span>
+                  </div>
+                  <div className="metadata-item">
+                    <span className="metadata-label">Generated:</span>
+                    <span className="metadata-value">
+                      {generatedReport.date}
+                    </span>
+                  </div>
+                  <div className="metadata-item">
+                    <span className="metadata-label">Status:</span>
+                    <span className="metadata-value status-complete">
+                      Complete
+                    </span>
+                  </div>
+                </div>
+                <div className="report-description">
+                  The analysis document has been generated successfully. Click
+                  "Retrieve Analysis Document" to download.
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
 
-            <button
-              className={`action-button download ${
-                !generatedReport ? "disabled" : ""
-              }`}
-              onClick={handleDownload}
-              disabled={!generatedReport}
-            >
-              <span className="button-icon">📥</span>
-              <span className="button-label">Download Report</span>
-            </button>
+      <section className="specifications-module">
+        <div className="module-header">
+          <h3>System Specifications</h3>
+        </div>
+
+        <div className="specifications-grid">
+          <div className="specification-item">
+            <div className="specification-title">File Requirements</div>
+            <div className="specification-content">
+              <p>XLSX format with standard HRIS data fields</p>
+              <p>Employee demographic and employment information</p>
+            </div>
+          </div>
+
+          <div className="specification-item">
+            <div className="specification-title">Analysis Parameters</div>
+            <div className="specification-content">
+              <p>Multi-dimensional attrition metrics</p>
+              <p>Demographic, department, and tenure segmentation</p>
+            </div>
+          </div>
+
+          <div className="specification-item">
+            <div className="specification-title">Output Format</div>
+            <div className="specification-content">
+              <p>Microsoft Word (.docx) document</p>
+              <p>Embedded visualizations and data tables</p>
+            </div>
+          </div>
+
+          <div className="specification-item">
+            <div className="specification-title">Data Security</div>
+            <div className="specification-content">
+              <p>Secure processing without persistent storage</p>
+              <p>Compliance with data protection regulations</p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
