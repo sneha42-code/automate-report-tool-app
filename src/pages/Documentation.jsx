@@ -26,7 +26,7 @@ const MinimalDocumentation = () => {
           <div className="doc-section">
             <h2>Required Data</h2>
             <ul>
-              <li>Employee Name</li>
+             
               <li>Gender</li>
               <li>Job Location</li>
               <li>Function</li>

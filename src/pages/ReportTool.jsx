@@ -19,7 +19,7 @@ const ReportTool = () => {
   const [fileId, setFileId] = useState(null);
 
   // API base URL - update with your FastAPI endpoint
-  const API_BASE_URL = "http://127.0.0.1:8000/api";
+  const API_BASE_URL = "http://127.0.0.1:8001/api";
 
   // Check for any previously generated reports
   const fetchReports = async () => {
@@ -135,13 +135,11 @@ const ReportTool = () => {
     }
 
     setIsGenerating(true);
-    setError(null);
-
+    setError(null)
+    console.log("fileid ", fileId)
     try {
       // Call API to generate report using the file_id
-      const response = await axios.post(`${API_BASE_URL}/generate-report/`, {
-        file_id: fileId,
-      });
+      const response = await axios.post(`${API_BASE_URL}/generate-report/?file_id=${fileId}`);
 
       // Report generation succeeded
       setIsGenerating(false);
@@ -202,7 +200,7 @@ const ReportTool = () => {
           <div className="module-header">
             <h3>Data Input</h3>
             <p className="module-description">
-              Upload HRIS Excel file containing employee data
+              Upload  Excel file containing separation data
             </p>
           </div>
 
@@ -239,7 +237,7 @@ const ReportTool = () => {
                   />
                 </svg>
               </div>
-              <p className="dropzone-text">Select HRIS Excel file</p>
+              <p className="dropzone-text">Select  Excel file</p>
               <p className="dropzone-subtext">Excel format (.xlsx) required</p>
               <input
                 type="file"
@@ -321,7 +319,7 @@ const ReportTool = () => {
           <div className="module-header">
             <h3>Analysis Controls</h3>
             <p className="module-description">
-              Generate and retrieve attrition analysis reports
+              Generate and download reports
             </p>
           </div>
 
@@ -336,7 +334,7 @@ const ReportTool = () => {
               >
                 {isGenerating
                   ? "Processing Data..."
-                  : "Generate Attrition Analysis"}
+                  : "Generate "}
               </button>
 
               <button
@@ -346,7 +344,7 @@ const ReportTool = () => {
                 onClick={handleDownload}
                 disabled={!generatedReport}
               >
-                Retrieve Analysis Document
+                Download
               </button>
             </div>
 
@@ -375,7 +373,7 @@ const ReportTool = () => {
                 </div>
                 <div className="report-description">
                   The analysis document has been generated successfully. Click
-                  "Retrieve Analysis Document" to download.
+                   to download.
                 </div>
               </div>
             )}
@@ -392,7 +390,7 @@ const ReportTool = () => {
           <div className="specification-item">
             <div className="specification-title">File Requirements</div>
             <div className="specification-content">
-              <p>XLSX format with standard HRIS data fields</p>
+              <p>XLSX format with standard  data fields</p>
               <p>Employee demographic and employment information</p>
             </div>
           </div>

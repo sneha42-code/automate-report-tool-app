@@ -22,7 +22,7 @@ const Home = () => {
           <div className="tool-header">
             <h2>Attrition Analytics Platform</h2>
             <p>
-              Generate comprehensive workforce analytics from your HRIS data
+              Generate comprehensive workforce analytics for you
             </p>
           </div>
           <ReportTool />

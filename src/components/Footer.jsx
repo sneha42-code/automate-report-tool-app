@@ -20,7 +20,7 @@ const Footer = () => {
 
           <div className="footer-section">
             <h2 className="footer-title">Contact Us</h2>
-            <p className="contact-email">support@reportgenerator.com</p>
+            <p className="contact-email"> automatereporting12@gmail.com</p>
           </div>
         </div>
 
