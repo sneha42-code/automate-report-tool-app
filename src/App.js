@@ -12,7 +12,7 @@ import BlogView from "./pages/BlogView";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlogCreatePage from "./pages/BlogCreatePage";
-import WorkingPage from "./pages/WorkingPage";
+import NotFound from "./pages/NotFound";
 function App() {
   return (
     <Router>
@@ -33,7 +33,7 @@ function App() {
             {/* <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} /> */}
 
-            <Route path="*" element={<WorkingPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

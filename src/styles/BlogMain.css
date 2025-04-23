@@ -3,9 +3,9 @@
 
 /* ===== Base Styles ===== */
 :root {
-  --primary-color: var(--primary-coral);
-  --primary-light: var(--primary-coral-light);
-  --secondary-color: var(--primary-peach);
+  --primary-color: var(--primary-slate);
+  --primary-light: var(--primary-slate-light);
+  --secondary-color: var(--primary-blue);
   --text-primary: var(--neutral-dark);
   --text-secondary: var(--neutral-medium);
   --text-tertiary: var(--neutral-light);

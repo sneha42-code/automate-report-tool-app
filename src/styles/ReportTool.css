@@ -38,7 +38,7 @@
   margin: 0 0 6px 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--primary-coral);
+  color: var(--primary-slate);
 }
 
 .module-description {
@@ -161,7 +161,7 @@
 
 .progress-completed {
   height: 100%;
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -243,21 +243,21 @@
 }
 
 .analyze-btn {
-  background-color: var(--primary-coral);
+  background-color: var(--primary-slate);
   color: white;
 }
 
 .analyze-btn:hover:not(:disabled) {
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
 }
 
 .retrieve-btn {
-  background-color: var(--primary-coral);
+  background-color: var(--primary-slate);
   color: white;
 }
 
 .retrieve-btn:hover:not(:disabled) {
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
 }
 
 .control-btn.disabled,

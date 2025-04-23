@@ -1,16 +1,17 @@
 /* src/styles/colors.css */
 
 :root {
-  /* Primary Colors from Logo */
-  --primary-coral: #f08080;
-  --primary-peach: #f9c889;
-  --primary-wheat: wheat;
+ /* Primary Colors from Logo */
+--primary-blue: #3366cc;
+--primary-slate: #7b93c1;
+--primary-gray: #e6e6e6;
 
-  /* Variations for Hover States */
-  --primary-coral-light: #f5a3a3;
-  --primary-coral-dark: #e86363;
-  --primary-peach-light: #fad6ad;
-  --primary-peach-dark: #f7b966;
+/* Variations for Hover States */
+--primary-blue-light: #5580d5;
+--primary-blue-dark: #264d99;
+--primary-slate-light: #96a9ce;
+--primary-slate-dark: #617db4;
+
 
   /* Neutral Colors */
   --neutral-dark: #2d3748; /* Dark text color */
@@ -39,25 +40,25 @@
 
 /* Helper Classes */
 .text-coral {
-  color: var(--primary-coral);
+  color: var(--primary-slate);
 }
 
 .text-peach {
-  color: var(--primary-peach);
+  color: var(--primary-blue);
 }
 
 .bg-coral {
-  background-color: var(--primary-coral);
+  background-color: var(--primary-slate);
 }
 
 .bg-peach {
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
 }
 
 .border-coral {
-  border-color: var(--primary-coral);
+  border-color: var(--primary-slate);
 }
 
 .border-peach {
-  border-color: var(--primary-peach);
+  border-color: var(--primary-blue);
 }

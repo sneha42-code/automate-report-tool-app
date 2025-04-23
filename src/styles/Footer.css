@@ -2,7 +2,7 @@
 @import "./color.css";
 
 .footer {
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
   color: wheat;
   padding: 60px 0 30px;
 }
@@ -41,19 +41,19 @@
   bottom: 0;
   width: 250px;
   height: 3px;
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
   transform: translateX(-50%);
 }
 
 .footer-description {
-  color: rgba(255, 255, 255, 0.7);
+  color:var(--primary-blue);
   line-height: 1.6;
   margin: 0;
   text-align: center;
 }
 
 .contact-email {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--primary-blue);
   font-size: 1rem;
   text-align: center;
 }
@@ -63,7 +63,7 @@
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: var(--primary-slate)
 }
 .footer-top {
   display: flex;
@@ -74,7 +74,7 @@
 }
 
 .copyright {
-  color: var(--primary-peach);
+  color: var(--primary-blue);
   font-size: 0.9rem;
 }
 
@@ -84,14 +84,14 @@
 }
 
 .footer-links a {
-  color: var(--primary-coral);
+  color: var(--primary-slate);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
 }
 
 .footer-links a:hover {
-  color: var(--primary-peach);
+  color: var(--primary-blue);
 }
 
 @media (max-width: 768px) {

@@ -1,0 +1,60 @@
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .auth-container {
+    text-align: center;
+    max-width: 600px;
+    padding: 20px;
+  }
+  
+  .notfound-image {
+    margin-bottom: 40px;
+  }
+  
+  .notfound-image img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .notfound-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: 1px solid var(--primary-blue);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-blue-light);
+    border-color: var(--primary-blue-light);
+  }
+  
+  .btn-secondary {
+    background-color: white;
+    color: var(--primary-slate);
+    border: 1px solid var(--primary-slate);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--primary-gray);
+    color: var(--primary-slate-dark);
+  }

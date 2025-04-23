@@ -23,7 +23,7 @@ h5,
 h6 {
   margin-top: 0;
   font-weight: 600;
-  color: var(--primary-coral);
+  color: var(--primary-slate);
 }
 
 /* Header Section */
@@ -37,7 +37,7 @@ h6 {
 .header-section h1 {
   font-size: 2.4rem;
   margin-bottom: 10px;
-  color: var(--primary-coral);
+  color: var(--primary-slate);
   font-weight: 700;
 }
 
@@ -70,7 +70,7 @@ h6 {
 .capability-item {
   background-color: var(--bg-light);
   padding: 25px;
-  border-left: 4px solid var(--primary-peach);
+  border-left: 4px solid var(--primary-blue);
   box-shadow: var(--shadow-soft);
 }
 
@@ -129,7 +129,7 @@ h6 {
 .value-item {
   background-color: var(--bg-light);
   padding: 25px;
-  border-top: 4px solid var(--primary-coral);
+  border-top: 4px solid var(--primary-slate);
   box-shadow: var(--shadow-soft);
 }
 
@@ -148,7 +148,7 @@ h6 {
 /* Footer Section */
 .footer-section {
   padding: 3rem;
-  background-color: var(--primary-coral);
+  background-color: var(--primary-slate);
   color: black;
 }
 
@@ -162,13 +162,13 @@ h6 {
   color: white;
   font-size: 1.1rem;
   margin-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid var(--primary-wheat);
   padding-bottom: 10px;
 }
 
 .footer-info p {
   margin: 0 0 10px 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--primary-blue);
   font-size: 0.9rem;
 }
 

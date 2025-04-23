@@ -21,7 +21,7 @@
 .blog-create-header h1 {
   font-size: 2rem;
   font-weight: 600;
-  color: var(--primary-coral);
+  color: var(--primary-slate);
   margin: 0;
 }
 
@@ -84,7 +84,7 @@
   margin-bottom: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--primary-coral);
+  color: var(--primary-slate);
 }
 
 .form-group {
@@ -111,7 +111,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-coral);
+  border-color: var(--primary-slate);
   box-shadow: 0 0 0 2px rgba(240, 128, 128, 0.2);
 }
 
@@ -247,7 +247,7 @@
 }
 
 .quote-section {
-  border-left: 4px solid var(--primary-coral);
+  border-left: 4px solid var(--primary-slate);
 }
 
 .quote-input {
@@ -341,17 +341,17 @@
 }
 
 .publish-button {
-  background-color: var(--primary-coral);
+  background-color: var(--primary-slate);
   border: none;
   color: white;
 }
 
 .publish-button:hover {
-  background-color: var(--primary-peach);
+  background-color: var(--primary-blue);
 }
 
 .publish-button:disabled {
-  background-color: var(--primary-coral-light);
+  background-color: var(--primary-slate-light);
   cursor: not-allowed;
 }
 
