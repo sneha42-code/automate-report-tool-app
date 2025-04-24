@@ -5,6 +5,10 @@
  * Formal Business Styling
  */
 
+ .tool-platform {
+padding : 0 120px;
+}
+
 /* Base Styles */
 .analytics-platform {
   font-family: "Arial", "Helvetica Neue", Helvetica, sans-serif;

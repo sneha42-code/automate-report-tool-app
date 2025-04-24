@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "../styles/ReportTool.css";
 import {
   validateFiles,
   formatFileSize,
   getAllowedFileExtensionsForDisplay,
 } from "../utils/fileValidation";
+import reportService from "../service/reportService";                
 
 const ReportTool = () => {
   // State variables
@@ -18,19 +18,12 @@ const ReportTool = () => {
   const [fileErrors, setFileErrors] = useState([]);
   const [fileId, setFileId] = useState(null);
 
-  // API base URL - update with your FastAPI endpoint
-  const API_BASE_URL = "http://127.0.0.1:8001/api";
-
   // Check for any previously generated reports
   const fetchReports = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/recent`);
-      if (
-        response.data &&
-        response.data.reports &&
-        response.data.reports.length > 0
-      ) {
-        setGeneratedReport(response.data.reports[0]);
+      const data = await reportService.getRecentReports();
+      if (data && data.reports && data.reports.length > 0) {
+        setGeneratedReport(data.reports[0]);
       }
     } catch (err) {
       console.error("Error fetching recent reports:", err);
@@ -39,7 +32,8 @@ const ReportTool = () => {
   };
 
   useEffect(() => {
-    //fetchReports();
+    // Uncomment when API is ready
+    // fetchReports();
   }, []);
 
   const handleFileUpload = async (event) => {
@@ -77,32 +71,21 @@ const ReportTool = () => {
       setIsUploading(true);
       setUploadProgress(0);
 
-      // Create form data for file upload - use the first file only for attrition report
-      const formData = new FormData();
-      formData.append("file", filesArray[0]);
-
       try {
-        // Upload file to the server using the FastAPI endpoint
-        const response = await axios.post(`${API_BASE_URL}/upload/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percentCompleted);
-          },
-        });
+        // Upload file to the server using the service
+        const response = await reportService.uploadFile(
+          filesArray[0], 
+          (percentCompleted) => setUploadProgress(percentCompleted)
+        );
 
         // Store the file_id returned from the backend
-        setFileId(response.data.file_id);
+        setFileId(response.file_id);
 
         // File upload completed - update status
         setSelectedFiles((prev) =>
           prev.map((file, index) => {
             if (index >= prev.length - filesArray.length) {
-              return { ...file, status: "uploaded", id: response.data.file_id };
+              return { ...file, status: "uploaded", id: response.file_id };
             }
             return file;
           })
@@ -135,20 +118,20 @@ const ReportTool = () => {
     }
 
     setIsGenerating(true);
-    setError(null)
-    console.log("fileid ", fileId)
+    setError(null);
+    
     try {
-      // Call API to generate report using the file_id
-      const response = await axios.post(`${API_BASE_URL}/generate-report/?file_id=${fileId}`);
+      // Call service to generate report using the file_id
+      const response = await reportService.generateReport(fileId);
 
       // Report generation succeeded
       setIsGenerating(false);
       setGeneratedReport({
-        id: response.data.file_id,
-        name: response.data.report_file || "Attrition_Report.docx",
+        id: response.file_id,
+        name: response.report_file || "Attrition_Report.docx",
         size: "Unknown", // Size info not provided by backend
         date: new Date().toLocaleDateString(),
-        url: response.data.download_url,
+        url: reportService.getDownloadUrl(response.file_id, response.report_file),
       });
     } catch (err) {
       console.error("Error generating report:", err);
@@ -169,11 +152,8 @@ const ReportTool = () => {
 
     try {
       if (generatedReport.url) {
-        // Format the download URL to match backend endpoint
-        const downloadUrl = `${API_BASE_URL}/download/?file_id=${generatedReport.id}&filename=${generatedReport.name}`;
-
         // Open in new tab or initiate download
-        window.open(downloadUrl, "_blank");
+        window.open(generatedReport.url, "_blank");
       }
     } catch (err) {
       console.error("Error downloading report:", err);
@@ -194,13 +174,14 @@ const ReportTool = () => {
   };
 
   return (
+    <div className="tool-platform">
     <div className="analytics-platform">
       <div className="platform-modules">
         <section className="data-module">
           <div className="module-header">
             <h3>Data Input</h3>
             <p className="module-description">
-              Upload  Excel file containing separation data
+              Upload Excel file containing separation data
             </p>
           </div>
 
@@ -237,7 +218,7 @@ const ReportTool = () => {
                   />
                 </svg>
               </div>
-              <p className="dropzone-text">Select  Excel file</p>
+              <p className="dropzone-text">Select Excel file</p>
               <p className="dropzone-subtext">Excel format (.xlsx) required</p>
               <input
                 type="file"
@@ -334,7 +315,7 @@ const ReportTool = () => {
               >
                 {isGenerating
                   ? "Processing Data..."
-                  : "Generate "}
+                  : "Generate Report"}
               </button>
 
               <button
@@ -344,7 +325,7 @@ const ReportTool = () => {
                 onClick={handleDownload}
                 disabled={!generatedReport}
               >
-                Download
+                Download Report
               </button>
             </div>
 
@@ -373,7 +354,7 @@ const ReportTool = () => {
                 </div>
                 <div className="report-description">
                   The analysis document has been generated successfully. Click
-                   to download.
+                  to download.
                 </div>
               </div>
             )}
@@ -390,7 +371,7 @@ const ReportTool = () => {
           <div className="specification-item">
             <div className="specification-title">File Requirements</div>
             <div className="specification-content">
-              <p>XLSX format with standard  data fields</p>
+              <p>XLSX format with standard data fields</p>
               <p>Employee demographic and employment information</p>
             </div>
           </div>
@@ -420,6 +401,7 @@ const ReportTool = () => {
           </div>
         </div>
       </section>
+    </div>
     </div>
   );
 };
