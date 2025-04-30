@@ -1,6 +1,11 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Report Generator",
+  "name": "Analytics Reporting App",
+  "version": "1.0.0",
+  "description": "A web application for generating and viewing analytics reports.",
+  "dir": "ltr",
+  "lang": "en-US",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,13 +13,13 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "logo192.svg",
+      "type": "image/svg",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
-      "type": "image/png",
+      "src": "logo512.svg",
+      "type": "image/svg",
       "sizes": "512x512"
     }
   ],
