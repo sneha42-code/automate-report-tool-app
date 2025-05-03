@@ -13,10 +13,22 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlogCreatePage from "./pages/BlogCreatePage";
 import NotFound from "./pages/NotFound";
+import { Helmet } from 'react-helmet';
 function App() {
   return (
+
     <Router>
+
       <div className="app">
+        <Helmet>
+          <title>Report Generator | automatereporting.com</title>
+          <meta     name="description"
+    content="World's first HR AI angent's to generate reports and summaries" />
+          {/* Open Graph tags for better social sharing */}
+          <meta property="og:title" content="Report Generator | automatereporting.com" />
+          <meta property="og:description" content="Advanced attrition analysis for human capital management" />
+          <meta property="og:url" content="https://automatereporting.com" />
+        </Helmet>
         <Header />
         <main className="main-content">
           <Routes>
