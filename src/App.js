@@ -1,32 +1,29 @@
-// App.js with updated routes
 import React from "react";
 import Header from "./components/Header";
-import ReportTool from "./pages/ReportTool";
+import ReportToolDocs from "./pages/ReportToolDocs";
+import ReportToolExcel from "./pages/ReportToolExcel";
+import ReportToolHtml from "./pages/ReportToolHtml"
 import Documentation from "./pages/Documentation";
+import Dashboard from './pages/Dashboard';
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
-import BlogManagement from "./pages/BlogManagement.Page";
+import BlogManagement from "./pages/BlogManagementPage";
 import BlogView from "./pages/BlogView";
-// import Login from "./pages/Login";
-// import Signup from "./pages/Signup";
-import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlogCreatePage from "./pages/BlogCreatePage";
 import NotFound from "./pages/NotFound";
 import { Helmet } from 'react-helmet';
+
+import "./App.css";
 function App() {
   return (
-
     <Router>
-
       <div className="app">
         <Helmet>
           <title>Report Generator | automatereporting.com</title>
-          <meta     name="description"
-    content="World's first HR AI angent's to generate reports and summaries" />
-          {/* Open Graph tags for better social sharing */}
+          <meta name="description" content="World's first HR AI angent's to generate reports and summaries" />
           <meta property="og:title" content="Report Generator | automatereporting.com" />
-          <meta property="og:description" content="Advanced attrition analysis for human capital management" />
+          <meta property="og:description" content="Advadnced attrition analysis for human capital management" />
           <meta property="og:url" content="https://automatereporting.com" />
         </Helmet>
         <Header />
@@ -36,15 +33,12 @@ function App() {
             <Route path="/blog" element={<BlogManagement />} />
             <Route path="/blog/create" element={<BlogCreatePage />} />
             <Route path="/blog/:postId" element={<BlogView />} />
-            <Route
-              path="/blog/category/:category"
-              element={<BlogManagement />}
-            />
+            <Route path="/blog/category/:category" element={<BlogManagement />} />
             <Route path="/documentation" element={<Documentation />} />
-            <Route path="/tool" element={<ReportTool />} />
-            {/* <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} /> */}
-
+            <Route path="/tool/Docs" element={<ReportToolDocs />} />
+            <Route path="/tool/excel" element={<ReportToolExcel />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/tool/html" element={<ReportToolHtml />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

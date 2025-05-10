@@ -1,12 +1,11 @@
-// components/Home/Home.js
 import React from "react";
 import "../styles/Home.css";
-import ReportTool from "./ReportTool";
+import EnhancedReportTool from "./ReportToolExcel";
+import ReportTool from "./ReportToolDocs";
 
 const Home = () => {
   return (
     <div className="home-page">
-      {/* Header Section */}
       <header className="header-section">
         <div className="container">
           <h1>Enterprise Workforce Analytics</h1>
@@ -16,20 +15,17 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Analysis Tool Section */}
       <section className="tool-section">
         <div className="container">
           <div className="tool-header">
             <h2>Attrition Analytics Platform</h2>
-            <p>
-              Generate comprehensive workforce analytics for you
-            </p>
+            <p>Generate comprehensive workforce analytics for you</p>
           </div>
           <ReportTool />
+          <EnhancedReportTool />
         </div>
       </section>
 
-      {/* Core Capabilities Section */}
       <section className="capabilities-section">
         <div className="container">
           <h2>Core Capabilities</h2>
@@ -61,7 +57,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Business Value Section */}
       <section className="value-section">
         <div className="container">
           <h2>Business Impact</h2>
