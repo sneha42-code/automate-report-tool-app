@@ -21,11 +21,10 @@ function App() {
 
       <div className="app">
         <Helmet>
-          <title>Report Generator | automatereporting.com</title>
-          <meta     name="description"
-    content="World's first HR AI angent's to generate reports and summaries" />
+          <title>Automate Reporting | automatereporting.com</title>
+          <meta name="description" content="World's first HR AI agent to automate reporting and summaries" />
           {/* Open Graph tags for better social sharing */}
-          <meta property="og:title" content="Report Generator | automatereporting.com" />
+          <meta property="og:title" content="Automate Reporting | automatereporting.com" />
           <meta property="og:description" content="Advanced attrition analysis for human capital management" />
           <meta property="og:url" content="https://automatereporting.com" />
         </Helmet>

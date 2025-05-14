@@ -17,8 +17,8 @@ const Header = () => {
         <div className="header-content">
           <div className="logo">
             <NavLink to="/">
-              <img src={logoImg} alt="Report Generator" className="logo-img" />
-              <span className="logo-text">Report Generator</span>
+              <img src={logoImg} alt="Automate Reporting" className="logo-img" />
+              <span className="logo-text">Automate Reporting</span>
             </NavLink>
           </div>
 
