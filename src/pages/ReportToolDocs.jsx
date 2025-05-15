@@ -168,10 +168,10 @@ const ReportTool = () => {
   };
 
   return (
-    <div className="tool-platform">
+    <div className="tool-platform fade-in">
       <div className="analytics-platform">
         <div className="platform-modules">
-          <section className="data-module">
+          <section className="data-module fade-in">
             <div className="module-header">
               <h3>Data Input --- Output (file format  * docs)</h3>
               <p className="module-description">
@@ -290,7 +290,7 @@ const ReportTool = () => {
             )}
           </section>
 
-          <section className="analysis-module">
+          <section className="analysis-module fade-in">
             <div className="module-header">
               <h3>Analysis Controls</h3>
               <p className="module-description">
@@ -357,7 +357,7 @@ const ReportTool = () => {
 
           {/* Add a conditional rendering for the specifications module */}
           {showSpecifications && (
-            <section className="specifications-module">
+            <section className="specifications-module fade-in">
               <div className="module-header">
                 <h3>System Specifications</h3>
               </div>

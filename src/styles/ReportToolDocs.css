@@ -394,6 +394,20 @@ padding : 0 120px;
   margin-bottom: 0;
 }
 
+/* Fade In Animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .control-actions {
