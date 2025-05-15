@@ -1,3 +1,4 @@
+
 // src/pages/ReportViewer.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -81,7 +82,7 @@ const ReportViewer = () => {
         </button>
         <h1>Report Viewer</h1>
         <a
-          href={reportService.getViewUrl(fileId, filename)}
+          href={HtmlReportService.getViewUrl(fileId, filename)}
           target="_blank"
           rel="noopener noreferrer"
           className="download-button"

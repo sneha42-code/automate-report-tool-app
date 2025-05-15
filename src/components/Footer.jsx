@@ -11,9 +11,9 @@ const Footer = () => {
         <div className="footer-top"></div>
         <div className="footer-sections">
           <div className="footer-section">
-            <h2 className="footer-title">Report Generator</h2>
+            <h2 className="footer-title">Automate Reporting</h2>
             <p className="footer-description">
-              Professional report generation tools to help you create beautiful,
+              Professional tools to help you automate analysis and create beautiful,
               data-driven reports from your spreadsheets and databases.
             </p>
           </div>
@@ -26,7 +26,7 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <div className="copyright">
-            &copy; {currentYear} Report Generator. All rights reserved.
+            &copy; {currentYear} Automate Reporting. All rights reserved.
           </div>
           <div className="footer-links">
             <a href="/terms">Terms of Service</a>

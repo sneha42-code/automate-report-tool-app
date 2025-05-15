@@ -5,6 +5,18 @@
   background-color: var(--primary-blue);
   color: wheat;
   padding: 60px 0 30px;
+  animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .container {
@@ -21,17 +33,21 @@
 .footer-section {
   flex: 1;
   max-width: 45%;
+  margin-bottom: 2rem;
 }
 
 .footer-title {
-  color: #ffffff;
+  color: var(--primary-slate);
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 10px 0;
   position: relative;
   margin-inline-start: auto;
   text-align: center;
   padding-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: none;
+  line-height: 1.2;
 }
 
 .footer-title:after {
@@ -46,10 +62,12 @@
 }
 
 .footer-description {
-  color:var(--primary-blue);
+  color: var(--neutral-medium, #64748b);
   line-height: 1.6;
   margin: 0;
   text-align: center;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .contact-email {
@@ -63,7 +81,7 @@
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
-  border-top: var(--primary-slate)
+  border-top: var(--primary-slate);
 }
 .footer-top {
   display: flex;
