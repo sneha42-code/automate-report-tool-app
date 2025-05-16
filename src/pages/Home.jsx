@@ -51,7 +51,7 @@ const Home = () => {
         </div>
         <div className="container hero-content">
           <h1 className="hero-title animate-slideDown">
-            Enterprise Workforce Analytics
+            AI Driven Workforce Analytics
           </h1>
           <p className="hero-subtitle animate-slideUp">
             Advanced attrition analysis for human capital management
