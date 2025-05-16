@@ -2,15 +2,15 @@ import React, { useEffect, useRef } from "react";
 import "../styles/Home.css";
 import AnalaysisTool from "./AnalaysisTool";
 import { animateCounters } from "../utils/animateCounters";
-import dashboardImage from "../image/dashboard.png";
-import analyticsIcon from "../image/analytics-icon.png";
-import demographicsIcon from "../image/demographics-icon.png";
-import trendsIcon from "../image/trends-icon.png";
-import riskIcon from "../image/risk-icon.png";
-import efficiency from "../image/efficiency.png";
-import costManagement from "../image/cost-management.png";
-import strategicPlanning from "../image/strategic-planning.png";
-import riskMitigation from "../image/risk-mitigation.png";
+import  dashboradImage from "../image/dashboard.jpg";
+import  analyticsIcon  from "../image/analytics-icon.png";
+import  demographicsIcon  from "../image/demographics-icon.png";
+import  trendsIcon from "../image/trends-icon.png"
+import  riskIcon from "../image/risk-icon.png"
+import  efficiency  from "../image/efficiency.png"
+import  costManagement from "../image/cost-management.png"
+import  strategicPlanning from "../image/strategic-planning.png"
+import  riskMitigation from "../image/risk-mitigation.png"
 
 const Home = () => {
   const observerRef = useRef(null);
@@ -19,17 +19,17 @@ const Home = () => {
     // Intersection Observer for fade-in animations
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("fade-in-visible");
+            entry.target.classList.add('fade-in-visible');
           }
         });
       },
       { threshold: 0.1 }
     );
 
-    const fadeElements = document.querySelectorAll(".fade-in");
-    fadeElements.forEach((el) => observerRef.current.observe(el));
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observerRef.current.observe(el));
 
     // Initialize counter animations
     animateCounters();
@@ -46,30 +46,17 @@ const Home = () => {
       {/* Hero Section with Background Image */}
       <header className="hero-section">
         <div className="hero-background">
-          <img
-            src={dashboardImage}
-            alt="Analytics Dashboard"
-            className="hero-image"
-            loading="eager"
-          />
+          <img src={dashboradImage} alt="Analytics Dashboard" className="hero-image" />
           <div className="hero-overlay"></div>
         </div>
         <div className="container hero-content">
           <h1 className="hero-title animate-slideDown">
-            AI Driven Analytics Platform
+            Enterprise Workforce Analytics
           </h1>
           <p className="hero-subtitle animate-slideUp">
-            Generate insightful analysis and data-driven reports for your organization
+            Advanced attrition analysis for human capital management
           </p>
-          <button
-            className="cta-button animate-fadeIn"
-            onClick={() => {
-              const toolSection = document.querySelector(".tool-section");
-              if (toolSection) {
-                toolSection.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-          >
+          <button className="cta-button animate-fadeIn">
             Get Started
           </button>
         </div>
@@ -79,8 +66,8 @@ const Home = () => {
       <section className="tool-section">
         <div className="container">
           <div className="tool-header fade-in">
-            <h2>Analysis & Reporting Platform</h2>
-            <p>Generate comprehensive analytics and reports for your business</p>
+            <h2>Attrition Analytics Platform</h2>
+            <p>Generate comprehensive workforce analytics for your organization</p>
           </div>
           <div className="tool-wrapper">
             <AnalaysisTool />
@@ -97,9 +84,9 @@ const Home = () => {
               <div className="capability-icon">
                 <img src={analyticsIcon} alt="Analytics" />
               </div>
-              <h3>Data Analysis</h3>
+              <h3>Attrition Analysis</h3>
               <p>
-                Extract key metrics and trends from your data for actionable insights
+                Comprehensive metrics for employee departure patterns and trends
               </p>
             </div>
             <div className="capability-card fade-in">
@@ -108,7 +95,7 @@ const Home = () => {
               </div>
               <h3>Demographic Insights</h3>
               <p>
-                Segment and visualize your data by any category or attribute
+                Detailed breakdown by department, tenure, grade and location
               </p>
             </div>
             <div className="capability-card fade-in">
@@ -117,15 +104,15 @@ const Home = () => {
               </div>
               <h3>Trend Identification</h3>
               <p>
-                Discover patterns and changes over time with advanced analytics
+                Quarterly and annual patterns with statistical significance markers
               </p>
             </div>
             <div className="capability-card fade-in">
               <div className="capability-icon">
                 <img src={riskIcon} alt="Risk Assessment" />
               </div>
-              <h3>Risk & Opportunity Assessment</h3>
-              <p>Identify potential risks and opportunities in your datasets</p>
+              <h3>Risk Assessment</h3>
+              <p>Proactive identification of retention vulnerabilities</p>
             </div>
           </div>
         </div>
@@ -143,7 +130,7 @@ const Home = () => {
               <div className="value-content">
                 <h3>Operational Efficiency</h3>
                 <p>
-                  Optimize processes and resource allocation with data-driven insights
+                  Identify root causes of turnover to optimize workforce planning
                 </p>
               </div>
             </div>
@@ -154,7 +141,7 @@ const Home = () => {
               <div className="value-content">
                 <h3>Cost Management</h3>
                 <p>
-                  Control expenses and improve ROI through targeted reporting
+                  Reduce replacement and training expenditures through targeted retention
                 </p>
               </div>
             </div>
@@ -164,7 +151,7 @@ const Home = () => {
               </div>
               <div className="value-content">
                 <h3>Strategic Planning</h3>
-                <p>Support evidence-based decision making at every level</p>
+                <p>Evidence-based insights for talent management decisions</p>
               </div>
             </div>
             <div className="value-card fade-in">
@@ -172,9 +159,9 @@ const Home = () => {
                 <img src={riskMitigation} alt="Risk Mitigation" />
               </div>
               <div className="value-content">
-                <h3>Opportunity Discovery</h3>
+                <h3>Risk Mitigation</h3>
                 <p>
-                  Uncover new growth areas and business opportunities from your data
+                  Early identification of attrition trends across key segments
                 </p>
               </div>
             </div>
