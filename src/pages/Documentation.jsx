@@ -18,9 +18,7 @@ const MinimalDocumentation = () => {
               <li>Download results</li>
             </ol>
 
-            <Link to="/tool" className="cta-button">
-              Start Now
-            </Link>
+    
           </div>
 
           <div className="doc-section">

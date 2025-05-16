@@ -1,4 +1,4 @@
-// src/services/reportService.js
+// src/services/ReportService.js
 import axios from "axios";
 
 // Get API base URL from environment variables
@@ -13,7 +13,7 @@ const apiClient = axios.create({
 });
 
 // Service functions for report-related API calls
-const reportService = {
+const ReportService = {
   /**
    * Fetch recent reports
    * @returns {Promise} Promise with recent reports data
@@ -39,7 +39,7 @@ const reportService = {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await apiClient.post("/upload/", formData, {
+      const response = await apiClient.post("/upload-forDocs/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -67,7 +67,7 @@ const reportService = {
    */
   generateReport: async (fileId) => {
     try {
-      const response = await apiClient.post(`/generate-report/?file_id=${fileId}`);
+      const response = await apiClient.post(`/generate-report-forDocs/?file_id=${fileId}`);
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
@@ -82,8 +82,11 @@ const reportService = {
    * @returns {string} Download URL
    */
   getDownloadUrl: (fileId, filename) => {
-    return `${API_BASE_URL}/download/?file_id=${fileId}&filename=${filename}`;
+    return `${API_BASE_URL}/download-forDocs/?file_id=${fileId}&filename=${filename}`;
+    
   }
+   
+ 
 };
 
-export default reportService;
+export default ReportService;
