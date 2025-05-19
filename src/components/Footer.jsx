@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="footer-section">
             <h2 className="footer-title">Automate Reporting</h2>
             <p className="footer-description">
-              Professional report generation tools to help you create beautiful,
+              Professional tools to help you automate analysis and create beautiful,
               data-driven reports from your spreadsheets and databases.
             </p>
           </div>

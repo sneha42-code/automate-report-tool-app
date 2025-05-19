@@ -1,12 +1,12 @@
-/* ReportTool.css */
+/* EnhancedReportTool.css */
 @import "./color.css";
 
 /* Enterprise Attrition Analytics Platform
  * Formal Business Styling
  */
 
- .tool-platform {
-padding : 0 120px;
+.tool-platform {
+  padding: 0 120px;
 }
 
 /* Base Styles */
@@ -16,6 +16,7 @@ padding : 0 120px;
   background-color: var(--bg-light);
   border-radius: 4px;
   box-shadow: var(--shadow-soft);
+  margin-bottom: 40px;
 }
 
 .platform-modules {
@@ -51,41 +52,66 @@ padding : 0 120px;
   color: var(--neutral-medium);
 }
 
+/* API Status Indicator */
+.api-status-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  margin-bottom: 24px;
+  color: #e53e3e;
+  font-size: 0.9rem;
+}
+
 /* Data Input Module */
 .file-input-section {
   padding: 20px;
 }
 
 .file-dropzone {
-  border: 1px dashed var(--border-medium);
+  border: 2px dashed var(--border-medium);
   border-radius: 4px;
-  padding: 24px;
+  padding: 32px;
   text-align: center;
   position: relative;
   background-color: var(--bg-light);
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .file-dropzone:hover {
-  border-color: var(--neutral-medium);
+  border-color: var(--primary-slate);
+  background-color: #f8fafc;
+}
+
+.file-dropzone.drag-over {
+  border-color: var(--primary-blue);
+  background-color: #f0f7ff;
 }
 
 .dropzone-icon {
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.dropzone-icon svg {
+  width: 48px;
+  height: 48px;
 }
 
 .dropzone-text {
-  margin: 0 0 6px 0;
-  font-size: 1rem;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
   font-weight: 500;
   color: var(--neutral-dark);
 }
 
 .dropzone-subtext {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--neutral-light);
 }
 
@@ -200,12 +226,19 @@ padding : 0 120px;
   border-bottom: none;
 }
 
-.files-table tr.uploaded .file-status {
+.files-table tr.uploaded .status-success {
   color: var(--success);
+  font-weight: 500;
 }
 
-.files-table tr.failed .file-status {
+.files-table tr.failed .status-error {
   color: var(--error);
+  font-weight: 500;
+}
+
+.files-table tr.pending .status-pending {
+  color: var(--warning);
+  font-weight: 500;
 }
 
 .remove-file-btn {
@@ -225,6 +258,11 @@ padding : 0 120px;
   border-color: var(--error);
 }
 
+.remove-file-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Analysis Controls */
 .control-panel {
   padding: 20px;
@@ -237,18 +275,23 @@ padding : 0 120px;
 }
 
 .control-btn {
-  padding: 10px 16px;
+  padding: 12px 20px;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .analyze-btn {
   background-color: var(--primary-slate);
   color: white;
+  min-width: 180px;
 }
 
 .analyze-btn:hover:not(:disabled) {
@@ -258,6 +301,7 @@ padding : 0 120px;
 .retrieve-btn {
   background-color: var(--primary-slate);
   color: white;
+  min-width: 180px;
 }
 
 .retrieve-btn:hover:not(:disabled) {
@@ -273,7 +317,7 @@ padding : 0 120px;
 
 .control-btn.processing {
   position: relative;
-  text-indent: -9999px;
+  color: transparent;
 }
 
 .control-btn.processing::after {
@@ -281,12 +325,12 @@ padding : 0 120px;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
-  height: 16px;
-  margin-top: -8px;
-  margin-left: -8px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   animation: spinner 0.8s linear infinite;
 }
@@ -306,9 +350,9 @@ padding : 0 120px;
 
 .complete-header {
   background-color: var(--bg-light);
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border-light);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--neutral-dark);
 }
@@ -320,11 +364,65 @@ padding : 0 120px;
 
 .metadata-item {
   display: flex;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .metadata-item:last-child {
   margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .tool-platform {
+    padding: 0 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tool-platform {
+    padding: 0 20px;
+  }
+  
+  .control-actions {
+    flex-direction: column;
+  }
+
+  .specifications-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .files-table {
+    font-size: 0.8rem;
+  }
+
+  .files-table th:nth-child(2),
+  .files-table td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .module-header h3 {
+    font-size: 1rem;
+  }
+
+  .files-table th:nth-child(3),
+  .files-table td:nth-child(3) {
+    display: none;
+  }
+
+  .dropzone-text {
+    font-size: 0.9rem;
+  }
+  
+  .metadata-item {
+    flex-direction: column;
+  }
+  
+  .metadata-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
 }
 
 .metadata-label {
@@ -351,6 +449,19 @@ padding : 0 120px;
   border-bottom-right-radius: 4px;
   font-size: 0.9rem;
   color: var(--neutral-medium);
+}
+
+.report-description p {
+  margin: 0 0 10px 0;
+}
+
+.report-description ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.report-description li {
+  margin-bottom: 4px;
 }
 
 /* Specifications Module */
@@ -392,39 +503,4 @@ padding : 0 120px;
 
 .specification-content p:last-child {
   margin-bottom: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .control-actions {
-    flex-direction: column;
-  }
-
-  .specifications-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .files-table {
-    font-size: 0.8rem;
-  }
-
-  .files-table th:nth-child(2),
-  .files-table td:nth-child(2) {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .module-header h3 {
-    font-size: 1rem;
-  }
-
-  .files-table th:nth-child(3),
-  .files-table td:nth-child(3) {
-    display: none;
-  }
-
-  .dropzone-text {
-    font-size: 0.9rem;
-  }
 }

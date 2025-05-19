@@ -1,15 +1,39 @@
-// components/Header/Header.js
-import React, { useState } from "react";
+// components/Header/Header.jsx
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/Header.css";
 import logoImg from "../image/logo.svg";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const mobileMenuRef = useRef(null);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const toggleDropdown = (index) => {
+    if (activeDropdown === index) {
+      setActiveDropdown(null);
+    } else {
+      setActiveDropdown(index);
+    }
+  };
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="header">
@@ -32,7 +56,10 @@ const Header = () => {
             <span className="hamburger-line"></span>
           </button>
 
-          <nav className={`main-nav ${mobileMenuOpen ? "open" : ""}`}>
+          <nav 
+            className={`main-nav ${mobileMenuOpen ? "open" : ""}`}
+            ref={mobileMenuRef}
+          >
             <ul className="nav-list">
               <li className="nav-item">
                 <NavLink
@@ -44,16 +71,43 @@ const Header = () => {
                   Home
                 </NavLink>
               </li>
+              
+              <li className={`nav-item dropdown ${activeDropdown === 0 ? "open" : ""}`}>
+                <span 
+                  className="nav-link dropdown-toggle"
+                  onClick={() => toggleDropdown(0)}
+                >
+                  Tools
+                </span>
+                <ul className="dropdown-menu">
+                  <li>
+                    <NavLink to="/tool/docs" className="dropdown-item">
+                    Docs file format
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/tool/excel" className="dropdown-item">
+                      Excel file format
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/tool/html" className="dropdown-item">
+                      Html file format
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
               <li className="nav-item">
                 <NavLink
-                  to="/tool"
+                  to="/Dashboard"
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Tool
+                  Dashboard
                 </NavLink>
               </li>
+              
               <li className="nav-item">
                 <NavLink
                   to="/blog"
@@ -64,6 +118,7 @@ const Header = () => {
                   Blog
                 </NavLink>
               </li>
+                 
               <li className="nav-item">
                 <NavLink
                   to="/documentation"
@@ -74,7 +129,29 @@ const Header = () => {
                   Documentation
                 </NavLink>
               </li>
+              
+              {/* <li className={`nav-item dropdown ${activeDropdown === 1 ? "open" : ""}`}>
+                <span 
+                  className="nav-link dropdown-toggle"
+                  onClick={() => toggleDropdown(1)}
+                >
+                  Resources
+                </span>
+                <ul className="dropdown-menu">
+                  <li>
+                    <NavLink to="/documentation" className="dropdown-item">
+                      Documentation
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/blog" className="dropdown-item">
+                      Blog
+                    </NavLink>
+                  </li>
+                </ul>
+              </li> */}
             </ul>
+            
             <div className="header-actions">
               <NavLink to="/login" className="btn btn-secondary">
                 Log In
