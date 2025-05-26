@@ -23,6 +23,10 @@ const ReportTool = () => {
   const [fileId, setFileId] = useState(null);
   const [showSpecifications, setShowSpecifications] = useState(false); // New state for controlling specifications visibility
   const location = useLocation();
+   const [apiStatus, setApiStatus] = useState({
+      isOnline: true,
+      message: "API connection established"
+    });
 
   
     const checkApiConnection = async () => {
@@ -46,7 +50,7 @@ const ReportTool = () => {
       checkApiConnection();
     }, []);
 
-    
+
   // Check the current route and set showSpecifications accordingly
   useEffect(() => {
     if (location.pathname.startsWith("/tool")) {
