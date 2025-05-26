@@ -4,6 +4,7 @@ import AttritionAnalysisService from "../service/attritionAnalysisService";
 import HtmlReportService from "../service/htmlReportService";
 import { validateFiles, formatFileSize } from "../utils/fileValidation";
 import "../styles/AnalaysisTool.css";
+import { checkApiConnection } from "../service/checkApiConnection";
 
 const AnalaysisTool = () => {
   // State variables
@@ -26,21 +27,15 @@ const AnalaysisTool = () => {
 
   // Check API connection on mount
   useEffect(() => {
-    checkApiConnection();
-  }, []);
-
-  const checkApiConnection = async () => {
-    try {
-      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api/v1/");
-      setApiStatus({ isOnline: true, message: "API connection established" });
-    } catch (err) {
-      console.error("API connection error:", err);
+    const checkApiConnectionStatus = async () => {
+      const result = await checkApiConnection();
       setApiStatus({
-        isOnline: false,
-        message: "Could not connect to analysis API. The report generation service may be offline.",
+        isOnline: result.success,
+        message: result.message,
       });
-    }
-  };
+    };
+    checkApiConnectionStatus();
+  }, []);
 
   // Get service based on report type
   const getService = () => {

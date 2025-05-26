@@ -7,6 +7,8 @@ import {
   formatFileSize,
 } from "../utils/fileValidation";
 import HtmlReportService from "../service/htmlReportService";
+import { checkApiConnection } from "../service/checkApiConnection";
+
 const ReportToolHtml = () => {
   const location = useLocation();
 
@@ -28,46 +30,17 @@ const ReportToolHtml = () => {
   // Refs
   const fileInputRef = useRef(null);
 
-  const checkApiConnection = async () => {
-    try {
-      // Simple ping to API root
-      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/v1/");
-      setApiStatus({
-        isOnline: true,
-        message: "API connection established"
-      });
-    } catch (err) {
-      console.error("API connection error:", err);
-      setApiStatus({
-        isOnline: false,
-        message: "Could not connect to analysis API. The report generation service may be offline."
-      });
-    }
+  const checkApiConnectionStatus = async () => {
+    const result = await checkApiConnection();
+    setApiStatus({
+      isOnline: result.success,
+      message: result.message
+    });
   };
   // Check API connection on initial load
   useEffect(() => {
-    checkApiConnection();
+    checkApiConnectionStatus();
   }, []);
-
-  // Check for any previously generated reports
-  useEffect(() => {
-    const fetchReports = async () => {
-      if (!apiStatus.isOnline) return;
-
-      try {
-        const data = await HtmlReportService.getRecentReports();
-        if (data && data.reports && data.reports.length > 0) {
-          setGeneratedReport(data.reports[0]);
-        }
-      } catch (err) {
-        console.error("Error fetching recent reports:", err);
-        // Don't set error state here - this is just an initial check
-      }
-    };
-
-    // Uncomment when API is ready
-    // fetchReports();
-  }, [apiStatus.isOnline]);
 
   // Check the current route and set showSpecifications accordingly
   useEffect(() => {
