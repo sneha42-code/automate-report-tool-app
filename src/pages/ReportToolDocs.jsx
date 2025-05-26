@@ -6,7 +6,7 @@ import {
   formatFileSize,
 
 } from "../utils/fileValidation";
-import ReportService from "../service/ReportService";
+import ReportService from "../service/reportService";
 
 /**
  * ReportTool component for uploading files, generating reports, and downloading them.

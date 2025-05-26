@@ -187,6 +187,40 @@
   transition: all 0.3s ease;
 }
 
+/* --- Fullwidth Header Styles --- */
+.header-fullwidth {
+  width: 100vw;
+  left: 0;
+  right: 0;
+  position: relative;
+  border-radius: 0;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.header-container-fullwidth {
+  max-width: 100vw;
+  width: 100vw;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0;
+}
+
+.header-content {
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+@media (max-width: 600px) {
+  .header-content {
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
+}
+/* --- End Fullwidth Header Styles --- */
+
 /* Responsive styles */
 @media (max-width: 960px) {
   .mobile-menu-toggle {

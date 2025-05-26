@@ -6,7 +6,7 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import HtmlReportService from "../service/HtmlReportService";
+import HtmlReportService from "../service/htmlReportService";
 const ReportToolHtml = () => {
   const location = useLocation();
 

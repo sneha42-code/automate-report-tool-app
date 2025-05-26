@@ -1,7 +1,11 @@
 // src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/Auth.css";
+import Head3D from "../components/SimpleNeuralNetwork";
+import AuthLeftSection from "../components/AuthLeftSection";
+import AuthRightSection from "../components/AuthRightSection";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -70,30 +74,28 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       return;
     }
-    
     setIsLoading(true);
-    
     try {
-      // In a real app, you would call your registration API here
-      // For demo purposes, we'll just simulate a signup
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Store some indication that registration was successful
+      // Replace with your real API endpoint
+      await axios.post("/api/auth/signup", {
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
       localStorage.setItem("registrationSuccess", "true");
-      
-      // Redirect to login page after successful registration
-      navigate("/login", { 
-        state: { 
-          message: "Registration successful! Please log in with your new account." 
-        } 
+      navigate("/login", {
+        state: {
+          message: "Registration successful! Please log in with your new account.",
+        },
       });
     } catch (error) {
       setErrors({
-        general: "Registration failed. Please try again later.",
+        general:
+          error.response?.data?.message ||
+          "Registration failed. Please try again later.",
       });
     } finally {
       setIsLoading(false);
@@ -101,135 +103,126 @@ const Signup = () => {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <h1>Create an Account</h1>
-          <p>Join us today and start generating professional reports with ease.</p>
+    <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+      <AuthLeftSection>
+        <Head3D />
+      </AuthLeftSection>
+      <AuthRightSection>
+        {/* Centered Auth Card */}
+        <div>
+          <div className="auth-header medium-header">
+            <h1 className="medium-title">Create your account</h1>
+            <p className="auth-subtitle medium-subtitle">
+              Join us and start generating professional AI-powered reports with ease.
+            </p>
+          </div>
+          {errors.general && (
+            <div className="auth-error-message" style={{ textAlign: 'left' }}>{errors.general}</div>
+          )}
+          <form className="auth-form" onSubmit={handleSubmit} autoComplete="off">
+            <div className="form-group medium-form-group">
+              <label htmlFor="fullName" className="medium-label">Full Name</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                className={`medium-input${errors.fullName ? ' error' : ''}`}
+                disabled={isLoading}
+                autoComplete="name"
+              />
+              {errors.fullName && (
+                <div className="field-error medium-error">{errors.fullName}</div>
+              )}
+            </div>
+            <div className="form-group medium-form-group">
+              <label htmlFor="email" className="medium-label">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className={`medium-input${errors.email ? ' error' : ''}`}
+                disabled={isLoading}
+                autoComplete="email"
+              />
+              {errors.email && <div className="field-error medium-error">{errors.email}</div>}
+            </div>
+            <div className="form-group medium-form-group">
+              <label htmlFor="password" className="medium-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a password"
+                className={`medium-input${errors.password ? ' error' : ''}`}
+                disabled={isLoading}
+                autoComplete="new-password"
+              />
+              {errors.password && (
+                <div className="field-error medium-error">{errors.password}</div>
+              )}
+            </div>
+            <div className="form-group medium-form-group">
+              <label htmlFor="confirmPassword" className="medium-label">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                className={`medium-input${errors.confirmPassword ? ' error' : ''}`}
+                disabled={isLoading}
+                autoComplete="new-password"
+              />
+              {errors.confirmPassword && (
+                <div className="field-error medium-error">{errors.confirmPassword}</div>
+              )}
+            </div>
+            <div className="terms-agreement" style={{ marginBottom: 24 }}>
+              <input
+                type="checkbox"
+                id="agreeToTerms"
+                name="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onChange={handleChange}
+                disabled={isLoading}
+              />
+              <label htmlFor="agreeToTerms" className="medium-terms-label">
+                I agree to the{' '}
+                <Link to="/terms" className="auth-link medium-link">
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link to="/privacy" className="auth-link medium-link">
+                  Privacy Policy
+                </Link>
+              </label>
+              {errors.agreeToTerms && (
+                <div className="field-error medium-error">{errors.agreeToTerms}</div>
+              )}
+            </div>
+            <button
+              type="submit"
+              className={`auth-button medium-btn${isLoading ? ' loading' : ''}`}
+              disabled={isLoading}
+            >
+              {isLoading ? <><span className="loader"></span> Creating account...</> : "Sign up"}
+            </button>
+          </form>
+          <div className="auth-footer medium-footer">
+            <span>Already have an account? </span>
+            <Link to="/login" className="auth-link medium-link">Sign in</Link>
+          </div>
         </div>
-
-        {errors.general && (
-          <div className="auth-error-message">{errors.general}</div>
-        )}
-
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="fullName">Full Name</label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              className={errors.fullName ? "error" : ""}
-              disabled={isLoading}
-            />
-            {errors.fullName && (
-              <div className="field-error">{errors.fullName}</div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className={errors.email ? "error" : ""}
-              disabled={isLoading}
-            />
-            {errors.email && <div className="field-error">{errors.email}</div>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create a password"
-              className={errors.password ? "error" : ""}
-              disabled={isLoading}
-            />
-            {errors.password && (
-              <div className="field-error">{errors.password}</div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              className={errors.confirmPassword ? "error" : ""}
-              disabled={isLoading}
-            />
-            {errors.confirmPassword && (
-              <div className="field-error">{errors.confirmPassword}</div>
-            )}
-          </div>
-
-          <div className="terms-agreement">
-            <input
-              type="checkbox"
-              id="agreeToTerms"
-              name="agreeToTerms"
-              checked={formData.agreeToTerms}
-              onChange={handleChange}
-              disabled={isLoading}
-            />
-            <label htmlFor="agreeToTerms">
-              I agree to the{" "}
-              <Link to="/terms" className="auth-link">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="auth-link">
-                Privacy Policy
-              </Link>
-            </label>
-            {errors.agreeToTerms && (
-              <div className="field-error">{errors.agreeToTerms}</div>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className={`auth-button ${isLoading ? "loading" : ""}`}
-            disabled={isLoading}
-          >
-            {isLoading ? "Creating Account..." : "Sign Up"}
-          </button>
-
-          <div className="auth-divider">
-            <span>OR</span>
-          </div>
-
-          <button type="button" className="social-auth-button google">
-            <span className="social-icon">G</span>
-            <span>Sign up with Google</span>
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          <p>
-            Already have an account?{" "}
-            <Link to="/login" className="auth-link">
-              Log in
-            </Link>
-          </p>
-        </div>
-      </div>
+      </AuthRightSection>
     </div>
   );
 };
