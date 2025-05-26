@@ -1,7 +1,7 @@
 // src/pages/ReportViewer.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import HtmlReportService from "../service/HtmlReportService";
+import HtmlReportService from "../service/htmlReportService";
 import "../styles/Dashboard.css";
 
 const ReportViewer = () => {

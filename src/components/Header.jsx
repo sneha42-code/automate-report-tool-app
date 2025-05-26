@@ -36,8 +36,8 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="header">
-      <div className="container">
+    <header className="header header-fullwidth">
+      <div className="container header-container-fullwidth">
         <div className="header-content">
           <div className="logo">
             <NavLink to="/">
@@ -153,9 +153,6 @@ const Header = () => {
             </ul>
             
             <div className="header-actions">
-              <NavLink to="/login" className="btn btn-secondary">
-                Log In
-              </NavLink>
               <NavLink to="/signup" className="btn btn-primary">
                 Sign Up
               </NavLink>

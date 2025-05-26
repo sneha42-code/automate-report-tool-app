@@ -6,7 +6,7 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import AttritionAnalysisService from "../service/AttritionAnalysisService";
+import AttritionAnalysisService from "../service/attritionAnalysisService";
 
 const EnhancedReportTool = () => {
   const location = useLocation();

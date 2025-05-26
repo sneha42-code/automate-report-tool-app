@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReportService from "../service/ReportService";
-import AttritionAnalysisService from "../service/AttritionAnalysisService";
-import HtmlReportService from "../service/HtmlReportService";
+import ReportService from "../service/reportService";
+import AttritionAnalysisService from "../service/attritionAnalysisService";
+import HtmlReportService from "../service/htmlReportService";
 import { validateFiles, formatFileSize } from "../utils/fileValidation";
 import "../styles/AnalaysisTool.css";
 

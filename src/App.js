@@ -12,6 +12,9 @@ import BlogView from "./pages/BlogView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlogCreatePage from "./pages/BlogCreatePage";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
 import { Helmet } from 'react-helmet';
 
 import "./App.css";
@@ -41,6 +44,9 @@ function App() {
             <Route path="/tool/excel" element={<ReportToolExcel />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tool/html" element={<ReportToolHtml />} />
+            <Route path ="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
