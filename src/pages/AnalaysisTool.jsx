@@ -31,7 +31,7 @@ const AnalaysisTool = () => {
 
   const checkApiConnection = async () => {
     try {
-      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api/");
+      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api/v1/");
       setApiStatus({ isOnline: true, message: "API connection established" });
     } catch (err) {
       console.error("API connection error:", err);

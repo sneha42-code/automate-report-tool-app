@@ -32,7 +32,7 @@ const EnhancedReportTool = () => {
   const checkApiConnection = async () => {
     try {
       // Simple ping to API root
-      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/");
+      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/v1/");
       setApiStatus({
         isOnline: true,
         message: "API connection established"

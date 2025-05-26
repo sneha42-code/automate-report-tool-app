@@ -23,6 +23,30 @@ const ReportTool = () => {
   const [fileId, setFileId] = useState(null);
   const [showSpecifications, setShowSpecifications] = useState(false); // New state for controlling specifications visibility
   const location = useLocation();
+
+  
+    const checkApiConnection = async () => {
+      try {
+        // Simple ping to API root
+        await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/V1/");
+        setApiStatus({
+          isOnline: true,
+          message: "API connection established"
+        });
+      } catch (err) {
+        console.error("API connection error:", err);
+        setApiStatus({
+          isOnline: false,
+          message: "Could not connect to analysis API. The report generation service may be offline."
+        });
+      }
+    };
+    // Check API connection on initial load
+    useEffect(() => {
+      checkApiConnection();
+    }, []);
+
+    
   // Check the current route and set showSpecifications accordingly
   useEffect(() => {
     if (location.pathname.startsWith("/tool")) {
