@@ -95,16 +95,22 @@ const Header = () => {
                       Html file format
                     </NavLink>
                   </li>
+                   <li>
+                    <NavLink to="/tool/slicer" className="dropdown-item">
+                    slicer analysis tool
+
+                    </NavLink>
+                  </li>
                 </ul>
               </li>
               <li className="nav-item">
                 <NavLink
-                  to="/Dashboard"
+                  to="/predictive-analysis"
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
                 >
-                  Dashboard
+                  predictive analysis
                 </NavLink>
               </li>
               

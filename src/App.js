@@ -4,7 +4,7 @@ import ReportToolDocs from "./pages/ReportToolDocs";
 import ReportToolExcel from "./pages/ReportToolExcel";
 import ReportToolHtml from "./pages/ReportToolHtml"
 import Documentation from "./pages/Documentation";
-import Dashboard from './pages/Dashboard';
+import SlicerAnalysisTool from './pages/SlicerAnalysisTool';
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import BlogManagement from "./pages/BlogManagementPage";
@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
+import DashboardViewer from "./pages/DashboardViewer";
 import { Helmet } from 'react-helmet';
 
 import "./App.css";
@@ -42,7 +43,8 @@ function App() {
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/tool/Docs" element={<ReportToolDocs />} />
             <Route path="/tool/excel" element={<ReportToolExcel />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+             <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
+            <Route path="/dashboard/view/:fileId/:filename" element={<DashboardViewer />} />
             <Route path="/tool/html" element={<ReportToolHtml />} />
             <Route path ="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
