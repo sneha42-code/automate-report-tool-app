@@ -1,8 +1,18 @@
 // src/services/ReportService.js
 import axios from "axios";
 
-// Get API base URL from environment variables
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8001/api";
+// Environment-aware API base URL configuration
+const getApiBaseUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_URL || "https://your-production-domain.com/api";
+  }
+  return process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Log the environment and URL for debugging
+console.log(`ReportService initialized in ${process.env.NODE_ENV} mode with URL: ${API_BASE_URL}`);
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -83,10 +93,7 @@ const ReportService = {
    */
   getDownloadUrl: (fileId, filename) => {
     return `${API_BASE_URL}/download-forDocs/?file_id=${fileId}&filename=${filename}`;
-    
   }
-   
- 
 };
 
 export default ReportService;

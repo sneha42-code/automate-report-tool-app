@@ -1,15 +1,21 @@
-
 import axios from "axios";
 
 class AttritionAnalysisService {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api";
+    // Use environment-specific API URL with fallback
+    this.baseURL = process.env.NODE_ENV === 'production' 
+      ? process.env.REACT_APP_API_URL || "https://your-production-domain.com/api"
+      : process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api";
+      
     this.api = axios.create({
       baseURL: this.baseURL,
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    // Log the environment and URL for debugging
+    console.log(`AttritionAnalysisService initialized in ${process.env.NODE_ENV} mode with URL: ${this.baseURL}`);
   }
 
   async uploadFile(file, progressCallback = null) {
