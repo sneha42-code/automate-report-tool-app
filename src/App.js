@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardViewer from "./pages/DashboardViewer";
+import PredictiveDashboad from "./pages/PredictiveDashboad";
 import { Helmet } from 'react-helmet';
 
 import "./App.css";
@@ -45,6 +46,7 @@ function App() {
             <Route path="/tool/excel" element={<ReportToolExcel />} />
              <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
             <Route path="/dashboard/view/:fileId/:filename" element={<DashboardViewer />} />
+           <Route path="/predictive-analysis" element={<PredictiveDashboad />} />
             <Route path="/tool/html" element={<ReportToolHtml />} />
             <Route path ="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

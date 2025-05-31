@@ -1,57 +1,69 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import ReportService from "../service/reportService";
-import AttritionAnalysisService from "../service/attritionAnalysisService";
-import HtmlReportService from "../service/htmlReportService";
+// src/pages/PredictiveTool.jsx
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import PredictiveService from "../service/predictiveService";
 import { validateFiles, formatFileSize } from "../utils/fileValidation";
-import "../styles/AnalaysisTool.css";
-import { checkApiConnection } from "../service/checkApiConnection";
+import "../styles/PredictiveDashboad.css";
 
-const AnalaysisTool = () => {
+const PredictiveTool = () => {
+  const location = useLocation();
+
   // State variables
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [generatedReport, setGeneratedReport] = useState(null);
+  const [generatedReports, setGeneratedReports] = useState({
+    word: null,
+    html: null
+  });
   const [error, setError] = useState(null);
   const [fileErrors, setFileErrors] = useState([]);
   const [fileId, setFileId] = useState(null);
-  const [reportType, setReportType] = useState("docs");
+  const [reportType, setReportType] = useState("word");
   const [apiStatus, setApiStatus] = useState({
     isOnline: true,
-    message: "API connection established",
+    message: "Predictive Analytics API connection established"
   });
-  const [isClicking, setIsClicking] = useState(false); // New state to prevent multiple clicks
+  const [showSpecifications, setShowSpecifications] = useState(false);
 
-  // Ref for file input
+  // Refs
   const fileInputRef = useRef(null);
 
   // Check API connection on mount
   useEffect(() => {
-    const checkApiConnectionStatus = async () => {
-      const result = await checkApiConnection();
-      setApiStatus({
-        isOnline: result.success,
-        message: result.message,
-      });
-    };
-    checkApiConnectionStatus();
+    checkApiConnection();
   }, []);
 
-  // Get service based on report type
-  const getService = () => {
-    const services = {
-      excel: AttritionAnalysisService,
-      html: HtmlReportService,
-      docs: ReportService,
-    };
-    return services[reportType] || ReportService;
+  // Check the current route and set showSpecifications accordingly
+  useEffect(() => {
+    if (location.pathname.startsWith("/tool")) {
+      setShowSpecifications(true);
+    } else {
+      setShowSpecifications(false);
+    }
+  }, [location]);
+
+  const checkApiConnection = async () => {
+    try {
+      await PredictiveService.healthCheck();
+      setApiStatus({
+        isOnline: true,
+        message: "Predictive Analytics API connection established"
+      });
+    } catch (err) {
+      console.error("Predictive API connection error:", err);
+      setApiStatus({
+        isOnline: false,
+        message: "Could not connect to Predictive Analytics API. The service may be offline."
+      });
+    }
   };
 
   // File handling
   const handleFiles = async (files) => {
     if (!apiStatus.isOnline) {
-      setError("Cannot upload files while API is offline.");
+      setError("Cannot upload files while Predictive Analytics API is offline. Please try again later.");
       return;
     }
 
@@ -78,8 +90,7 @@ const AnalaysisTool = () => {
     setUploadProgress(0);
 
     try {
-      const service = getService();
-      const response = await service.uploadFile(validFiles[0], setUploadProgress);
+      const response = await PredictiveService.uploadFile(validFiles[0], setUploadProgress);
       setFileId(response.file_id);
 
       setSelectedFiles((prev) =>
@@ -121,22 +132,12 @@ const AnalaysisTool = () => {
   };
 
   const handleFileSelect = (e) => {
-    if (e.target.files?.length) {
-      handleFiles(e.target.files);
-      e.target.value = null; // Reset file input to allow re-selection of the same file
-    }
+    if (e.target.files?.length) handleFiles(e.target.files);
   };
 
-  // Debounced click handler to prevent multiple dialogs
-  const handleBrowseClick = useCallback((e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    if (!isClicking && fileInputRef.current) {
-      setIsClicking(true);
-      fileInputRef.current.click();
-      // Reset clicking state after a short delay
-      setTimeout(() => setIsClicking(false), 500);
-    }
-  }, [isClicking]);
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
 
   // Report generation
   const handleGenerateClick = async () => {
@@ -149,22 +150,38 @@ const AnalaysisTool = () => {
     setError(null);
 
     try {
-      const service = getService();
-      const response = await service.generateReport(fileId);
-      const reportExtension = { docs: ".docx", excel: ".xlsx", html: ".html" }[reportType];
-
-      setGeneratedReport({
-        id: fileId,
-        name: response.report_file || `Attrition_Report${reportExtension}`,
-        size: "Unknown",
-        date: new Date().toLocaleDateString(),
-        url: service.getDownloadUrl(fileId, response.report_file),
-        type: reportType,
-        ...(reportType === "html" && { viewUrl: service.getViewUrl(fileId, response.report_file) }),
-      });
+      let response;
+      if (reportType === "word") {
+        response = await PredictiveService.generateReport(fileId);
+        setGeneratedReports(prev => ({
+          ...prev,
+          word: {
+            id: fileId,
+            name: response.report_file || "Predictive_Attrition_Report.docx",
+            size: "Unknown",
+            date: new Date().toLocaleDateString(),
+            url: PredictiveService.getDownloadUrl(fileId, response.report_file),
+            type: "word"
+          }
+        }));
+      } else {
+        response = await PredictiveService.generateHtmlReport(fileId);
+        setGeneratedReports(prev => ({
+          ...prev,
+          html: {
+            id: fileId,
+            name: response.report_file || "Predictive_Attrition_Report.html",
+            size: "Unknown",
+            date: new Date().toLocaleDateString(),
+            url: PredictiveService.getHtmlDownloadUrl(fileId, response.report_file),
+            viewUrl: PredictiveService.getHtmlViewUrl(fileId, response.report_file),
+            type: "html"
+          }
+        }));
+      }
     } catch (err) {
       console.error("Report generation error:", err);
-      setError(err.message || "Failed to generate report.");
+      setError(err.message || "Failed to generate predictive report.");
     } finally {
       setIsGenerating(false);
     }
@@ -172,7 +189,8 @@ const AnalaysisTool = () => {
 
   // Download report
   const handleDownloadClick = async () => {
-    if (!generatedReport) {
+    const currentReport = generatedReports[reportType];
+    if (!currentReport) {
       setError("No report available to download.");
       return;
     }
@@ -180,11 +198,10 @@ const AnalaysisTool = () => {
     setError(null);
 
     try {
-      const service = getService();
-      if (generatedReport.url && (reportType === "html" || reportType === "excel")) {
-        service.downloadReport(generatedReport.id, generatedReport.name);
+      if (reportType === "word") {
+        PredictiveService.downloadReport(currentReport.id, currentReport.name);
       } else {
-        window.open(generatedReport.url, "_blank");
+        PredictiveService.downloadHtmlReport(currentReport.id, currentReport.name);
       }
     } catch (err) {
       console.error("Report download error:", err);
@@ -194,34 +211,35 @@ const AnalaysisTool = () => {
 
   // View HTML report
   const handleViewClick = () => {
-    if (generatedReport?.viewUrl && reportType === "html") {
-      window.open(generatedReport.viewUrl, "_blank");
+    const currentReport = generatedReports.html;
+    if (currentReport?.viewUrl) {
+      window.open(currentReport.viewUrl, "_blank");
     }
   };
 
   // Remove file
   const handleRemoveFile = (index) => {
     setSelectedFiles((files) => files.filter((_, i) => i !== index));
-    if (selectedFiles[index].id === fileId) setFileId(null);
+    if (selectedFiles[index].id === fileId) {
+      setFileId(null);
+      setGeneratedReports({ word: null, html: null });
+    }
   };
 
   // Change report type
   const handleReportTypeChange = (type) => {
-    if (selectedFiles.length && !window.confirm("Changing report type will clear uploaded files. Continue?")) {
+    if (selectedFiles.length && !window.confirm("Changing report type will reset the current session. Continue?")) {
       return;
     }
     setReportType(type);
-    setSelectedFiles([]);
-    setFileId(null);
-    setGeneratedReport(null);
-    setError(null);
-    setFileErrors([]);
   };
 
+  const currentReport = generatedReports[reportType];
+
   return (
-    <div className="unified-tool-container">
-      <h1>Analysis & Reporting Tool</h1>
-      <p>Upload your files and generate insightful analysis and reports for any domain.</p>
+    <div className="predictive-tool-container">
+      <h1>Predictive Attrition Analytics</h1>
+      <p>Upload your HRIS data to identify employees at high risk of attrition using machine learning predictions.</p>
 
       {!apiStatus.isOnline && (
         <div className="api-status-warning">
@@ -247,51 +265,59 @@ const AnalaysisTool = () => {
       <div className="report-type-selector">
         <div className="selector-label">Select Report Format:</div>
         <div className="selector-options">
-          {["docs", "excel", "html"].map((type) => (
-            <button
-              key={type}
-              className={`selector-option ${reportType === type ? "active" : ""}`}
-              onClick={() => handleReportTypeChange(type)}
+          <button
+            className={`selector-option ${reportType === "word" ? "active" : ""}`}
+            onClick={() => handleReportTypeChange("word")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {type === "html" ? (
-                  <>
-                    <polyline points="14 2 14 8 20 8" />
-                    <path d="M20 12H4" />
-                    <path d="M4 18h16" />
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  </>
-                ) : (
-                  <>
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                    <polyline points="10 9 9 9 8 9" />
-                  </>
-                )}
-              </svg>
-              {type === "docs" ? "Word (.docx)" : type === "excel" ? "Excel (.xlsx)" : "HTML (.html)"}
-            </button>
-          ))}
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            Word (.docx)
+          </button>
+          <button
+            className={`selector-option ${reportType === "html" ? "active" : ""}`}
+            onClick={() => handleReportTypeChange("html")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M20 12H4" />
+              <path d="M4 18h16" />
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            </svg>
+            HTML (.html)
+          </button>
         </div>
       </div>
 
       <div className="platform-modules">
         <section className="data-module">
           <div className="module-header">
-            <h3>Data Input — Output ({reportType.toUpperCase()} Format)</h3>
-            <p className="module-description">Upload Excel file containing separation data</p>
+            <h3>Data Input — Predictive Analytics ({reportType.toUpperCase()} Format)</h3>
+            <p className="module-description">Upload Excel file containing HRIS data for predictive attrition analysis</p>
           </div>
 
           <div className="file-input-section">
@@ -334,7 +360,7 @@ const AnalaysisTool = () => {
                 </svg>
               </div>
               <p className="dropzone-text">Drag & drop or click to select Excel file</p>
-              <p className="dropzone-subtext">Excel format (.xlsx) required</p>
+              <p className="dropzone-subtext">Excel format (.xlsx) required for predictive analysis</p>
               <input
                 type="file"
                 className="file-input"
@@ -411,8 +437,8 @@ const AnalaysisTool = () => {
 
         <section className="analysis-module">
           <div className="module-header">
-            <h3>Analysis Controls</h3>
-            <p className="module-description">Generate and download reports</p>
+            <h3>Predictive Analytics Controls</h3>
+            <p className="module-description">Generate predictive attrition reports using machine learning</p>
           </div>
 
           <div className="control-panel">
@@ -424,58 +450,106 @@ const AnalaysisTool = () => {
                 onClick={handleGenerateClick}
                 disabled={isGenerating || !fileId || !apiStatus.isOnline}
               >
-                {isGenerating ? "Processing..." : "Generate Report"}
+                {isGenerating ? "Processing..." : "Generate Predictive Report"}
               </button>
 
               <button
-                className={`control-btn retrieve-btn ${!generatedReport ? "disabled" : ""}`}
+                className={`control-btn retrieve-btn ${!currentReport ? "disabled" : ""}`}
                 onClick={handleDownloadClick}
-                disabled={!generatedReport}
+                disabled={!currentReport}
               >
                 Download Report
               </button>
 
-              {reportType === "html" && generatedReport && (
+              {reportType === "html" && currentReport && (
                 <button className="control-btn view-btn" onClick={handleViewClick}>
                   View Report
                 </button>
               )}
             </div>
 
-            {generatedReport && (
+            {currentReport && (
               <div className="analysis-complete">
-                <div className="complete-header">Analysis Summary</div>
+                <div className="complete-header">Predictive Analysis Summary</div>
                 <div className="report-metadata">
                   <div className="metadata-item">
                     <span className="metadata-label">Document:</span>
-                    <span className="metadata-value">{generatedReport.name}</span>
+                    <span className="metadata-value">{currentReport.name}</span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Format:</span>
                     <span className="metadata-value">
-                      {reportType === "docs"
-                        ? "Microsoft Word"
-                        : reportType === "excel"
-                        ? "Microsoft Excel"
-                        : "HTML Webpage"}
+                      {reportType === "word" ? "Microsoft Word" : "HTML Webpage"}
                     </span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Generated:</span>
-                    <span className="metadata-value">{generatedReport.date}</span>
+                    <span className="metadata-value">{currentReport.date}</span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Status:</span>
                     <span className="metadata-value status-complete">Complete</span>
                   </div>
                 </div>
+                <div className="report-description">
+                  <p>The predictive analysis has been completed successfully. The report includes:</p>
+                  <ul>
+                    <li>Machine learning model performance metrics</li>
+                    <li>High-risk employees (probability &gt; 70%)</li>
+                    <li>Risk analysis by gender, location, function, and grade</li>
+                    <li>Complete list of employees with attrition risk scores</li>
+                  </ul>
+                </div>
               </div>
             )}
           </div>
         </section>
+
+        {/* Specifications Module */}
+        {showSpecifications && (
+          <section className="specifications-module">
+            <div className="module-header">
+              <h3>Predictive Analytics Specifications</h3>
+            </div>
+
+            <div className="specifications-grid">
+              <div className="specification-item">
+                <div className="specification-title">Machine Learning Model</div>
+                <div className="specification-content">
+                  <p>Random Forest Classifier with 100 estimators</p>
+                  <p>Features: Gender, Tenure, Function, Grade</p>
+                </div>
+              </div>
+
+              <div className="specification-item">
+                <div className="specification-title">Risk Threshold</div>
+                <div className="specification-content">
+                  <p>High-risk employees: Probability &gt; 70%</p>
+                  <p>Sorted by descending attrition probability</p>
+                </div>
+              </div>
+
+              <div className="specification-item">
+                <div className="specification-title">Output Analysis</div>
+                <div className="specification-content">
+                  <p>Demographic risk breakdowns</p>
+                  <p>Model performance metrics</p>
+                </div>
+              </div>
+
+              <div className="specification-item">
+                <div className="specification-title">Data Requirements</div>
+                <div className="specification-content">
+                  <p>Employee Name, Gender, Function, Grade</p>
+                  <p>Date of Joining, Action Type, Action Date</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
 };
 
-export default AnalaysisTool;
+export default PredictiveTool;
