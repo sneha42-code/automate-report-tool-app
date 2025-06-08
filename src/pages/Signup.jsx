@@ -1,7 +1,7 @@
 // src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import authService from "../service/authService";
 import "../styles/Auth.css";
 import Head3D from "../components/SimpleNeuralNetwork";
 import AuthLeftSection from "../components/AuthLeftSection";
@@ -77,25 +77,35 @@ const Signup = () => {
     if (!validateForm()) {
       return;
     }
+    
     setIsLoading(true);
+    setErrors({}); // Clear any previous errors
+    
     try {
-      // Replace with your real API endpoint
-      await axios.post("/api/auth/signup", {
+      const response = await authService.signupWithStorage({
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
       });
-      localStorage.setItem("registrationSuccess", "true");
-      navigate("/login", {
-        state: {
-          message: "Registration successful! Please log in with your new account.",
-        },
-      });
+
+      if (response.success) {
+        // Registration successful - user is automatically logged in
+        // Navigate to dashboard or show success message
+        navigate("/", {
+          state: {
+            message: "Registration successful! Welcome to Automate Reporting.",
+          },
+        });
+      } else {
+        // Registration failed - show error message
+        setErrors({
+          general: response.message || "Registration failed. Please try again later.",
+        });
+      }
     } catch (error) {
+      console.error("Signup error:", error);
       setErrors({
-        general:
-          error.response?.data?.message ||
-          "Registration failed. Please try again later.",
+        general: "Registration failed. Please try again later.",
       });
     } finally {
       setIsLoading(false);
@@ -108,7 +118,6 @@ const Signup = () => {
         <Head3D />
       </AuthLeftSection>
       <AuthRightSection>
-        {/* Centered Auth Card */}
         <div>
           <div className="auth-header medium-header">
             <h1 className="medium-title">Create your account</h1>

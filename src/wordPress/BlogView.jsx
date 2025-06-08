@@ -1,61 +1,107 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getPostById, loadPostsFromStorage } from "../utils/blogStorage";
+import WordPressService from "../wordPress/wordPressApiService";
 import "../styles/BlogView.css";
 
 const BlogView = () => {
-  const { postId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [recommendedPosts, setRecommendedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
   const articleRef = useRef(null);
 
   useEffect(() => {
-    // Load the post by ID
-    const currentPost = getPostById(postId);
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('Fetching post with ID:', id);
+        
+        if (!id) {
+          throw new Error('No post ID provided');
+        }
 
-    if (!currentPost) {
-      // Post not found, redirect to blog main page
-      navigate("/blog");
-      return;
-    }
+        const fetchedPost = await WordPressService.getPost(id);
+        console.log('Fetched post:', fetchedPost);
+        
+        if (!fetchedPost) {
+          throw new Error('Post not found');
+        }
+        
+        setPost(fetchedPost);
 
-    setPost(currentPost);
+        // Fetch related posts
+        try {
+          const categoryId = Array.isArray(fetchedPost.categories) 
+            ? fetchedPost.categories[0] 
+            : typeof fetchedPost.categories === 'string' 
+              ? fetchedPost.categories.split(',')[0]?.trim()
+              : null;
 
-    // Find related posts (with same categories)
-    const allPosts = loadPostsFromStorage();
-    const related = allPosts
-      .filter(
-        (p) =>
-          p.id !== currentPost.id &&
-          p.categories &&
-          currentPost.categories &&
-          p.categories.some((cat) => currentPost.categories.includes(cat))
-      )
-      .slice(0, 3);
+          let related = { posts: [] };
+          if (categoryId) {
+            try {
+              related = await WordPressService.getPostsByCategory(categoryId, {
+                per_page: 3,
+              });
+            } catch (relatedError) {
+              console.warn('Error fetching related posts:', relatedError);
+            }
+          }
+          
+          setRelatedPosts(
+            related.posts
+              ?.filter((p) => p.id !== fetchedPost.id)
+              .slice(0, 3) || []
+          );
 
-    setRelatedPosts(related);
+          // Fetch recommended posts
+          try {
+            const recommended = await WordPressService.getPosts({
+              per_page: 4,
+              orderby: "date",
+              order: "desc",
+            });
+            
+            setRecommendedPosts(
+              recommended.posts
+                ?.filter(
+                  (p) =>
+                    p.id !== fetchedPost.id &&
+                    !related.posts?.find((r) => r.id === p.id)
+                )
+                .slice(0, 4) || []
+            );
+          } catch (recommendedError) {
+            console.warn('Error fetching recommended posts:', recommendedError);
+          }
+        } catch (sideContentError) {
+          console.warn('Error fetching side content:', sideContentError);
+        }
 
-    // Find recommended posts (different algorithm, here just by date)
-    const recommended = allPosts
-      .filter(
-        (p) => p.id !== currentPost.id && !related.find((r) => r.id === p.id)
-      )
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 4);
+        setLoading(false);
+        window.scrollTo(0, 0);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        setError(error.message);
+        setLoading(false);
+        
+        // Don't navigate away immediately, let user see the error
+        setTimeout(() => {
+          navigate("/blog");
+        }, 3000);
+      }
+    };
+    
+    fetchPost();
+  }, [id, navigate]);
 
-    setRecommendedPosts(recommended);
-    setLoading(false);
-
-    // Scroll to top when post changes
-    window.scrollTo(0, 0);
-  }, [postId, navigate]);
-
-  // Track reading progress
   useEffect(() => {
     const handleScroll = () => {
       if (articleRef.current) {
@@ -63,16 +109,12 @@ const BlogView = () => {
         const totalHeight = element.clientHeight;
         const windowHeight = window.innerHeight;
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const currentPosition = scrollTop + windowHeight;
-        const elementTop =
-          window.pageYOffset + element.getBoundingClientRect().top;
+        const elementTop = window.pageYOffset + element.getBoundingClientRect().top;
 
-        // Start counting from when the article comes into view
-        if (scrollTop >= elementTop) {
+        if (scrollTop >= elementTop && totalHeight > 0) {
           const currentProgress = Math.min(
             100,
-            ((scrollTop - elementTop) / (totalHeight - windowHeight + 200)) *
-              100
+            Math.max(0, ((scrollTop - elementTop) / (totalHeight - windowHeight + 200)) * 100)
           );
           setProgress(currentProgress);
         }
@@ -83,6 +125,38 @@ const BlogView = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [post]);
 
+  const renderContent = () => {
+    if (!post?.content) {
+      return <p>No content available.</p>;
+    }
+    
+    return (
+      <div
+        className="article-content-html"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
+    );
+  };
+
+  const getCategoriesArray = (categories) => {
+    if (Array.isArray(categories)) {
+      return categories;
+    } else if (typeof categories === 'string' && categories) {
+      return categories.split(',').map(cat => cat.trim()).filter(Boolean);
+    }
+    return [];
+  };
+
+  const getTagsArray = (tags) => {
+    if (Array.isArray(tags)) {
+      return tags;
+    } else if (typeof tags === 'string' && tags) {
+      return tags.split(',').map(tag => tag.trim()).filter(Boolean);
+    }
+    return [];
+  };
+
+  // Loading state
   if (loading) {
     return (
       <div className="enhanced-loading">
@@ -92,101 +166,39 @@ const BlogView = () => {
     );
   }
 
-  if (!post) {
-    return null; // This should not happen due to the redirect in useEffect
+  // Error state
+  if (error) {
+    return (
+      <div className="enhanced-loading">
+        <div className="error-message">
+          <h2>Error loading article</h2>
+          <p>{error}</p>
+          <p>Redirecting to blog page...</p>
+          <Link to="/blog" className="back-to-blog-btn">
+            ← Back to all articles
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  // Function to render post content
-  const renderContent = () => {
-    // If post.content is a string, render it as paragraphs
-    if (typeof post.content === "string") {
-      return post.content.split("\n\n").map((paragraph, index) => (
-        <p key={index} className="article-paragraph">
-          {paragraph}
-        </p>
-      ));
-    }
-
-    // If post.content is an array of content blocks
-    if (Array.isArray(post.content)) {
-      return post.content.map((section, index) => {
-        if (typeof section === "string") {
-          return (
-            <p key={index} className="article-paragraph">
-              {section}
-            </p>
-          );
-        }
-
-        // If using the content block structure
-        switch (section.type) {
-          case "paragraph":
-            return (
-              <p key={index} className="article-paragraph">
-                {section.content}
-              </p>
-            );
-          case "heading":
-            return (
-              <h2 key={index} className="article-heading">
-                {section.content}
-              </h2>
-            );
-          case "subheading":
-            return (
-              <h3 key={index} className="article-subheading">
-                {section.content}
-              </h3>
-            );
-          case "image":
-            return (
-              <figure key={index} className="article-figure">
-                <img
-                  src={section.url}
-                  alt={section.caption || ""}
-                  className="article-image"
-                />
-                {section.caption && (
-                  <figcaption className="article-caption">
-                    {section.caption}
-                  </figcaption>
-                )}
-              </figure>
-            );
-          case "quote":
-            return (
-              <blockquote key={index} className="article-quote">
-                <p>"{section.content}"</p>
-                {section.attribution && <cite>— {section.attribution}</cite>}
-              </blockquote>
-            );
-          case "list":
-            return (
-              <ul key={index} className="article-list">
-                {section.items.map((item, i) => (
-                  <li key={i} className="article-list-item">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            );
-          default:
-            return (
-              <p key={index} className="article-paragraph">
-                {JSON.stringify(section)}
-              </p>
-            );
-        }
-      });
-    }
-
-    // Fallback
-    return <p className="article-paragraph">{post.content}</p>;
-  };
+  // No post found
+  if (!post) {
+    return (
+      <div className="enhanced-loading">
+        <div className="error-message">
+          <h2>Article not found</h2>
+          <p>The article you're looking for doesn't exist or has been removed.</p>
+          <Link to="/blog" className="back-to-blog-btn">
+            ← Back to all articles
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="enhanced-article-container">
-      {/* Reading Progress Bar */}
       <div className="reading-progress-container">
         <div
           className="reading-progress-bar"
@@ -197,18 +209,18 @@ const BlogView = () => {
       <header className="enhanced-article-header">
         <div className="enhanced-article-meta">
           <span className="article-date">
-            {new Date(post.date).toLocaleDateString("en-US", {
+            {post.date ? new Date(post.date).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
               year: "numeric",
-            })}
+            }) : 'Date unavailable'}
           </span>
           <span className="article-reading-time">
             {post.readingTime || "5"} min read
           </span>
         </div>
 
-        <h1 className="enhanced-article-title">{post.title}</h1>
+        <h1 className="enhanced-article-title">{post.title || 'Untitled'}</h1>
 
         {post.subtitle && (
           <h2 className="enhanced-article-subtitle">{post.subtitle}</h2>
@@ -219,38 +231,38 @@ const BlogView = () => {
             src={post.author?.avatar || "/default-avatar.png"}
             alt={post.author?.name || "Author"}
             className="enhanced-author-avatar"
+            onError={(e) => {
+              e.target.src = "/default-avatar.png";
+            }}
           />
           <div className="enhanced-author-info">
             <span className="enhanced-author-name">
               {post.author?.name || "Author"}
             </span>
-            {post.author?.title && (
-              <span className="enhanced-author-title">{post.author.title}</span>
-            )}
           </div>
         </div>
 
         <div className="enhanced-article-categories">
-          {post.categories &&
-            post.categories.map((category) => (
-              <Link
-                to={`/blog/category/${category
-                  .toLowerCase()
-                  .replace(" ", "-")}`}
-                className="enhanced-category-tag"
-                key={category}
-              >
-                {category}
-              </Link>
-            ))}
+          {getCategoriesArray(post.categories).map((category, index) => (
+            <Link
+              to={`/blog/category/${category.toLowerCase().replace(/\s+/g, "-")}`}
+              className="enhanced-category-tag"
+              key={index}
+            >
+              {category}
+            </Link>
+          ))}
         </div>
       </header>
 
       <div className="enhanced-article-hero">
         <img
-          src={post.image}
-          alt={post.title}
+          src={post.image || '/default-hero.jpg'}
+          alt={post.title || 'Article image'}
           className="enhanced-article-hero-image"
+          onError={(e) => {
+            e.target.src = '/default-hero.jpg';
+          }}
         />
       </div>
 
@@ -264,10 +276,45 @@ const BlogView = () => {
               <span className="share-icon">Share</span>
               {showTooltip && (
                 <div className="share-tooltip">
-                  <button className="share-option twitter">Twitter</button>
-                  <button className="share-option facebook">Facebook</button>
-                  <button className="share-option linkedin">LinkedIn</button>
-                  <button className="share-option copy-link">Copy Link</button>
+                  <button 
+                    className="share-option twitter"
+                    onClick={() => {
+                      const url = window.location.href;
+                      const text = post.title || 'Check out this article';
+                      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+                    }}
+                  >
+                    Twitter
+                  </button>
+                  <button 
+                    className="share-option facebook"
+                    onClick={() => {
+                      const url = window.location.href;
+                      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                    }}
+                  >
+                    Facebook
+                  </button>
+                  <button 
+                    className="share-option linkedin"
+                    onClick={() => {
+                      const url = window.location.href;
+                      const title = post.title || 'Article';
+                      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`, '_blank');
+                    }}
+                  >
+                    LinkedIn
+                  </button>
+                  <button 
+                    className="share-option copy-link"
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copied to clipboard!');
+                      });
+                    }}
+                  >
+                    Copy Link
+                  </button>
                 </div>
               )}
             </button>
@@ -281,13 +328,13 @@ const BlogView = () => {
           <div className="enhanced-article-body">{renderContent()}</div>
 
           <div className="enhanced-article-tags">
-            {post.tags && post.tags.length > 0 && (
+            {getTagsArray(post.tags).length > 0 && (
               <div className="tags-container">
-                {post.tags.map((tag) => (
+                {getTagsArray(post.tags).map((tag, index) => (
                   <Link
-                    to={`/blog/tag/${tag.toLowerCase().replace(" ", "-")}`}
+                    to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, "-")}`}
                     className="article-tag"
-                    key={tag}
+                    key={index}
                   >
                     {tag}
                   </Link>
@@ -301,6 +348,9 @@ const BlogView = () => {
               src={post.author?.avatar || "/default-avatar.png"}
               alt={post.author?.name || "Author"}
               className="bio-avatar"
+              onError={(e) => {
+                e.target.src = "/default-avatar.png";
+              }}
             />
             <div className="bio-content">
               <h3 className="bio-name">{post.author?.name || "Author"}</h3>
@@ -363,18 +413,24 @@ const BlogView = () => {
                   className="related-article-link"
                 >
                   <div className="related-article-image">
-                    <img src={relatedPost.image} alt={relatedPost.title} />
+                    <img 
+                      src={relatedPost.image || '/default-hero.jpg'} 
+                      alt={relatedPost.title || 'Related article'}
+                      onError={(e) => {
+                        e.target.src = '/default-hero.jpg';
+                      }}
+                    />
                   </div>
                   <div className="related-article-content">
                     <h3 className="related-article-title">
-                      {relatedPost.title}
+                      {relatedPost.title || 'Untitled'}
                     </h3>
                     <p className="related-article-excerpt">
-                      {relatedPost.excerpt}
+                      {relatedPost.excerpt || ''}
                     </p>
                     <div className="related-article-meta">
                       <span className="related-article-author">
-                        {relatedPost.author?.name}
+                        {relatedPost.author?.name || 'Author'}
                       </span>
                       <span className="dot-separator">·</span>
                       <span className="related-article-read-time">
@@ -400,27 +456,30 @@ const BlogView = () => {
               >
                 <div className="recommended-article-image">
                   <img
-                    src={recommendedPost.image}
-                    alt={recommendedPost.title}
+                    src={recommendedPost.image || '/default-hero.jpg'}
+                    alt={recommendedPost.title || 'Recommended article'}
+                    onError={(e) => {
+                      e.target.src = '/default-hero.jpg';
+                    }}
                   />
                 </div>
                 <div className="recommended-article-content">
                   <h3 className="recommended-article-title">
-                    {recommendedPost.title}
+                    {recommendedPost.title || 'Untitled'}
                   </h3>
                   <div className="recommended-article-meta">
                     <span className="recommended-article-author">
-                      {recommendedPost.author?.name}
+                      {recommendedPost.author?.name || 'Author'}
                     </span>
                     <span className="dot-separator">·</span>
                     <span className="recommended-article-date">
-                      {new Date(recommendedPost.date).toLocaleDateString(
+                      {recommendedPost.date ? new Date(recommendedPost.date).toLocaleDateString(
                         "en-US",
                         {
                           month: "short",
                           day: "numeric",
                         }
-                      )}
+                      ) : 'Date unavailable'}
                     </span>
                   </div>
                 </div>
@@ -429,27 +488,6 @@ const BlogView = () => {
           ))}
         </div>
       </section>
-      {/* 
-      <div className="newsletter-signup">
-        <div className="newsletter-content">
-          <h3 className="newsletter-heading">Enjoy this article?</h3>
-          <p className="newsletter-description">
-            Subscribe to our newsletter to get updates on new articles,
-            insights, and more.
-          </p>
-          <form className="newsletter-form">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="newsletter-input"
-              required
-            />
-            <button type="submit" className="newsletter-button">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div> */}
 
       <div className="enhanced-post-navigation">
         <Link to="/blog" className="back-to-blog-btn">
