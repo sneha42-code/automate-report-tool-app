@@ -1,7 +1,7 @@
 /* src/styles/BlogCreate.css */
+@import "./color.css";
 
 /* General container */
-@import "./color.css";
 .blog-create-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -16,6 +16,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .blog-create-header h1 {
@@ -39,6 +41,11 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .cancel-button:hover {
@@ -55,6 +62,8 @@
   margin-bottom: 2rem;
   text-align: center;
   font-size: 0.9rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Form layout */
@@ -114,6 +123,8 @@
   color: var(--neutral-dark);
   background-color: var(--bg-off-white);
   transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .title-input:focus,
@@ -142,6 +153,7 @@
 .quote-input,
 .author-bio-input {
   resize: vertical;
+  min-height: 100px;
 }
 
 .error-field {
@@ -164,6 +176,7 @@
   max-height: 200px;
   border-radius: 8px;
   object-fit: cover;
+  display: block;
 }
 
 /* Content builder */
@@ -193,6 +206,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .section-controls span {
@@ -207,10 +222,15 @@
   color: var(--error);
   font-size: 0.85rem;
   cursor: pointer;
+  min-height: 44px;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 .section-controls button:hover {
-  text-decoration: underline;
+  background-color: var(--error);
+  color: var(--bg-white);
 }
 
 .list-item-container {
@@ -219,14 +239,29 @@
   gap: 0.5rem;
 }
 
+.list-item-input {
+  flex: 1;
+}
+
 .remove-list-item {
   background-color: var(--error);
   color: var(--bg-white);
   border: none;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
   border-radius: 50%;
   font-size: 0.85rem;
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.remove-list-item:hover {
+  background-color: var(--error);
+  opacity: 0.8;
 }
 
 .add-list-item {
@@ -238,6 +273,8 @@
   font-size: 0.9rem;
   cursor: pointer;
   align-self: flex-start;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
 }
 
 .add-list-item:hover {
@@ -259,6 +296,11 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .add-section-btn:hover {
@@ -308,6 +350,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .publish-button:hover,
@@ -327,16 +373,68 @@
 .save-draft-button:disabled {
   background-color: var(--neutral-light);
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Responsive adjustments */
+/* Image sections */
+.image-file-input {
+  margin-bottom: 0.5rem;
+}
+
+.image-caption-input {
+  margin-top: 0.5rem;
+}
+
+.image-preview {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.image-preview img {
+  border: 1px solid var(--border-light);
+}
+
+/* Quote sections */
+.quote-section {
+  background-color: var(--bg-light);
+}
+
+.quote-attribution-input {
+  margin-top: 0.5rem;
+}
+
+/* List sections */
+.list-section {
+  background-color: var(--bg-light);
+}
+
+.list-item-container {
+  margin-bottom: 0.5rem;
+}
+
+.list-item-container:last-of-type {
+  margin-bottom: 1rem;
+}
+
+/* Mobile-first responsive adjustments */
 @media (max-width: 992px) {
   .form-layout {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .side-form-content {
     order: -1;
+  }
+
+  .publishing-actions {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .publish-button,
+  .save-draft-button {
+    flex: 1;
   }
 }
 
@@ -345,8 +443,35 @@
     padding: 1.5rem 1rem;
   }
 
+  .blog-create-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
   .blog-create-header h1 {
     font-size: 1.75rem;
+  }
+
+  .header-actions {
+    justify-content: center;
+  }
+
+  .cancel-button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .form-section {
+    padding: 1rem;
+  }
+
+  .form-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .content-section {
+    padding: 1rem;
   }
 
   .add-section-controls {
@@ -357,9 +482,46 @@
     width: 100%;
     text-align: center;
   }
+
+  .list-item-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .remove-list-item {
+    align-self: flex-end;
+    border-radius: 16px;
+    width: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  .section-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .section-controls button {
+    align-self: flex-end;
+    width: auto;
+  }
+
+  .publishing-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .publish-button,
+  .save-draft-button {
+    flex: none;
+  }
 }
 
 @media (max-width: 480px) {
+  .blog-create-container {
+    padding: 1rem 0.75rem;
+  }
+
   .blog-create-header h1 {
     font-size: 1.5rem;
   }
@@ -386,5 +548,154 @@
   .image-caption-input,
   .list-item-input {
     font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .content-section {
+    padding: 0.75rem;
+  }
+
+  .form-section {
+    padding: 0.75rem;
+  }
+
+  .publish-button,
+  .save-draft-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .add-section-btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .section-controls span {
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .blog-create-container {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .blog-create-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .form-section {
+    padding: 0.5rem;
+  }
+
+  .content-section {
+    padding: 0.5rem;
+  }
+
+  .title-input,
+  .subtitle-input,
+  .excerpt-input {
+    font-size: 0.85rem;
+  }
+}
+
+/* Improve touch targets and accessibility */
+@media (max-width: 768px) {
+  /* Ensure all interactive elements have adequate touch targets */
+  .title-input,
+  .subtitle-input,
+  .excerpt-input,
+  .image-input,
+  .categories-input,
+  .tags-input,
+  .author-name-input,
+  .author-avatar-input,
+  .author-bio-input,
+  .social-input,
+  .heading-input,
+  .subheading-input,
+  .paragraph-input,
+  .quote-input,
+  .quote-attribution-input,
+  .image-caption-input,
+  .list-item-input {
+    min-height: 44px;
+  }
+
+  /* Better spacing for mobile content editing */
+  .content-sections {
+    gap: 1rem;
+  }
+
+  .form-group {
+    gap: 0.75rem;
+  }
+
+  /* Ensure proper text wrapping */
+  .error-message,
+  .form-group label {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Improve visual hierarchy on small screens */
+  .form-section h3 {
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Loading states for mobile */
+@media (max-width: 768px) {
+  .publish-button:disabled,
+  .save-draft-button:disabled {
+    position: relative;
+  }
+
+  .publish-button:disabled::after,
+  .save-draft-button:disabled::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--bg-white);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus management for better mobile UX */
+@media (max-width: 768px) {
+  .title-input:focus,
+  .subtitle-input:focus,
+  .excerpt-input:focus,
+  .paragraph-input:focus,
+  .quote-input:focus {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+}
+
+/* Better error handling on mobile */
+@media (max-width: 480px) {
+  .error-banner {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: 0 -0.75rem 1rem -0.75rem;
+    border-radius: 0;
+  }
+
+  .error-message {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
   }
 }
