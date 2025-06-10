@@ -26,57 +26,54 @@ const BlogView = () => {
         if (!slug) {
           throw new Error('No post slug provided');
         }
-        // Fetch post by slug instead of ID
-        const fetchedPost = await WordPressService.getPostBySlug(slug);
-        if (!fetchedPost) {
-          throw new Error('Post not found');
+
+        console.log('Fetching post with slug:', slug);
+        
+        // Decode the slug in case it has URL encoding
+        const decodedSlug = decodeURIComponent(slug);
+        console.log('Decoded slug:', decodedSlug);
+        
+        // Try to fetch post by slug
+        let fetchedPost = null;
+        
+        try {
+          fetchedPost = await WordPressService.getPostBySlug(decodedSlug);
+        } catch (slugError) {
+          console.warn('Failed to fetch by slug, trying original slug:', slugError);
+          // Try with original slug if decoding failed
+          if (decodedSlug !== slug) {
+            fetchedPost = await WordPressService.getPostBySlug(slug);
+          } else {
+            throw slugError;
+          }
         }
+        
+        if (!fetchedPost) {
+          throw new Error(`Post with slug "${slug}" not found`);
+        }
+        
+        console.log('Fetched post:', fetchedPost);
         setPost(fetchedPost);
 
-        // Fetch related posts
+        // Fetch related and recommended posts in parallel
         try {
-          const categoryId = Array.isArray(fetchedPost.categories) 
-            ? fetchedPost.categories[0] 
-            : typeof fetchedPost.categories === 'string' 
-              ? fetchedPost.categories.split(',')[0]?.trim()
-              : null;
+          const [relatedPostsResult, recommendedPostsResult] = await Promise.allSettled([
+            fetchRelatedPosts(fetchedPost),
+            fetchRecommendedPosts(fetchedPost)
+          ]);
 
-          let related = { posts: [] };
-          if (categoryId) {
-            try {
-              related = await WordPressService.getPostsByCategory(categoryId, {
-                per_page: 3,
-              });
-            } catch (relatedError) {
-              console.warn('Error fetching related posts:', relatedError);
-            }
+          if (relatedPostsResult.status === 'fulfilled') {
+            setRelatedPosts(relatedPostsResult.value);
+          } else {
+            console.warn('Error fetching related posts:', relatedPostsResult.reason);
+            setRelatedPosts([]);
           }
-          
-          setRelatedPosts(
-            related.posts
-              ?.filter((p) => p.id !== fetchedPost.id)
-              .slice(0, 3) || []
-          );
 
-          // Fetch recommended posts
-          try {
-            const recommended = await WordPressService.getPosts({
-              per_page: 4,
-              orderby: "date",
-              order: "desc",
-            });
-            
-            setRecommendedPosts(
-              recommended.posts
-                ?.filter(
-                  (p) =>
-                    p.id !== fetchedPost.id &&
-                    !related.posts?.find((r) => r.id === p.id)
-                )
-                .slice(0, 4) || []
-            );
-          } catch (recommendedError) {
-            console.warn('Error fetching recommended posts:', recommendedError);
+          if (recommendedPostsResult.status === 'fulfilled') {
+            setRecommendedPosts(recommendedPostsResult.value);
+          } else {
+            console.warn('Error fetching recommended posts:', recommendedPostsResult.reason);
+            setRecommendedPosts([]);
           }
         } catch (sideContentError) {
           console.warn('Error fetching side content:', sideContentError);
@@ -88,16 +85,54 @@ const BlogView = () => {
         console.error("Error fetching post:", error);
         setError(error.message);
         setLoading(false);
-        
-        // Don't navigate away immediately, let user see the error
-        setTimeout(() => {
-          navigate("/blog");
-        }, 3000);
       }
     };
-    
+
     fetchPost();
-  }, [slug, navigate]);
+  }, [slug]);
+
+  // Helper function to fetch related posts
+  const fetchRelatedPosts = async (post) => {
+    try {
+      const categoryId = Array.isArray(post.categories) 
+        ? post.categories[0] 
+        : typeof post.categories === 'string' 
+          ? post.categories.split(',')[0]?.trim()
+          : null;
+
+      if (categoryId) {
+        const related = await WordPressService.getPostsByCategory(categoryId, {
+          per_page: 3,
+        });
+        
+        return related.posts
+          ?.filter((p) => p.id !== post.id)
+          .slice(0, 3) || [];
+      }
+      return [];
+    } catch (error) {
+      console.warn('Error fetching related posts:', error);
+      return [];
+    }
+  };
+
+  // Helper function to fetch recommended posts
+  const fetchRecommendedPosts = async (post) => {
+    try {
+      const recommended = await WordPressService.getPosts({
+        per_page: 4,
+        orderby: "date",
+        order: "desc",
+      });
+      
+      return recommended.posts
+        ?.filter((p) => p.id !== post.id)
+        .slice(0, 4) || [];
+    } catch (error) {
+      console.warn('Error fetching recommended posts:', error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -159,6 +194,7 @@ const BlogView = () => {
       <div className="enhanced-loading">
         <div className="loading-spinner"></div>
         <p>Loading article...</p>
+        {slug && <p>Searching for: "{decodeURIComponent(slug)}"</p>}
       </div>
     );
   }
@@ -170,10 +206,27 @@ const BlogView = () => {
         <div className="error-message">
           <h2>Error loading article</h2>
           <p>{error}</p>
-          <p>Redirecting to blog page...</p>
-          <Link to="/blog" className="back-to-blog-btn">
-            ← Back to all articles
-          </Link>
+          <p>Slug: "{slug}"</p>
+          <div className="error-actions">
+            <Link to="/blog" className="back-to-blog-btn">
+              ← Back to all articles
+            </Link>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="retry-btn"
+              style={{
+                marginLeft: '1rem',
+                padding: '0.5rem 1rem',
+                backgroundColor: '#007cba',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -186,6 +239,7 @@ const BlogView = () => {
         <div className="error-message">
           <h2>Article not found</h2>
           <p>The article you're looking for doesn't exist or has been removed.</p>
+          <p>Searched for slug: "{slug}"</p>
           <Link to="/blog" className="back-to-blog-btn">
             ← Back to all articles
           </Link>
@@ -408,7 +462,7 @@ const BlogView = () => {
             {relatedPosts.map((relatedPost) => (
               <div className="related-article-card" key={relatedPost.id}>
                 <Link
-                  to={`/blog/${relatedPost.id}`}
+                  to={`/blog/${relatedPost.slug}`}
                   className="related-article-link"
                 >
                   <div className="related-article-image">
@@ -450,7 +504,7 @@ const BlogView = () => {
           {recommendedPosts.map((recommendedPost) => (
             <div className="recommended-article-card" key={recommendedPost.id}>
               <Link
-                to={`/blog/${recommendedPost.id}`}
+                to={`/blog/${recommendedPost.slug}`}
                 className="recommended-article-link"
               >
                 <div className="recommended-article-image">
