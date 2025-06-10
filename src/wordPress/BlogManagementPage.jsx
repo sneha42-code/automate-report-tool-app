@@ -164,9 +164,9 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
     return [];
   };
 
-  const handlePostNavigation = (postId) => {
-    if (postId) {
-      navigate(`/blog/${postId}`);
+  const handlePostNavigation = (postSlug) => {
+    if (postSlug) {
+      navigate(`/blog/${postSlug}`);
     }
   };
 
@@ -291,7 +291,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
               </div>
 
               <button
-                onClick={() => handlePostNavigation(featuredPost.id)}
+                onClick={() => handlePostNavigation(featuredPost.slug)}
                 className="read-article-btn"
               >
                 Read Full Article
@@ -308,7 +308,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                 {currentPosts.map((post) => (
                   <article className="article-card" key={post.id}>
                     <div
-                      onClick={() => handlePostNavigation(post.id)}
+                      onClick={() => handlePostNavigation(post.slug)}
                       className="article-image-link"
                       style={{ cursor: "pointer" }}
                     >
@@ -337,7 +337,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
 
                       <h3 className="article-title">
                         <button
-                          onClick={() => handlePostNavigation(post.id)}
+                          onClick={() => handlePostNavigation(post.slug)}
                           style={{
                             background: "none",
                             border: "none",
@@ -393,7 +393,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                         </div>
 
                         <button
-                          onClick={() => handlePostNavigation(post.id)}
+                          onClick={() => handlePostNavigation(post.slug)}
                           className="read-more-btn"
                           style={{
                             padding: "8px 16px",
@@ -484,7 +484,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
               {popularPosts.map((post) => (
                 <div className="popular-post-item" key={post.id}>
                   <button
-                    onClick={() => handlePostNavigation(post.id)}
+                    onClick={() => handlePostNavigation(post.slug)}
                     className="popular-post-link"
                     style={{
                       background: "none",

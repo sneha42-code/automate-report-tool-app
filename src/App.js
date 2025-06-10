@@ -66,7 +66,7 @@ function App() {
             <Route path="/blog" element={<BlogManagement />} />
             <Route path="/blog/category/:category" element={<BlogManagement />} />
             <Route path="/blog/tag/:tag" element={<BlogManagement />} />
-            <Route path="/blog/:id" element={<BlogView />} />
+            <Route path="/blog/:slug" element={<BlogView />} />
             
             {/* WordPress Authentication Routes - Fixed path consistency */}
             <Route path="/wplogin" element={<WordPressLogin />} />

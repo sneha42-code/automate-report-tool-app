@@ -61,6 +61,13 @@ class WordPressService {
     }
   }
 
+  // Add this function to fetch a post by slug
+  async getPostBySlug(slug) {
+    // Fetch all posts and find the one with the matching slug
+    const { posts } = await this.getPosts();
+    return posts.find(post => post.slug === slug) || null;
+  }
+
   async createPost(postData) {
     try {
       const formattedData = await this.formatPostForAPI(postData);
@@ -273,12 +280,20 @@ class WordPressService {
     }
   }
 
+  // Utility to decode HTML entities
+  decodeHtmlEntities(str) {
+    if (!str) return '';
+    const txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
   formatPost(wpPost) {
     return {
       id: wpPost.id,
-      title: wpPost.title?.rendered || "",
-      subtitle: wpPost.meta?.subtitle || "",
-      excerpt: wpPost.excerpt?.rendered?.replace(/<[^>]*>/g, "") || "",
+      title: this.decodeHtmlEntities(wpPost.title?.rendered || ""),
+      subtitle: this.decodeHtmlEntities(wpPost.meta?.subtitle || ""),
+      excerpt: this.decodeHtmlEntities(wpPost.excerpt?.rendered?.replace(/<[^>]*>/g, "") || ""),
       content: wpPost.content?.rendered || "",
       image: this.getFeatureImage(wpPost),
       date: wpPost.date,

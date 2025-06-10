@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import WordPressService from "../wordPress/wordPressApiService";
+import WordPressService from "./wordPressApiService";
+import CommentSystem from "./CommentSystem";
+import LikeReactionSystem from "./LikeReactionSystem";
 import "../styles/BlogView.css";
 
 const BlogView = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -21,19 +23,14 @@ const BlogView = () => {
         setLoading(true);
         setError(null);
         
-        console.log('Fetching post with ID:', id);
-        
-        if (!id) {
-          throw new Error('No post ID provided');
+        if (!slug) {
+          throw new Error('No post slug provided');
         }
-
-        const fetchedPost = await WordPressService.getPost(id);
-        console.log('Fetched post:', fetchedPost);
-        
+        // Fetch post by slug instead of ID
+        const fetchedPost = await WordPressService.getPostBySlug(slug);
         if (!fetchedPost) {
           throw new Error('Post not found');
         }
-        
         setPost(fetchedPost);
 
         // Fetch related posts
@@ -100,7 +97,7 @@ const BlogView = () => {
     };
     
     fetchPost();
-  }, [id, navigate]);
+  }, [slug, navigate]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -343,6 +340,16 @@ const BlogView = () => {
             )}
           </div>
 
+          {/* Like and Reaction System */}
+          <div className="article-engagement-section">
+            <LikeReactionSystem 
+              postId={post.id} 
+              showReactions={true}
+              showCounts={true}
+              size="large"
+            />
+          </div>
+
           <div className="enhanced-author-bio">
             <img
               src={post.author?.avatar || "/default-avatar.png"}
@@ -387,17 +394,9 @@ const BlogView = () => {
             </div>
           </div>
 
-          <div className="article-engagement">
-            <div className="article-reactions">
-              <button className="reaction-button like">
-                <span className="reaction-icon">👍</span>
-                <span className="reaction-count">42</span>
-              </button>
-              <button className="reaction-button comment">
-                <span className="reaction-icon">💬</span>
-                <span className="reaction-count">12</span>
-              </button>
-            </div>
+          {/* Comment System */}
+          <div className="comments-section">
+            <CommentSystem postId={post.id} />
           </div>
         </article>
       </div>
