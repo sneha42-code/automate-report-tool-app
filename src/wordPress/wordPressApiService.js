@@ -61,11 +61,52 @@ class WordPressService {
     }
   }
 
-  // Add this function to fetch a post by slug
+  // FIXED: Proper slug-based post fetching
   async getPostBySlug(slug) {
-    // Fetch all posts and find the one with the matching slug
-    const { posts } = await this.getPosts();
-    return posts.find(post => post.slug === slug) || null;
+    try {
+      console.log('Fetching post by slug:', slug);
+      
+      // Use WordPress REST API's slug parameter directly
+      const response = await this.api.get("/posts", {
+        params: { 
+          slug: slug,
+          _embed: true,
+          status: 'publish'
+        }
+      });
+
+      console.log('API Response for slug:', response.data);
+
+      if (!response.data || response.data.length === 0) {
+        // Try alternative slug formats in case of URL encoding issues
+        const alternativeSlug = slug.replace(/-/g, ' ').trim();
+        const fallbackResponse = await this.api.get("/posts", {
+          params: { 
+            search: alternativeSlug,
+            _embed: true,
+            status: 'publish',
+            per_page: 5
+          }
+        });
+
+        if (fallbackResponse.data && fallbackResponse.data.length > 0) {
+          // Find exact match by slug
+          const exactMatch = fallbackResponse.data.find(post => post.slug === slug);
+          if (exactMatch) {
+            return this.formatPost(exactMatch);
+          }
+          // Return first result if no exact match
+          return this.formatPost(fallbackResponse.data[0]);
+        }
+        
+        throw new Error(`Post with slug "${slug}" not found`);
+      }
+
+      return this.formatPost(response.data[0]);
+    } catch (error) {
+      console.error("Error fetching post by slug:", error);
+      throw this._handleError(error);
+    }
   }
 
   async createPost(postData) {
@@ -317,6 +358,20 @@ class WordPressService {
       return wpPost._embedded["wp:featuredmedia"][0].source_url;
     }
     return WORDPRESS_CONFIG.DEFAULT_FEATURED_IMAGE || "/default-blog-image.jpg";
+  }
+
+  getCategories(wpPost) {
+    if (wpPost._embedded?.["wp:term"]?.[0]) {
+      return wpPost._embedded["wp:term"][0].map((cat) => cat.name);
+    }
+    return [];
+  }
+
+  getTags(wpPost) {
+    if (wpPost._embedded?.["wp:term"]?.[1]) {
+      return wpPost._embedded["wp:term"][1].map((tag) => tag.name);
+    }
+    return [];
   }
 
   getAuthor(wpPost) {
