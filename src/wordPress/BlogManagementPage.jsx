@@ -1,26 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import WordPressService from "./wordPressApiService";
+import WordPressAuthService from "./wordPressAuthService";
 import "../styles/BlogMain.css";
 
-// Import from utils
-import { loadPostsFromStorage } from "../utils/blogStorage";
+// Function to decode HTML entities
+const decodeHtmlEntities = (html) => {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html || "";
+  return txt.value;
+};
 
-// Enhanced Blog Management Component
 const BlogManagement = () => {
   const [posts, setPosts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load posts from localStorage when component mounts
-    const savedPosts = loadPostsFromStorage();
-    if (savedPosts && savedPosts.length > 0) {
-      setPosts(savedPosts);
-    }
+    const fetchPosts = async () => {
+      try {
+        const params = WordPressAuthService.isAuthenticated()
+          ? { status: "publish,draft" }
+          : { status: "publish" };
+        const { posts: fetchedPosts } = await WordPressService.getPosts(params);
+
+        // Decode HTML entities in fetched posts
+        const decodedPosts = fetchedPosts.map((post) => ({
+          ...post,
+          title: decodeHtmlEntities(post.title),
+          subtitle: decodeHtmlEntities(post.subtitle || ""),
+          excerpt: decodeHtmlEntities(post.excerpt || ""),
+          categories: Array.isArray(post.categories)
+            ? post.categories.map(decodeHtmlEntities)
+            : typeof post.categories === "string"
+            ? post.categories.split(",").map((cat) => decodeHtmlEntities(cat.trim()))
+            : [],
+          tags: Array.isArray(post.tags)
+            ? post.tags.map(decodeHtmlEntities)
+            : typeof post.tags === "string"
+            ? post.tags.split(",").map((tag) => decodeHtmlEntities(tag.trim()))
+            : [],
+        }));
+        setPosts(decodedPosts || []);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+    fetchPosts();
   }, []);
 
-  // Navigate to the create blog page
   const handleCreatePost = () => {
+    if (!WordPressAuthService.isAuthenticated()) {
+      navigate("/wpLogin");
+      return;
+    }
     navigate("/blog/create");
   };
 
@@ -42,7 +75,6 @@ const BlogManagement = () => {
   );
 };
 
-// Enhanced Blog Component
 const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
   const [featuredPost, setFeaturedPost] = useState(null);
   const [sortedPosts, setSortedPosts] = useState([]);
@@ -56,55 +88,57 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
 
   useEffect(() => {
     if (posts.length > 0) {
-      // Sort posts by date
       const sorted = [...posts].sort(
         (a, b) => new Date(b.date) - new Date(a.date)
       );
-
       setSortedPosts(sorted);
       setFeaturedPost(sorted[0]);
       setRecentPosts(sorted.slice(1, 7));
-
-      // For demo purposes, set some popular posts
-      // In a real app, you would have metrics for this
       setPopularPosts(sorted.slice(0, 4));
 
-      // Extract unique categories
+      // Extract unique categories, ensuring they are decoded
       const allCategories = new Set();
       posts.forEach((post) => {
-        if (post.categories) {
-          post.categories.forEach((category) => allCategories.add(category));
-        }
+        const cats = Array.isArray(post.categories)
+          ? post.categories
+          : typeof post.categories === "string" && post.categories
+          ? post.categories.split(",").map((cat) => cat.trim())
+          : [];
+        cats.forEach((category) => allCategories.add(decodeHtmlEntities(category)));
       });
-
       setCategories(Array.from(allCategories));
     }
   }, [posts]);
 
-  // Filter posts based on category and search term
   const filteredPosts = sortedPosts.filter((post) => {
-    // Only show published posts (if status exists)
-    const statusMatch = !post.status || post.status === "publish";
-
-    // Filter by category
+    const statusMatch =
+      !WordPressAuthService.isAuthenticated() ? post.status === "publish" : true;
     const categoryMatch =
       activeCategory === "all" ||
-      (post.categories && post.categories.includes(activeCategory));
-
-    // Filter by search term
+      (Array.isArray(post.categories)
+        ? post.categories.includes(activeCategory)
+        : typeof post.categories === "string" &&
+          post.categories
+            .split(",")
+            .map((cat) => decodeHtmlEntities(cat.trim()))
+            .includes(activeCategory));
     const searchMatch =
       !searchTerm ||
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      decodeHtmlEntities(post.title).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      decodeHtmlEntities(post.excerpt).toLowerCase().includes(searchTerm.toLowerCase()) ||
       (post.tags &&
-        post.tags.some((tag) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-
+        (Array.isArray(post.tags)
+          ? post.tags.some((tag) =>
+              decodeHtmlEntities(tag).toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          : typeof post.tags === "string" &&
+            post.tags
+              .split(",")
+              .map((tag) => decodeHtmlEntities(tag.trim()))
+              .some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))));
     return statusMatch && categoryMatch && searchMatch;
   });
 
-  // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
@@ -112,15 +146,28 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Handle search input
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
-  // Handle write first post
   const handleWriteFirstPost = () => {
     navigate("/blog/create");
+  };
+
+  const getCategoriesArray = (categories) => {
+    if (Array.isArray(categories)) {
+      return categories.map(decodeHtmlEntities);
+    } else if (typeof categories === "string" && categories) {
+      return categories.split(",").map((cat) => decodeHtmlEntities(cat.trim())).filter(Boolean);
+    }
+    return [];
+  };
+
+  const handlePostNavigation = (postSlug) => {
+    if (postSlug) {
+      navigate(`/blog/${postSlug}`);
+    }
   };
 
   if (posts.length === 0) {
@@ -128,10 +175,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
       <div className="blog-empty">
         <h2>No articles published yet</h2>
         <p>Be the first to share your thoughts and insights!</p>
-        <button
-          className="create-first-post-btn"
-          onClick={handleWriteFirstPost}
-        >
+        <button className="create-first-post-btn" onClick={handleWriteFirstPost}>
           Create Your First Post
         </button>
       </div>
@@ -159,9 +203,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
 
           <div className="category-filter">
             <button
-              className={`category-btn ${
-                activeCategory === "all" ? "active" : ""
-              }`}
+              className={`category-btn ${activeCategory === "all" ? "active" : ""}`}
               onClick={() => {
                 setActiveCategory("all");
                 setCurrentPage(1);
@@ -172,9 +214,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
             {categories.map((category) => (
               <button
                 key={category}
-                className={`category-btn ${
-                  activeCategory === category ? "active" : ""
-                }`}
+                className={`category-btn ${activeCategory === category ? "active" : ""}`}
                 onClick={() => {
                   setActiveCategory(category);
                   setCurrentPage(1);
@@ -193,59 +233,69 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
         currentPage === 1 && (
           <section className="enhanced-featured-post">
             <div className="featured-image">
-              <img src={featuredPost.image} alt={featuredPost.title} />
+              <img
+                src={featuredPost.image || "/default-hero.jpg"}
+                alt={decodeHtmlEntities(featuredPost.title) || "Featured Post"}
+              />
             </div>
             <div className="featured-content">
               <div className="post-meta">
                 <span className="featured-label">Featured</span>
                 <span className="post-date">
-                  {new Date(featuredPost.date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {featuredPost.date
+                    ? new Date(featuredPost.date).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    : "Date unavailable"}
                 </span>
                 <span className="reading-time">
                   {featuredPost.readingTime || "5"} min read
                 </span>
               </div>
 
-              <h2 className="featured-title">{featuredPost.title}</h2>
+              <h2 className="featured-title">
+                {decodeHtmlEntities(featuredPost.title) || "Untitled"}
+              </h2>
 
               {featuredPost.subtitle && (
-                <h3 className="featured-subtitle">{featuredPost.subtitle}</h3>
+                <h3 className="featured-subtitle">
+                  {decodeHtmlEntities(featuredPost.subtitle)}
+                </h3>
               )}
 
-              <p className="featured-excerpt">{featuredPost.excerpt}</p>
+              <p className="featured-excerpt">
+                {decodeHtmlEntities(featuredPost.excerpt) || ""}
+              </p>
 
               <div className="post-categories">
-                {featuredPost.categories &&
-                  featuredPost.categories.map((category) => (
-                    <span className="category-tag" key={category}>
-                      {category}
-                    </span>
-                  ))}
+                {getCategoriesArray(featuredPost.categories).map((category, index) => (
+                  <span className="category-tag" key={index}>
+                    {category}
+                  </span>
+                ))}
               </div>
 
               <div className="post-author">
                 <img
                   src={featuredPost.author?.avatar || "/default-avatar.png"}
-                  alt={featuredPost.author?.name || "Author"}
+                  alt={decodeHtmlEntities(featuredPost.author?.name) || "Author"}
                   className="author-avatar"
                 />
                 <div className="author-details">
                   <span className="author-name">
-                    {featuredPost.author?.name || "Author"}
+                    {decodeHtmlEntities(featuredPost.author?.name) || "Author"}
                   </span>
                 </div>
               </div>
 
-              <Link
-                to={`/blog/${featuredPost.id}`}
+              <button
+                onClick={() => handlePostNavigation(featuredPost.slug)}
                 className="read-article-btn"
               >
                 Read Full Article
-              </Link>
+              </button>
             </div>
           </section>
         )}
@@ -257,22 +307,28 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
               <div className="articles-grid">
                 {currentPosts.map((post) => (
                   <article className="article-card" key={post.id}>
-                    <Link
-                      to={`/blog/${post.id}`}
+                    <div
+                      onClick={() => handlePostNavigation(post.slug)}
                       className="article-image-link"
+                      style={{ cursor: "pointer" }}
                     >
                       <div className="article-image">
-                        <img src={post.image} alt={post.title} />
+                        <img
+                          src={post.image || "/default-hero.jpg"}
+                          alt={decodeHtmlEntities(post.title) || "Article"}
+                        />
                       </div>
-                    </Link>
+                    </div>
 
                     <div className="article-content">
                       <div className="article-meta">
                         <span className="post-date">
-                          {new Date(post.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {post.date
+                            ? new Date(post.date).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "Date unavailable"}
                         </span>
                         <span className="reading-time">
                           {post.readingTime || "4"} min read
@@ -280,26 +336,47 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                       </div>
 
                       <h3 className="article-title">
-                        <Link to={`/blog/${post.id}`}>{post.title}</Link>
+                        <button
+                          onClick={() => handlePostNavigation(post.slug)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            cursor: "pointer",
+                            textAlign: "left",
+                            color: "inherit",
+                            fontSize: "inherit",
+                            fontWeight: "inherit",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {decodeHtmlEntities(post.title) || "Untitled"}
+                        </button>
                       </h3>
 
-                      <p className="article-excerpt">{post.excerpt}</p>
+                      <p className="article-excerpt">
+                        {decodeHtmlEntities(post.excerpt) || ""}
+                      </p>
 
-                      {post.categories && post.categories.length > 0 && (
+                      {getCategoriesArray(post.categories).length > 0 && (
                         <div className="article-categories">
-                          {post.categories.map((category) => (
-                            <span
-                              key={category}
-                              className="category-tag"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setActiveCategory(category);
-                                setCurrentPage(1);
-                              }}
-                            >
-                              {category}
-                            </span>
-                          ))}
+                          {getCategoriesArray(post.categories).map(
+                            (category, index) => (
+                              <span
+                                key={index}
+                                className="category-tag"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setActiveCategory(category);
+                                  setCurrentPage(1);
+                                }}
+                                style={{ cursor: "pointer" }}
+                              >
+                                {category}
+                              </span>
+                            )
+                          )}
                         </div>
                       )}
 
@@ -307,20 +384,36 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                         <div className="author-info">
                           <img
                             src={post.author?.avatar || "/default-avatar.png"}
-                            alt={post.author?.name || "Author"}
+                            alt={decodeHtmlEntities(post.author?.name) || "Author"}
                             className="author-avatar-small"
                           />
                           <span className="author-name">
-                            {post.author?.name || "Author"}
+                            {decodeHtmlEntities(post.author?.name) || "Author"}
                           </span>
                         </div>
+
+                        <button
+                          onClick={() => handlePostNavigation(post.slug)}
+                          className="read-more-btn"
+                          style={{
+                            padding: "8px 16px",
+                            backgroundColor: "#007cba",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            marginLeft: "auto",
+                          }}
+                        >
+                          Read More
+                        </button>
                       </div>
                     </div>
                   </article>
                 ))}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="pagination">
                   <button
@@ -365,6 +458,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                 onClick={() => {
                   setSearchTerm("");
                   setActiveCategory("all");
+                  setCurrentPage(1);
                 }}
                 className="reset-filters-btn"
               >
@@ -389,18 +483,29 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
             <div className="popular-posts-list">
               {popularPosts.map((post) => (
                 <div className="popular-post-item" key={post.id}>
-                  <Link to={`/blog/${post.id}`} className="popular-post-link">
-                    <h4>{post.title}</h4>
+                  <button
+                    onClick={() => handlePostNavigation(post.slug)}
+                    className="popular-post-link"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      width: "100%",
+                    }}
+                  >
+                    <h4>{decodeHtmlEntities(post.title) || "Untitled"}</h4>
                     <div className="popular-post-meta">
                       <span className="popular-post-author">
-                        {post.author?.name}
+                        {decodeHtmlEntities(post.author?.name) || "Author"}
                       </span>
                       <span className="dot-separator">·</span>
                       <span className="popular-post-read-time">
                         {post.readingTime || "4"} min read
                       </span>
                     </div>
-                  </Link>
+                  </button>
                 </div>
               ))}
             </div>
@@ -426,22 +531,6 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
               ))}
             </ul>
           </div>
-
-          {/* <div className="sidebar-section subscribe-section">
-            <h3 className="sidebar-heading">Stay Updated</h3>
-            <p>Get the latest articles delivered straight to your inbox.</p>
-            <form className="subscription-form">
-              <input
-                type="email"
-                placeholder="Your email address"
-                required
-                className="subscribe-email-input"
-              />
-              <button type="submit" className="subscribe-button">
-                Subscribe
-              </button>
-            </form>
-          </div> */}
         </aside>
       </div>
     </div>

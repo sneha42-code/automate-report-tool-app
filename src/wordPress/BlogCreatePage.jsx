@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addPost } from "../utils/blogStorage";
+import WordPressService from "../wordPress/wordPressApiService";
+import WordPressAuthService from "../wordPress/wordPressAuthService";
 import "../styles/BlogCreate.css";
 
 const BlogCreatePage = () => {
@@ -9,7 +10,7 @@ const BlogCreatePage = () => {
     title: "",
     subtitle: "",
     excerpt: "",
-    image: "",
+    image: null,
     categories: "",
     tags: "",
     authorName: "",
@@ -26,12 +27,28 @@ const BlogCreatePage = () => {
   ]);
 
   const [isSaving, setIsSaving] = useState(false);
-  const [savingAs, setSavingAs] = useState("publish"); // "publish" or "draft"
+  const [savingAs, setSavingAs] = useState("publish");
   const [errors, setErrors] = useState({});
+
+  // Prefill author fields with logged-in user data
+  useEffect(() => {
+    const currentUser = WordPressAuthService.getCurrentUser();
+    if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        authorName: currentUser.displayName || currentUser.username || "",
+        authorAvatar: currentUser.avatar || "",
+        authorBio: currentUser.bio || "", // Adjust if bio is stored differently
+        authorSocial: {
+          twitter: currentUser.social?.twitter || "",
+          linkedin: currentUser.social?.linkedin || "",
+        },
+      }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.startsWith("authorSocial.")) {
       const socialField = name.split(".")[1];
       setFormData({
@@ -49,6 +66,13 @@ const BlogCreatePage = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    setFormData({
+      ...formData,
+      image: e.target.files[0],
+    });
+  };
+
   const handleSectionChange = (index, value) => {
     const updatedSections = [...contentSections];
     updatedSections[index].content = value;
@@ -57,7 +81,6 @@ const BlogCreatePage = () => {
 
   const addSection = (type) => {
     let newSection;
-
     switch (type) {
       case "heading":
         newSection = { type: "heading", content: "" };
@@ -66,7 +89,7 @@ const BlogCreatePage = () => {
         newSection = { type: "subheading", content: "" };
         break;
       case "image":
-        newSection = { type: "image", url: "", caption: "" };
+        newSection = { type: "image", file: null, caption: "" };
         break;
       case "quote":
         newSection = { type: "quote", content: "", attribution: "" };
@@ -77,7 +100,6 @@ const BlogCreatePage = () => {
       default:
         newSection = { type: "paragraph", content: "" };
     }
-
     setContentSections([...contentSections, newSection]);
   };
 
@@ -88,35 +110,17 @@ const BlogCreatePage = () => {
 
   const validateForm = () => {
     const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.excerpt.trim()) newErrors.excerpt = "Excerpt is required";
+    if (!formData.image) newErrors.image = "Featured image is required";
+    if (!formData.authorName.trim()) newErrors.authorName = "Author name is required";
 
-    if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
-    }
-
-    if (!formData.excerpt.trim()) {
-      newErrors.excerpt = "Excerpt is required";
-    }
-
-    if (!formData.image.trim()) {
-      newErrors.image = "Featured image is required";
-    }
-
-    if (!formData.authorName.trim()) {
-      newErrors.authorName = "Author name is required";
-    }
-
-    // Validate content sections
     const hasContent = contentSections.some((section) => {
-      if (
-        section.type === "paragraph" ||
-        section.type === "heading" ||
-        section.type === "subheading" ||
-        section.type === "quote"
-      ) {
+      if (["paragraph", "heading", "subheading", "quote"].includes(section.type)) {
         return section.content.trim() !== "";
       }
       if (section.type === "image") {
-        return section.url && section.url.trim() !== "";
+        return section.file;
       }
       if (section.type === "list") {
         return section.items.some((item) => item.trim() !== "");
@@ -124,19 +128,65 @@ const BlogCreatePage = () => {
       return false;
     });
 
-    if (!hasContent) {
-      newErrors.content = "At least one content section is required";
-    }
-
+    if (!hasContent) newErrors.content = "At least one content section is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const convertSectionsToHTML = async () => {
+    let htmlContent = "";
+    for (const section of contentSections) {
+      switch (section.type) {
+        case "paragraph":
+          if (section.content.trim())
+            htmlContent += `<p>${section.content}</p>\n`;
+          break;
+        case "heading":
+          if (section.content.trim())
+            htmlContent += `<h2>${section.content}</h2>\n`;
+          break;
+        case "subheading":
+          if (section.content.trim())
+            htmlContent += `<h3>${section.content}</h3>\n`;
+          break;
+        case "image":
+          if (section.file) {
+            try {
+              const media = await WordPressAuthService.uploadMedia(section.file, {
+                caption: section.caption || "",
+              });
+              htmlContent += `<figure><img src="${media.url}" alt="${section.caption || ""}" />`;
+              if (section.caption) htmlContent += `<figcaption>${section.caption}</figcaption>`;
+              htmlContent += `</figure>\n`;
+            } catch (error) {
+              console.error("Error uploading image:", error);
+            }
+          }
+          break;
+        case "quote":
+          if (section.content.trim())
+            htmlContent += `<blockquote><p>${section.content}</p>${
+              section.attribution ? `<cite>${section.attribution}</cite>` : ""
+            }</blockquote>\n`;
+          break;
+        case "list":
+          if (section.items.some((item) => item.trim())) {
+            htmlContent += `<ul>\n${section.items
+              .filter((item) => item.trim())
+              .map((item) => `<li>${item}</li>`)
+              .join("\n")}\n</ul>\n`;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    return htmlContent;
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!validateForm()) {
-      // Scroll to the first error
       const firstError = document.querySelector(".error-message");
       if (firstError) {
         firstError.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -144,92 +194,68 @@ const BlogCreatePage = () => {
       return;
     }
 
+    if (!WordPressAuthService.isAuthenticated()) {
+      setErrors({ general: "Please log in to create a post." });
+      navigate("/blog-management");
+      return;
+    }
+
     setIsSaving(true);
+    try {
+      // Upload featured image
+      let featuredMediaId = null;
+      if (formData.image) {
+        const media = await WordPressAuthService.uploadMedia(formData.image, {
+          title: formData.title,
+        });
+        featuredMediaId = media.id;
+      }
 
-    // Filter out empty sections
-    const filteredSections = contentSections.filter(
-      (section) =>
-        (section.type === "paragraph" && section.content.trim() !== "") ||
-        (section.type === "heading" && section.content.trim() !== "") ||
-        (section.type === "subheading" && section.content.trim() !== "") ||
-        (section.type === "quote" && section.content.trim() !== "") ||
-        (section.type === "image" && section.url) ||
-        (section.type === "list" &&
-          section.items.some((item) => item.trim() !== ""))
-    );
+      // Convert content sections to HTML
+      const contentHTML = await convertSectionsToHTML();
 
-    // Create the new post object
-    const newPost = {
-      id: Date.now(),
-      title: formData.title,
-      subtitle: formData.subtitle,
-      excerpt: formData.excerpt,
-      content: filteredSections,
-      image: formData.image,
-      date: new Date().toISOString(),
-      categories: formData.categories
-        .split(",")
-        .map((cat) => cat.trim())
-        .filter((cat) => cat !== ""),
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
-      readingTime: calculateReadingTime(filteredSections),
-      status: savingAs, // "publish" or "draft"
-      author: {
-        name: formData.authorName,
-        avatar: formData.authorAvatar || "/default-avatar.png",
-        bio: formData.authorBio,
-        social: {
-          twitter: formData.authorSocial.twitter,
-          linkedin: formData.authorSocial.linkedin,
+      // Prepare post data
+      const postData = {
+        title: formData.title,
+        subtitle: formData.subtitle,
+        excerpt: formData.excerpt,
+        content: contentHTML,
+        status: savingAs,
+        categories: formData.categories
+          .split(",")
+          .map((cat) => cat.trim())
+          .filter((cat) => cat !== ""),
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== ""),
+        featured_media: featuredMediaId,
+        meta: {
+          subtitle: formData.subtitle,
         },
-      },
-    };
+      };
 
-    // Save the post
-    const success = addPost(newPost);
+      // Create post
+      const token = WordPressAuthService.getToken();
+      const newPost = await WordPressService.createPost(postData, token);
 
-    setIsSaving(false);
-
-    if (success) {
-      // Redirect to the blog page or the new post
+      setIsSaving(false);
       if (savingAs === "publish") {
         navigate(`/blog/${newPost.id}`);
       } else {
         navigate("/blog");
       }
-    } else {
-      // Handle error
+    } catch (error) {
+      setIsSaving(false);
       setErrors({
-        ...errors,
-        general: "Failed to save post. Please try again.",
+        general: error.message || "Failed to save post. Please try again.",
       });
     }
   };
 
-  // Calculate estimated reading time
-  const calculateReadingTime = (sections) => {
-    let wordCount = 0;
-
-    sections.forEach((section) => {
-      if (
-        section.type === "paragraph" ||
-        section.type === "heading" ||
-        section.type === "subheading" ||
-        section.type === "quote"
-      ) {
-        wordCount += section.content.split(/\s+/).length;
-      } else if (section.type === "list") {
-        section.items.forEach((item) => {
-          wordCount += item.split(/\s+/).length;
-        });
-      }
-    });
-
-    // Average reading speed is about 200-250 words per minute
-    const minutes = Math.ceil(wordCount / 200);
+  const calculateReadingTime = (content) => {
+    const words = content.replace(/<[^>]*>/g, "").split(/\s+/).length;
+    const minutes = Math.ceil(words / 200);
     return minutes < 1 ? 1 : minutes;
   };
 
@@ -281,15 +307,14 @@ const BlogCreatePage = () => {
               </button>
             </div>
             <input
-              type="url"
-              value={section.url || ""}
+              type="file"
+              accept="image/*"
               onChange={(e) => {
                 const updatedSections = [...contentSections];
-                updatedSections[index].url = e.target.value;
+                updatedSections[index].file = e.target.files[0];
                 setContentSections(updatedSections);
               }}
-              placeholder="Image URL"
-              className="image-url-input"
+              className="image-file-input"
             />
             <input
               type="text"
@@ -302,9 +327,9 @@ const BlogCreatePage = () => {
               placeholder="Image Caption (optional)"
               className="image-caption-input"
             />
-            {section.url && (
+            {section.file && (
               <div className="image-preview">
-                <img src={section.url} alt="Preview" />
+                <img src={URL.createObjectURL(section.file)} alt="Preview" />
               </div>
             )}
           </div>
@@ -324,7 +349,7 @@ const BlogCreatePage = () => {
               placeholder="Quote text"
               className="quote-input"
               rows="3"
-            ></textarea>
+            />
             <input
               type="text"
               value={section.attribution || ""}
@@ -388,7 +413,7 @@ const BlogCreatePage = () => {
             </button>
           </div>
         );
-      default: // paragraph
+      default:
         return (
           <div className="content-section paragraph-section" key={index}>
             <div className="section-controls">
@@ -403,7 +428,7 @@ const BlogCreatePage = () => {
               placeholder="Paragraph text"
               className="paragraph-input"
               rows="5"
-            ></textarea>
+            />
           </div>
         );
     }
@@ -466,21 +491,20 @@ const BlogCreatePage = () => {
                 className={`excerpt-input ${
                   errors.excerpt ? "error-field" : ""
                 }`}
-              ></textarea>
+              />
               {errors.excerpt && (
                 <span className="error-message">{errors.excerpt}</span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="image">Featured Image URL</label>
+              <label htmlFor="image">Featured Image</label>
               <input
-                type="url"
+                type="file"
                 id="image"
                 name="image"
-                value={formData.image}
-                onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
+                accept="image/*"
+                onChange={handleImageChange}
                 className={`image-input ${errors.image ? "error-field" : ""}`}
               />
               {errors.image && (
@@ -488,7 +512,7 @@ const BlogCreatePage = () => {
               )}
               {formData.image && (
                 <div className="image-preview featured-image-preview">
-                  <img src={formData.image} alt="Featured preview" />
+                  <img src={URL.createObjectURL(formData.image)} alt="Featured preview" />
                 </div>
               )}
             </div>
@@ -661,7 +685,7 @@ const BlogCreatePage = () => {
                   rows="3"
                   placeholder="A brief author bio"
                   className="author-bio-input"
-                ></textarea>
+                />
               </div>
 
               <div className="form-group">

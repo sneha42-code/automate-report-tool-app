@@ -1,7 +1,7 @@
 // src/pages/ResetPassword.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import authService from "../service/authService";
 import "../styles/Auth.css";
 import Head3D from "../components/SimpleNeuralNetwork";
 import AuthLeftSection from "../components/AuthLeftSection";
@@ -20,21 +20,27 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
+    
     setIsLoading(true);
+    setError("");
+    
     try {
-      // Replace with your real API endpoint
-      await axios.post("/api/auth/forgot-password", { email });
-      setSubmitted(true);
-      setError("");
+      const response = await authService.forgotPassword(email);
+      
+      if (response.success) {
+        setSubmitted(true);
+        setError("");
+      } else {
+        setError(response.message || "Failed to send reset link. Please try again later.");
+      }
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to send reset link. Please try again later."
-      );
+      console.error("Reset password error:", err);
+      setError("Failed to send reset link. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +55,7 @@ const ResetPassword = () => {
         <div className="auth-header medium-header">
           <h1 className="medium-title">Reset your password</h1>
           <p className="auth-subtitle medium-subtitle">
-            Enter your email address and we’ll send you a link to reset your password.
+            Enter your email address and we'll send you a link to reset your password.
           </p>
         </div>
         {submitted ? (

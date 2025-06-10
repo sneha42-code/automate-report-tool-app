@@ -1,8 +1,7 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { forgotPassword } from "../service/authService";
+import authService from "../service/authService";
 import "../styles/Auth.css";
 import Head3D from "../components/SimpleNeuralNetwork"; // Import the 3D component
 import AuthLeftSection from "../components/AuthLeftSection";
@@ -51,20 +50,30 @@ const Login = () => {
     if (!validateForm()) {
       return;
     }
+    
     setIsLoading(true);
+    setErrors({}); // Clear any previous errors
+    
     try {
-      const response = await axios.post("/api/auth/login", {
+      const response = await authService.loginWithStorage({
         email: formData.email,
         password: formData.password,
         rememberMe: formData.rememberMe,
       });
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/");
+
+      if (response.success) {
+        // Login successful - navigate to dashboard or home
+        navigate("/");
+      } else {
+        // Login failed - show error message
+        setErrors({
+          general: response.message || "Login failed. Please check your credentials and try again.",
+        });
+      }
     } catch (error) {
+      console.error("Login error:", error);
       setErrors({
-        general:
-          error.response?.data?.message ||
-          "Login failed. Please check your credentials and try again.",
+        general: "Login failed. Please check your credentials and try again.",
       });
     } finally {
       setIsLoading(false);
@@ -73,16 +82,33 @@ const Login = () => {
 
   const handleForgotPassword = async () => {
     if (!formData.email || errors.email) {
-      setErrors((prev) => ({ ...prev, general: "Please enter a valid email address above to reset your password." }));
+      setErrors((prev) => ({ 
+        ...prev, 
+        general: "Please enter a valid email address above to reset your password." 
+      }));
       return;
     }
+    
     setIsLoading(true);
+    
     try {
-      await forgotPassword(formData.email);
-      setErrors({});
-      alert(`If an account exists for ${formData.email}, a reset link has been sent.`);
+      const response = await authService.forgotPassword(formData.email);
+      
+      if (response.success) {
+        setErrors({});
+        alert(`If an account exists for ${formData.email}, a reset link has been sent.`);
+      } else {
+        setErrors((prev) => ({ 
+          ...prev, 
+          general: response.message || "Failed to send reset link. Please try again later." 
+        }));
+      }
     } catch (error) {
-      setErrors((prev) => ({ ...prev, general: error.response?.data?.message || "Failed to send reset link. Please try again later." }));
+      console.error("Forgot password error:", error);
+      setErrors((prev) => ({ 
+        ...prev, 
+        general: "Failed to send reset link. Please try again later." 
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -156,13 +182,23 @@ const Login = () => {
               />
               <label htmlFor="rememberMe">Remember me</label>
             </div>
-            <Link
-              to="/reset-password"
+            <button
+              type="button"
+              onClick={handleForgotPassword}
               className="forgot-password medium-link"
-              style={{ color: '#3366cc', fontWeight: 600, fontSize: 14 }}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#3366cc', 
+                fontWeight: 600, 
+                fontSize: 14,
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+              disabled={isLoading}
             >
               Forgot password?
-            </Link>
+            </button>
           </div>
           <button
             type="submit"
@@ -178,6 +214,10 @@ const Login = () => {
             )}
           </button>
         </form>
+        <div className="auth-footer medium-footer">
+          <span>Don't have an account? </span>
+          <Link to="/signup" className="auth-link medium-link">Sign up</Link>
+        </div>
       </AuthRightSection>
     </div>
   );

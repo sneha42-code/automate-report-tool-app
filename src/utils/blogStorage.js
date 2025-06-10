@@ -37,6 +37,17 @@ export const getPostById = (postId) => {
   }
 };
 
+// Get a specific post by slug
+export const getPostBySlug = (slug) => {
+  try {
+    const posts = loadPostsFromStorage();
+    return posts.find((post) => post.slug === slug) || null;
+  } catch (error) {
+    console.error("Error getting post by slug:", error);
+    return null;
+  }
+};
+
 // Add a new post
 export const addPost = (newPost) => {
   try {
@@ -190,6 +201,7 @@ export default {
   loadPostsFromStorage,
   savePostsToStorage,
   getPostById,
+  getPostBySlug,
   addPost,
   updatePost,
   deletePost,
