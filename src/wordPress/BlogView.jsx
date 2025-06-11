@@ -308,11 +308,11 @@ const BlogView = () => {
 
       <div className="enhanced-article-hero">
         <img
-          src={post.image || '/default-hero.jpg'}
+          src={post.image || '/default-hero.png'}
           alt={post.title || 'Article image'}
           className="enhanced-article-hero-image"
           onError={(e) => {
-            e.target.src = '/default-hero.jpg';
+            e.target.src = '/default-hero.png';
           }}
         />
       </div>
@@ -467,10 +467,10 @@ const BlogView = () => {
                 >
                   <div className="related-article-image">
                     <img 
-                      src={relatedPost.image || '/default-hero.jpg'} 
+                      src={relatedPost.image || '/default-hero.png'} 
                       alt={relatedPost.title || 'Related article'}
                       onError={(e) => {
-                        e.target.src = '/default-hero.jpg';
+                        e.target.src = '/default-hero.png';
                       }}
                     />
                   </div>
@@ -509,10 +509,10 @@ const BlogView = () => {
               >
                 <div className="recommended-article-image">
                   <img
-                    src={recommendedPost.image || '/default-hero.jpg'}
+                    src={recommendedPost.image || '/default-hero.png'}
                     alt={recommendedPost.title || 'Recommended article'}
                     onError={(e) => {
-                      e.target.src = '/default-hero.jpg';
+                      e.target.src = '/default-hero.png';
                     }}
                   />
                 </div>

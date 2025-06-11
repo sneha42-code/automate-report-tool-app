@@ -362,32 +362,41 @@ class WordPressAuthService {
     }
   }
 
-  async uploadMedia(file, metadata = {}) {
-    try {
-      if (!this.isAuthenticated()) {
-        throw new Error("User not authenticated. Please login first.");
-      }
-      const formData = new FormData();
-      formData.append("file", file);
-      if (metadata.title) formData.append("title", metadata.title);
-      if (metadata.caption) formData.append("caption", metadata.caption);
-      if (metadata.alt) formData.append("alt_text", metadata.alt);
-
-      const response = await this.api.post("/media", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return {
-        id: response.data.id,
-        url: response.data.source_url,
-        title: response.data.title?.rendered || "",
-        alt: response.data.alt_text || "",
-        caption: response.data.caption?.rendered || "",
-      };
-    } catch (error) {
-      console.error("Error uploading media:", error);
-      throw this._handleError(error);
+// In your wordPressAuthService.js - update the uploadMedia method
+async uploadMedia(file, metadata = {}) {
+  try {
+    if (!this.isAuthenticated()) {
+      throw new Error("User not authenticated. Please login first.");
     }
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    // Add metadata if provided
+    if (metadata.title) formData.append("title", metadata.title);
+    if (metadata.caption) formData.append("caption", metadata.caption);
+    if (metadata.alt) formData.append("alt_text", metadata.alt);
+
+    const response = await this.api.post("/media", formData, {
+      headers: { 
+        "Content-Type": "multipart/form-data"
+      },
+      // Remove any default Content-Type to let browser set it with boundary
+      transformRequest: [(data) => data]
+    });
+    
+    return {
+      id: response.data.id,
+      url: response.data.source_url,
+      title: response.data.title?.rendered || "",
+      alt: response.data.alt_text || "",
+      caption: response.data.caption?.rendered || "",
+    };
+  } catch (error) {
+    console.error("Error uploading media:", error);
+    throw this._handleError(error);
   }
+}
 
   async _formatPostForAPI(postData) {
     return {
@@ -618,6 +627,144 @@ class WordPressAuthService {
       },
     };
   }
+  // Add this enhanced uploadMedia method to your WordPressAuthService.js
+
+
+
+// Enhanced method to test media upload capability
+async testMediaUploadCapability() {
+  try {
+    if (!this.isAuthenticated()) {
+      return { canUpload: false, reason: "Not authenticated" };
+    }
+
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) {
+      return { canUpload: false, reason: "No user data available" };
+    }
+
+    // Check if user has upload_files capability
+    const canUploadFiles = currentUser.capabilities?.upload_files || 
+                          currentUser.roles?.includes('administrator') ||
+                          currentUser.roles?.includes('editor') ||
+                          currentUser.roles?.includes('author');
+
+    if (!canUploadFiles) {
+      return { 
+        canUpload: false, 
+        reason: "User role does not have upload permissions",
+        userRoles: currentUser.roles
+      };
+    }
+
+    // Test API endpoint accessibility
+    try {
+      const response = await this.api.get('/media', {
+        params: { per_page: 1 },
+        timeout: 5000
+      });
+      
+      return { 
+        canUpload: true, 
+        reason: "All checks passed",
+        apiAccessible: true 
+      };
+    } catch (apiError) {
+      return { 
+        canUpload: false, 
+        reason: "Media API endpoint not accessible",
+        error: apiError.message 
+      };
+    }
+
+  } catch (error) {
+    return { 
+      canUpload: false, 
+      reason: "Error checking upload capability",
+      error: error.message 
+    };
+  }
+}
+
+// Method to get upload limits from WordPress
+async getUploadLimits() {
+  try {
+    // Try to get upload limits from WordPress API
+    const response = await this.api.get('/');
+    
+    // WordPress doesn't always expose upload limits via API,
+    // so we provide sensible defaults
+    return {
+      maxFileSize: 8 * 1024 * 1024, // 8MB default
+      allowedTypes: [
+        'image/jpeg',
+        'image/jpg', 
+        'image/png',
+        'image/gif',
+        'image/webp'
+      ],
+      maxWidth: 2048,
+      maxHeight: 2048
+    };
+  } catch (error) {
+    console.warn('Could not fetch upload limits:', error);
+    
+    // Return conservative defaults
+    return {
+      maxFileSize: 2 * 1024 * 1024, // 2MB conservative default
+      allowedTypes: [
+        'image/jpeg',
+        'image/png',
+        'image/gif'
+      ],
+      maxWidth: 1024,
+      maxHeight: 1024
+    };
+  }
+}
+
+// Utility method to validate file before upload
+validateFileForUpload(file, limits = null) {
+  const errors = [];
+
+  if (!file) {
+    errors.push("No file provided");
+    return { isValid: false, errors };
+  }
+
+  // Use provided limits or defaults
+  const uploadLimits = limits || {
+    maxFileSize: 8 * 1024 * 1024,
+    allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+  };
+
+  // Check file size
+  if (file.size > uploadLimits.maxFileSize) {
+    errors.push(`File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB. Maximum: ${(uploadLimits.maxFileSize / 1024 / 1024)}MB`);
+  }
+
+  // Check file type
+  if (!uploadLimits.allowedTypes.includes(file.type)) {
+    errors.push(`File type not allowed: ${file.type}. Allowed: ${uploadLimits.allowedTypes.join(', ')}`);
+  }
+
+  // Check file name
+  if (!file.name || file.name.trim() === '') {
+    errors.push("File must have a valid name");
+  }
+
+  // Check for potentially unsafe file names
+  const unsafeChars = /[<>:"/\\|?*]/;
+  if (unsafeChars.test(file.name)) {
+    errors.push("File name contains unsafe characters");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors: errors,
+    warnings: []
+  };
+}
 }
 
 export default new WordPressAuthService();

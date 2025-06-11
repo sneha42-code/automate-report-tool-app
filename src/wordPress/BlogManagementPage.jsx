@@ -234,7 +234,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
           <section className="enhanced-featured-post">
             <div className="featured-image">
               <img
-                src={featuredPost.image || "/default-hero.jpg"}
+                src={featuredPost.image || "/default-hero.png"}
                 alt={decodeHtmlEntities(featuredPost.title) || "Featured Post"}
               />
             </div>
@@ -314,7 +314,7 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                     >
                       <div className="article-image">
                         <img
-                          src={post.image || "/default-hero.jpg"}
+                          src={post.image || "/default-hero.png"}
                           alt={decodeHtmlEntities(post.title) || "Article"}
                         />
                       </div>

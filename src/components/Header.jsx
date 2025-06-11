@@ -236,8 +236,8 @@ const Header = () => {
                           </NavLink>
                         </li>
                         <li>
-                          <NavLink to="/blog/manage" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Manage Posts
+                          <NavLink to="/blog/edit" className="dropdown-item" onClick={handleNavLinkClick}>
+                            Edit Posts
                           </NavLink>
                         </li>
                       </>

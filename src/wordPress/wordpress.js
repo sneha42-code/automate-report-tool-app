@@ -16,7 +16,7 @@ export const WORDPRESS_CONFIG = {
   EXCERPT_LENGTH: 200,
   
   // Default images
-  DEFAULT_FEATURED_IMAGE: '/api/placeholder/800/400',
+  DEFAULT_FEATURED_IMAGE: '/default-hero.png',
   DEFAULT_AVATAR: '/api/placeholder/96/96',
   
   // Cache settings (in milliseconds)

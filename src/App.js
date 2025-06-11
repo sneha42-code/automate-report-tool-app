@@ -13,6 +13,7 @@ import Footer from "./components/Footer";
 import BlogManagement from "./wordPress/BlogManagementPage";
 import BlogView from "./wordPress/BlogView";
 import BlogCreatePage from "./wordPress/BlogCreatePage";
+import BlogEditPage from "./wordPress/BlogEditPage";
 import WordPressLogin from "./wordPress/WordPressLogin";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -43,9 +44,9 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ 
-          padding: '2rem', 
-          textAlign: 'center', 
+        <div style={{
+          padding: '2rem',
+          textAlign: 'center',
           minHeight: '50vh',
           display: 'flex',
           flexDirection: 'column',
@@ -53,7 +54,7 @@ class ErrorBoundary extends React.Component {
         }}>
           <h2>Something went wrong</h2>
           <p>We're having trouble loading this page.</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             style={{
               padding: '0.5rem 1rem',
@@ -68,7 +69,7 @@ class ErrorBoundary extends React.Component {
           >
             Reload Page
           </button>
-          <button 
+          <button
             onClick={() => window.location.href = '#/'}
             style={{
               padding: '0.5rem 1rem',
@@ -103,7 +104,7 @@ const ProtectedRoute = ({ children }) => {
 // Route Logger for debugging
 const RouteLogger = ({ children }) => {
   const location = useLocation();
-  
+
   useEffect(() => {
     console.log('Route changed:', {
       pathname: location.pathname,
@@ -146,24 +147,24 @@ function App() {
               <meta property="og:description" content="Advanced attrition analysis for human capital management" />
               <meta property="og:url" content="https://automatereporting.com" />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
-              
+
               {/* GitHub Pages specific meta tags */}
               <link rel="canonical" href={`https://automatereporting.com${window.location.pathname}`} />
             </Helmet>
-            
+
             <Header />
-            
+
             <main className="main-content">
               <ErrorBoundary>
                 <Routes>
                   {/* Home page */}
                   <Route path="/" element={<Home />} />
-                  
+
                   {/* Blog routes - Order is crucial! */}
                   <Route path="/blog" element={<BlogManagement />} />
                   <Route path="/blog/category/:category" element={<BlogManagement />} />
                   <Route path="/blog/tag/:tag" element={<BlogManagement />} />
-                  
+
                   {/* Protected Blog Creation Route - BEFORE dynamic slug */}
                   <Route
                     path="/blog/create"
@@ -173,42 +174,51 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  
+                  <Route
+                    path="/blog/edit"
+                    element={
+                      <ProtectedRoute>
+                        <BlogEditPage />
+                      </ProtectedRoute>
+                    }
+                  />
+
+
                   {/* Dynamic blog post route - MUST BE LAST */}
                   <Route path="/blog/:slug" element={<BlogView />} />
-                  
+
                   {/* WordPress Authentication */}
                   <Route path="/wplogin" element={<WordPressLogin />} />
                   <Route path="/wpLogin" element={<Navigate to="/wplogin" replace />} />
-                  
+
                   {/* User Management */}
                   <Route path="/admin/*" element={<UserManagementRoutes />} />
-                  
+
                   {/* Tools */}
                   <Route path="/tool/docs" element={<ReportToolDocs />} />
                   <Route path="/tool/Docs" element={<Navigate to="/tool/docs" replace />} />
                   <Route path="/tool/excel" element={<ReportToolExcel />} />
                   <Route path="/tool/html" element={<ReportToolHtml />} />
                   <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
-                  
+
                   {/* Dashboard and Analysis */}
                   <Route path="/dashboard/view/:fileId/:filename" element={<DashboardViewer />} />
                   <Route path="/predictive-analysis" element={<PredictiveDashboad />} />
-                  
+
                   {/* Documentation */}
                   <Route path="/documentation" element={<Documentation />} />
-                  
+
                   {/* Auth pages */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  
+
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </ErrorBoundary>
             </main>
-            
+
             <Footer />
           </div>
         </RouteLogger>
