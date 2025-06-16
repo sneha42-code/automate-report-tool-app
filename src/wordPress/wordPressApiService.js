@@ -23,9 +23,8 @@ class WordPressService {
   }
 
   async getPosts(params = {}) {
-    try {
-      const defaultParams = {
-        per_page: 10,
+    try {      const defaultParams = {
+        per_page: 100,
         page: 1,
         status: "publish",
         _embed: true,
