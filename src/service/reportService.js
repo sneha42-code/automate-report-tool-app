@@ -3,10 +3,7 @@ import axios from "axios";
 
 // Environment-aware API base URL configuration
 const getApiBaseUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_URL || "https://your-production-domain.com/api";
-  }
-  return process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api";
+  return process.env.REACT_APP_API_URL;
 };
 
 const API_BASE_URL = getApiBaseUrl();

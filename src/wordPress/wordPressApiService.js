@@ -4,7 +4,7 @@ import WordPressAuthService from "./wordPressAuthService";
 
 class WordPressService {
   constructor() {
-    this.baseURL = WORDPRESS_CONFIG.API_URL || "https://aiblog.automatereporting.com/wp-json/wp/v2";
+    this.baseURL = WORDPRESS_CONFIG.API_URL;
     this.api = axios.create({
       baseURL: this.baseURL,
       headers: {

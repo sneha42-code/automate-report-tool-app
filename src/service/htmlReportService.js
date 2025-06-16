@@ -2,10 +2,7 @@ import axios from "axios";
 
 class HtmlReportService {
   constructor() {
-    // Environment-aware base URL configuration
-    this.baseURL = process.env.NODE_ENV === 'production' 
-      ? process.env.REACT_APP_API_URL || "https://your-production-domain.com/api"
-      : process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api";
+    // Environment-aware base URL configuration    this.baseURL = process.env.REACT_APP_API_URL;
       
     this.api = axios.create({
       baseURL: this.baseURL,

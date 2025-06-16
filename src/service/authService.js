@@ -8,10 +8,7 @@ const REFRESH_TOKEN_KEY = 'refresh_token';
 
 // Environment-aware API base URL
 const getAuthApiBase = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return process.env.REACT_APP_AUTH_API_URL || "https://your-production-domain.com/api/auth";
-  }
-  return process.env.REACT_APP_AUTH_API_URL || "http://127.0.0.1:8001/api/auth";
+  return process.env.REACT_APP_AUTH_API_URL;
 };
 
 const API_BASE = getAuthApiBase();
