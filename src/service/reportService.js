@@ -77,7 +77,7 @@ const ReportService = {
    */
   generateReport: async (fileId) => {
     try {
-      const response = await apiClient.post(`/generate-report-forDocs/?file_id=${fileId}`);
+      const response = await apiClient.post(`/generate-report-forDocs/?file_id=${fileId}`, null, { timeout: 60000 });
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);

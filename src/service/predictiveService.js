@@ -51,7 +51,7 @@ class PredictiveService {
    */
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-predictive-report/?file_id=${fileId}`);
+      const response = await this.api.post(`/generate-predictive-report/?file_id=${fileId}`, null,{ timeout: 60000 });
       return response.data;
     } catch (error) {
       console.error("Error generating predictive report:", error);

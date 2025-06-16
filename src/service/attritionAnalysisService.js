@@ -11,7 +11,7 @@ class AttritionAnalysisService {
       baseURL: this.baseURL,
       headers: {
         "Content-Type": "application/json",
-      },timeout:6000
+      }
     });
 
     // Log the environment and URL for debugging

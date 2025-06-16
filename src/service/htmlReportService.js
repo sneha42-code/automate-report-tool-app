@@ -46,7 +46,7 @@ class HtmlReportService {
 
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-report/?file_id=${fileId}`);
+      const response = await this.api.post(`/generate-report/?file_id=${fileId}`, null, { timeout: 60000 }); // 60 seconds timeout
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
