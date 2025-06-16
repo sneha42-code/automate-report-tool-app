@@ -11,7 +11,7 @@ class AttritionAnalysisService {
       baseURL: this.baseURL,
       headers: {
         "Content-Type": "application/json",
-      },
+      },timeout:6000
     });
 
     // Log the environment and URL for debugging
@@ -43,10 +43,11 @@ class AttritionAnalysisService {
       throw this._handleError(error);
     }
   }
-
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-report-forExcel/?file_id=${fileId}`);
+      const response = await this.api.post(`/generate-report-forExcel/?file_id=${fileId}`, null, {
+        timeout: 30000 // 30 seconds timeout
+      });
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);

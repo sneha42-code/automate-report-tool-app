@@ -27,7 +27,7 @@ export const WORDPRESS_CONFIG = {
   },
   
   // Request timeout
-  TIMEOUT: 10000, // 10 seconds
+  TIMEOUT: 6000, // 60 seconds
   
   // API Version
   API_VERSION: 'wp/v2',
