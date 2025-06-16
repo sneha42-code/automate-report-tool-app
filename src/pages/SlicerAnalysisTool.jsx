@@ -32,7 +32,7 @@ const SlicerAnalysisTool = () => {
 
   const checkApiConnection = async () => {
     try {
-      await fetch(process.env.REACT_APP_API_URL || "http://127.0.0.1:8001/api/");
+      await fetch(process.env.REACT_APP_API_URL);
       setApiStatus({
         isOnline: true,
         message: "API connection established"
