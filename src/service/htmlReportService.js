@@ -20,7 +20,7 @@ class HtmlReportService {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await this.api.post("/upload/", formData, {
+      const response = await this.api.post("/html/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -43,7 +43,7 @@ class HtmlReportService {
 
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-report/?file_id=${fileId}`, null, { timeout: 60000 }); // 60 seconds timeout
+      const response = await this.api.post(`/html/generate-report/?file_id=${fileId}`, null, { timeout: 60000 }); // 60 seconds timeout
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
@@ -52,11 +52,11 @@ class HtmlReportService {
   }
 
   getDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download/${fileId}/${filename}`;
+    return `${this.baseURL}/html/download/${fileId}/${filename}`;
   }
 
   getViewUrl(fileId, filename) {
-    return `${this.baseURL}/view/${fileId}/${filename}`;
+    return `${this.baseURL}/html/view/${fileId}/${filename}`;
   }
 
   downloadReport(fileId, filename) {

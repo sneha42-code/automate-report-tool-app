@@ -1,5 +1,5 @@
 /* Enhanced Home.css with animations and modern styling */
-@import "./color.css";
+@import "./Color.css";
 
 /* Base Styles */
 .home-page {
@@ -64,25 +64,54 @@
   color: white;
   max-width: 700px;
   margin: 0 auto;
-  padding: 2.5rem 2rem 2.5rem 2rem;
+  padding: 4rem 3rem 4rem 3rem;
   background: rgba(30, 41, 59, 0.45);
   border-radius: 18px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   backdrop-filter: blur(2.5px);
   -webkit-backdrop-filter: blur(2.5px);
+  margin-top: 3.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.hero-action-btn {
+  min-width: 180px;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: inline-block;
 }
 
 @media (max-width: 600px) {
   .hero-content {
-    padding: 1.2rem 0.5rem;
+    padding: 2rem 1rem;
     max-width: 98vw;
     border-radius: 10px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
-  .hero-title {
-    font-size: 2rem;
+  .hero-actions {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
-  .hero-subtitle {
-    font-size: 1rem;
+  .hero-action-btn {
+    min-width: 100%;
+    padding: 1rem 0;
+    font-size: 1.1rem;
   }
 }
 
@@ -100,7 +129,7 @@
   opacity: 0.95;
 }
 
-.cta-button {
+.cta-button, .get-started-btn {
   background-color: var(--primary-blue);
   color: white;
   border: none;
@@ -113,10 +142,18 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.cta-button:hover {
+.cta-button:hover, .get-started-btn:hover {
   background-color: var(--primary-blue-dark);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.get-started-btn {
+  background-color: var(--success);
+  color: white;
+}
+.get-started-btn:hover {
+  background-color: #23855c;
 }
 
 /* Tool Section */

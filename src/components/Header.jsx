@@ -1,4 +1,3 @@
-// components/Header/Header.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "../styles/Header.css";
@@ -135,7 +134,7 @@ const Header = () => {
                   className="nav-link dropdown-toggle"
                   onClick={() => toggleDropdown(0)}
                 >
-                  Tools
+                  Product
                 </span>
                 <ul className="dropdown-menu">
                   <li>
@@ -158,17 +157,12 @@ const Header = () => {
                       Slicer analysis tool
                     </NavLink>
                   </li>
+                   <li>
+                    <NavLink to="/tool/predictive-analysis" className="dropdown-item" onClick={handleNavLinkClick}>
+                      Predictive analysis tool
+                    </NavLink>
+                  </li>
                 </ul>
-              </li>
-              
-              <li className="nav-item">
-                <NavLink
-                  to="/predictive-analysis"
-                  className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                  onClick={handleNavLinkClick}
-                >
-                  Predictive Analysis
-                </NavLink>
               </li>
               
               <li className="nav-item">
@@ -178,16 +172,6 @@ const Header = () => {
                   onClick={handleNavLinkClick}
                 >
                   Blog
-                </NavLink>
-              </li>
-                 
-              <li className="nav-item">
-                <NavLink
-                  to="/documentation"
-                  className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                  onClick={handleNavLinkClick}
-                >
-                  Documentation
                 </NavLink>
               </li>
 
@@ -211,8 +195,6 @@ const Header = () => {
                     </span>
                   </span>
                   <ul className="dropdown-menu">
-                    {/* Context-aware header */}
-                
                     {/* WordPress-specific options (when in blog context) */}
                     {useWordPressAuth && isWpLoggedIn && (
                       <>
@@ -235,11 +217,7 @@ const Header = () => {
                             Create Post
                           </NavLink>
                         </li>
-                        <li>
-                          <NavLink to="/blog/edit" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Edit Posts
-                          </NavLink>
-                        </li>
+                  
                       </>
                     )}
 
@@ -280,24 +258,25 @@ const Header = () => {
                   </ul>
                 </li>
               )}
-
-              {/* Regular Login - Only show when NOT in blog areas and NOT logged in */}
-              {!useWordPressAuth && !isLoggedIn && (
-                <li className="nav-item">
-                  <NavLink
-                    to="/login"
-                    className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                    onClick={handleNavLinkClick}
-                  >
-                    Login
-                  </NavLink>
-                </li>
-              )}
             </ul>
 
-            {/* Get Started Button - Only show when NOT in blog areas and NOT logged in */}
+            {/* Header Actions - Only show when NOT in blog areas and NOT logged in */}
             {!useWordPressAuth && !isLoggedIn && (
               <div className="header-actions">
+                {/* <NavLink 
+                  to="/login" 
+                  className="btn btn-outline"
+                  onClick={handleNavLinkClick}
+                >
+                  Login
+                </NavLink> */}
+                <NavLink 
+                  to="/book-demo" 
+                  className="btn btn-secondary"
+                  onClick={handleNavLinkClick}
+                >
+                  Book a Demo
+                </NavLink>
                 <NavLink 
                   to="/signup" 
                   className="btn btn-primary"

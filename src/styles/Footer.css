@@ -1,5 +1,5 @@
 /* components/styles/Footer.css */
-@import "./color.css";
+@import "./Color.css";
 
 .footer {
   background: linear-gradient(120deg, #f7fafc 0%, #e9eef6 100%);
@@ -38,7 +38,7 @@
 .footer-section {
   flex: 1 1 260px;
   min-width: 220px;
-  margin-bottom: 1.5rem;@import "./color.css";
+  margin-bottom: 1.5rem;@import "./Color.css";
 
 .footer {
   color: var(--neutral-dark);
@@ -74,17 +74,23 @@
 }
 
 .footer-description {
-  color: var(--neutral-medium);
-  font-size: 0.9rem;
-  line-height: 1.6;
+    display: block;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  color: var(--neutral-dark, #222);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .contact-email {
-  color: var(--neutral-dark);
+  display: block;
+  text-align: center;
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  color: var(--primary-blue, #1a237e);
   font-weight: 500;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  letter-spacing: 0.02em;
 }
 
 .contact-email:hover {
@@ -198,11 +204,13 @@
 }
 
 .footer-description {
-  color: var(--primary-slate);
-  font-size: 1.05rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
+  display: block;
   text-align: center;
+  margin: 0.5rem 0 0 0;
+  font-size: 1rem;
+  color: var(--neutral-dark, #222);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .contact-email {

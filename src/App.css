@@ -1,5 +1,5 @@
 /* App.css */
-@import "./styles/color.css";
+@import "./styles/Color.css";
 
 * {
   box-sizing: border-box;
@@ -22,7 +22,6 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
 }
 
 /* Utility classes */

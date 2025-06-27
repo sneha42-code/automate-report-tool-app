@@ -4,7 +4,7 @@ import WordPressAuthService from "./wordPressAuthService";
 
 class WordPressService {
   constructor() {
-    this.baseURL = WORDPRESS_CONFIG.API_URL;
+    this.baseURL = WORDPRESS_CONFIG.API_URL || "https://aiblog.automatereporting.com/wp-json/wp/v2";
     this.api = axios.create({
       baseURL: this.baseURL,
       headers: {
@@ -70,7 +70,7 @@ class WordPressService {
         params: { 
           slug: slug,
           _embed: true,
-          status: 'publish'
+          status: 'publish,draft,private'
         }
       });
 
@@ -83,7 +83,7 @@ class WordPressService {
           params: { 
             search: alternativeSlug,
             _embed: true,
-            status: 'publish',
+            status: 'publish,draft,private',
             per_page: 5
           }
         });

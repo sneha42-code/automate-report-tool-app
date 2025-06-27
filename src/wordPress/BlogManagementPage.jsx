@@ -61,7 +61,10 @@ const BlogManagement = () => {
     <div className="blog-management">
       <div className="blog-management-header">
         <h1>Blog Management</h1>
-        <button className="add-post-button" onClick={handleCreatePost}>
+        <button 
+          className="add-post-button" 
+          onClick={handleCreatePost}
+        >
           Write a story
         </button>
       </div>
@@ -395,18 +398,14 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                         <button
                           onClick={() => handlePostNavigation(post.slug)}
                           className="read-more-btn"
-                          style={{
-                            padding: "8px 16px",
-                            backgroundColor: "#007cba",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            fontSize: "14px",
-                            marginLeft: "auto",
-                          }}
                         >
                           Read More
+                        </button>
+                        <button
+                          onClick={() => navigate(`/blog/edit/${post.slug}`)}
+                          className="edit-btn"
+                        >
+                          Edit
                         </button>
                       </div>
                     </div>

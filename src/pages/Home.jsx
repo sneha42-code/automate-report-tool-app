@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import AnalaysisTool from "./AnalaysisTool";
 import { animateCounters } from "../utils/animateCounters";
-import  dashboradImage from "../image/dashboard.jpg";
+import BrainCircuitVisualization from "../components/BrainCircuitVisualization";
 import  analyticsIcon  from "../image/analytics-icon.png";
 import  demographicsIcon  from "../image/demographics-icon.png";
 import  trendsIcon from "../image/trends-icon.png"
@@ -14,6 +14,7 @@ import  riskMitigation from "../image/risk-mitigation.png"
 
 const Home = () => {
   const observerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Intersection Observer for fade-in animations
@@ -42,11 +43,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home-page">
+    <div className="home-page" style={{ background: '#000' }}>
       {/* Hero Section with Background Image */}
       <header className="hero-section">
         <div className="hero-background">
-          <img src={dashboradImage} alt="Analytics Dashboard" className="hero-image" />
+          <BrainCircuitVisualization />
           <div className="hero-overlay"></div>
         </div>
         <div className="container hero-content">
@@ -56,21 +57,28 @@ const Home = () => {
           <p className="hero-subtitle animate-slideUp">
             Advanced attrition analysis for human capital management
           </p>
-          <button className="cta-button animate-fadeIn">
-            Get Started
-          </button>
+          <div className="hero-actions">
+            <button className="get-started-btn animate-fadeIn hero-action-btn" onClick={() => navigate('/signup')}>
+              Get Started
+            </button>
+            <button className="cta-button animate-fadeIn hero-action-btn" onClick={() => navigate('/book-demo')}>
+              Book a Demo
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Enhanced Tool Section */}
-      <section className="tool-section">
-        <div className="container">
+      <section className="tool-section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="container" style={{ textAlign: 'center' }}>
           <div className="tool-header fade-in">
             <h2>Attrition Analytics Platform</h2>
             <p>Generate comprehensive workforce analytics for your organization</p>
           </div>
-          <div className="tool-wrapper">
-            <AnalaysisTool />
+          <div className="tool-wrapper tool-demo-center">
+            <NavLink to="/analysis" className="btn btn-primary btn-demo-request">
+              Analysis Tool
+            </NavLink>
           </div>
         </div>
       </section>

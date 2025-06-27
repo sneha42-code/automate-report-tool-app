@@ -1,5 +1,5 @@
 /* src/styles/Auth.css */
-@import "./color.css";
+@import "./Color.css";
 
 .auth-page {
   min-height: calc(100vh - 70px);

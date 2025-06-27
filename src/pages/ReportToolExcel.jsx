@@ -6,7 +6,7 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import AttritionAnalysisService from "../service/attritionAnalysisService";
+import AttritionAnalysisService from "../service/excelReportService";
 import { checkApiConnection } from "../service/checkApiConnection";
 
 const EnhancedReportTool = () => {

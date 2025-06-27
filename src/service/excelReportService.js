@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class AttritionAnalysisService {
+class ExcelReportService {
   constructor() {
     // Use environment-specific API URL with fallback    this.baseURL = process.env.REACT_APP_API_URL;
       
@@ -12,7 +12,7 @@ class AttritionAnalysisService {
     });
 
     // Log the environment and URL for debugging
-    console.log(`AttritionAnalysisService initialized in ${process.env.NODE_ENV} mode with URL: ${this.baseURL}`);
+    console.log(`ExcelReportService initialized in ${process.env.NODE_ENV} mode with URL: ${this.baseURL}`);
   }
 
   async uploadFile(file, progressCallback = null) {
@@ -20,7 +20,7 @@ class AttritionAnalysisService {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await this.api.post("/upload-forExcel/", formData, {
+      const response = await this.api.post("/excel/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -42,7 +42,7 @@ class AttritionAnalysisService {
   }
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-report-forExcel/?file_id=${fileId}`, null, {
+      const response = await this.api.post(`/excel/generate-report/?file_id=${fileId}`, null, {
         timeout: 30000 // 30 seconds timeout
       });
       return response.data;
@@ -53,7 +53,7 @@ class AttritionAnalysisService {
   }
 
   getDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download-forExcel/${fileId}/${filename}`;
+    return `${this.baseURL}/excel/download/${fileId}/${filename}`;
   }
 
   downloadReport(fileId, filename) {
@@ -87,4 +87,4 @@ class AttritionAnalysisService {
   }
 }
 
-export default new AttritionAnalysisService();
+export default new ExcelReportService();

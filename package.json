@@ -4,9 +4,14 @@
   "private": true,
   "homepage": "https://automatereporting.com",
   "dependencies": {
+    "@mantine/core": "^5.10.5",
+    "@mantine/hooks": "^5.10.5",
+    "@mantine/notifications": "^5.10.5",
+    "@mantine/rte": "^5.10.5",
     "@react-three/drei": "^10.0.8",
     "@react-three/fiber": "^9.1.2",
     "@react-three/postprocessing": "^3.0.4",
+    "@tabler/icons-react": "^3.34.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -51,6 +56,8 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21"
+    "autoprefixer": "^10.4.21",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0"
   }
 }

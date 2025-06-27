@@ -17,7 +17,7 @@ class SlicerReportService {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await this.api.post("/slicer-upload/", formData, {
+      const response = await this.api.post("/slicer/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -43,7 +43,7 @@ class SlicerReportService {
       const formData = new FormData();
       formData.append("file_id", fileId);
 
-      const response = await this.api.post("/slicer-generate-report", formData, {
+      const response = await this.api.post("/slicer/generate-report", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -57,11 +57,11 @@ class SlicerReportService {
   }
 
   getDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/slicer-download/${fileId}/${filename}`;
+    return `${this.baseURL}/slicer/download/${fileId}/${filename}`;
   }
 
   getViewUrl(fileId, filename) {
-    return `${this.baseURL}/slicer-download/${fileId}/${filename}`;
+    return `${this.baseURL}/slicer/download/${fileId}/${filename}`;
   }
 
   downloadReport(fileId, filename) {
@@ -75,15 +75,6 @@ class SlicerReportService {
     document.body.removeChild(link);
   }
 
-  async getRecentReports() {
-    try {
-      const response = await this.api.get("/recent");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching recent reports:", error);
-      throw this._handleError(error);
-    }
-  }
 
   _handleError(error) {
     let errorMessage = "An unknown error occurred";

@@ -1,4 +1,4 @@
-// src/services/ReportService.js
+// src/services/DocsReportService.js
 import axios from "axios";
 
 // Environment-aware API base URL configuration
@@ -9,7 +9,7 @@ const getApiBaseUrl = () => {
 const API_BASE_URL = getApiBaseUrl();
 
 // Log the environment and URL for debugging
-console.log(`ReportService initialized in ${process.env.NODE_ENV} mode with URL: ${API_BASE_URL}`);
+console.log(`DocsReportService initialized in ${process.env.NODE_ENV} mode with URL: ${API_BASE_URL}`);
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -20,7 +20,7 @@ const apiClient = axios.create({
 });
 
 // Service functions for report-related API calls
-const ReportService = {
+const DocsReportService = {
   /**
    * Fetch recent reports
    * @returns {Promise} Promise with recent reports data
@@ -46,7 +46,7 @@ const ReportService = {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await apiClient.post("/upload-forDocs/", formData, {
+      const response = await apiClient.post("/docs/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -74,7 +74,7 @@ const ReportService = {
    */
   generateReport: async (fileId) => {
     try {
-      const response = await apiClient.post(`/generate-report-forDocs/?file_id=${fileId}`, null, { timeout: 60000 });
+      const response = await apiClient.post(`/docs/generate-report/?file_id=${fileId}`, null, { timeout: 60000 });
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
@@ -89,8 +89,18 @@ const ReportService = {
    * @returns {string} Download URL
    */
   getDownloadUrl: (fileId, filename) => {
-    return `${API_BASE_URL}/download-forDocs/?file_id=${fileId}&filename=${filename}`;
+    return `${API_BASE_URL}/docs/download/?file_id=${fileId}&filename=${filename}`;
+  },
+
+  /**
+   * Download report (Docs)
+   * @param {string} fileId - The ID of the report file
+   * @param {string} filename - The name of the report file
+   */
+  downloadReport: (fileId, filename) => {
+    const url = DocsReportService.getDownloadUrl(fileId, filename);
+    window.open(url, "_blank");
   }
 };
 
-export default ReportService;
+export default DocsReportService;

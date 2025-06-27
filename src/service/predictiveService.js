@@ -23,7 +23,9 @@ class PredictiveService {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await this.api.post("/upload-predictive/", formData, {
+      
+
+      const response = await this.api.post("/predictive/upload/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -51,7 +53,7 @@ class PredictiveService {
    */
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-predictive-report/?file_id=${fileId}`, null,{ timeout: 60000 });
+      const response = await this.api.post(`/predictive/generate-report/?file_id=${fileId}`, null,{ timeout: 60000 });
       return response.data;
     } catch (error) {
       console.error("Error generating predictive report:", error);
@@ -66,7 +68,7 @@ class PredictiveService {
    */
   async generateHtmlReport(fileId) {
     try {
-      const response = await this.api.post(`/generate-predictive-html/?file_id=${fileId}`);
+      const response = await this.api.post(`/predictive/generate-html/?file_id=${fileId}`);
       return response.data;
     } catch (error) {
       console.error("Error generating predictive HTML report:", error);
@@ -81,7 +83,7 @@ class PredictiveService {
    * @returns {string} Download URL
    */
   getDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download-predictive/?file_id=${fileId}&filename=${filename}`;
+    return `${this.baseURL}/predictive/download/?file_id=${fileId}&filename=${filename}`;
   }
 
   /**
@@ -91,7 +93,7 @@ class PredictiveService {
    * @returns {string} Download URL
    */
   getHtmlDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download-predictive-html/${fileId}/${filename}`;
+    return `${this.baseURL}/predictive/download-html/${fileId}/${filename}`;
   }
 
   /**
@@ -101,7 +103,7 @@ class PredictiveService {
    * @returns {string} View URL
    */
   getHtmlViewUrl(fileId, filename) {
-    return `${this.baseURL}/view-predictive/${fileId}/${filename}`;
+    return `${this.baseURL}/predictive/view/${fileId}/${filename}`;
   }
 
   /**
@@ -124,19 +126,7 @@ class PredictiveService {
     window.open(url, "_blank");
   }
 
-  /**
-   * Check health of predictive analytics service
-   * @returns {Promise} Promise with health check response
-   */
-  async healthCheck() {
-    try {
-      const response = await this.api.get("/health-predictive");
-      return response.data;
-    } catch (error) {
-      console.error("Error checking predictive service health:", error);
-      throw this._handleError(error);
-    }
-  }
+  
 
   /**
    * Handle API errors

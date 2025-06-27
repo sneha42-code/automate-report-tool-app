@@ -1,0 +1,63 @@
+.footerlink-container, .container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  background: var(--bg-white, #fff);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-family: 'Arial', sans-serif;
+  color: var(--neutral-dark, #222);
+  text-align: left;
+}
+
+.footerlink-container h1,
+.footerlink-container h2,
+.container h1,
+.container h2 {
+  font-family: 'Arial', sans-serif;
+  color: var(--primary-blue, #1a237e);
+  margin-bottom: 0.75rem;
+}
+
+.footerlink-container h1,
+.container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.footerlink-container h2,
+.container h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+
+.footerlink-container p,
+.container p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: var(--neutral-medium, #444);
+  text-align: left;
+}
+
+.footerlink-container section,
+.container section {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .footerlink-container, .container {
+    padding: 1rem 0.5rem;
+    border-radius: 0;
+  }
+  .footerlink-container h1,
+  .container h1 {
+    font-size: 1.3rem;
+  }
+  .footerlink-container h2,
+  .container h2 {
+    font-size: 1.05rem;
+  }
+}

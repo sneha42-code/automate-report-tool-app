@@ -22,9 +22,11 @@ import ResetPassword from "./pages/ResetPassword";
 import DashboardViewer from "./pages/DashboardViewer";
 import PredictiveDashboad from "./pages/PredictiveDashboad";
 import UserManagementRoutes from "./wordPress/UserManagementRoutes";
+import RequestDemo from "./pages/RequestDemo";
 
 import { Helmet } from "react-helmet";
 import "./App.css";
+import AnalysisTool from "./pages/AnalaysisTool";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -194,24 +196,32 @@ function App() {
                   {/* User Management */}
                   <Route path="/admin/*" element={<UserManagementRoutes />} />
 
+                  <Route path="/product-tools" element={<AnalysisTool />} />
+
                   {/* Tools */}
                   <Route path="/tool/docs" element={<ReportToolDocs />} />
                   <Route path="/tool/Docs" element={<Navigate to="/tool/docs" replace />} />
                   <Route path="/tool/excel" element={<ReportToolExcel />} />
                   <Route path="/tool/html" element={<ReportToolHtml />} />
                   <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
+                  <Route path="/tool/predictive-analysis" element={<PredictiveDashboad />} />
+                  <Route path="/tool/analysis" element={<AnalysisTool />} />
+
 
                   {/* Dashboard and Analysis */}
                   <Route path="/dashboard/view/:fileId/:filename" element={<DashboardViewer />} />
-                  <Route path="/predictive-analysis" element={<PredictiveDashboad />} />
+
 
                   {/* Documentation */}
                   <Route path="/documentation" element={<Documentation />} />
-
+                  <Route path= "/book-demo" element={<RequestDemo />} />
                   {/* Auth pages */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
+
+                  {/* Request Demo */}
+                  <Route path="/request-demo" element={<RequestDemo />} />
 
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />

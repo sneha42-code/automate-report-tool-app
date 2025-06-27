@@ -6,7 +6,7 @@ import {
   formatFileSize,
 
 } from "../utils/fileValidation";
-import ReportService from "../service/reportService";
+import ReportService from "../service/docsReportService";
 import { checkApiConnection } from "../service/checkApiConnection";
 
 /**
