@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import "../styles/Header.css";
 import logoImg from "../image/logo.svg";
 import WordPressAuthService from "../wordPress/wordPressAuthService";
-import authService from "../service/authService";
+import authService from "../service/AuthService";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -162,6 +162,7 @@ const Header = () => {
                       Predictive analysis tool
                     </NavLink>
                   </li>
+                  
                 </ul>
               </li>
               

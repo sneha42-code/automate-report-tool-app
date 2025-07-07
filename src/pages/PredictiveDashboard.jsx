@@ -1,26 +1,19 @@
-// src/pages/PredictiveTool.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import PredictiveService from "../service/predictiveService";
+import PredictiveService from "../service/PredictiveService";
 import { validateFiles, formatFileSize } from "../utils/fileValidation";
-import "../styles/PredictiveDashboad.css";
+import "../styles/PredictiveDashboard.css";
 
-const PredictiveTool = () => {
+const PredictiveDashboard = () => {
   const location = useLocation();
 
   // State variables
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [generatedReports, setGeneratedReports] = useState({
-    word: null,
-    html: null
-  });
+  const [generatedReport, setGeneratedReport] = useState(null);
   const [error, setError] = useState(null);
   const [fileErrors, setFileErrors] = useState([]);
-  const [fileId, setFileId] = useState(null);
-  const [reportType, setReportType] = useState("word");
   const [apiStatus, setApiStatus] = useState({
     isOnline: true,
     message: "Predictive Analytics API connection established"
@@ -31,11 +24,26 @@ const PredictiveTool = () => {
   const fileInputRef = useRef(null);
 
   // Check API connection on mount
-  useEffect(() => {
-    checkApiConnection();
-  }, []);
+  // useEffect(() => {
+  //   const checkConnection = async () => {
+  //     try {
+  //       await PredictiveService.checkHealth();
+  //       setApiStatus({
+  //         isOnline: true,
+  //         message: "Predictive Analytics API connection established"
+  //       });
+  //     } catch (err) {
+  //       console.error("Predictive API connection error:", err);
+  //       setApiStatus({
+  //         isOnline: false,
+  //         message: "Could not connect to Predictive Analytics API. The service may be offline."
+  //       });
+  //     }
+  //   };
+  //   checkConnection();
+  // }, []);
 
-  // Check the current route and set showSpecifications accordingly
+  // Check the current route and set showSpecifications
   useEffect(() => {
     if (location.pathname.startsWith("/tool")) {
       setShowSpecifications(true);
@@ -43,22 +51,6 @@ const PredictiveTool = () => {
       setShowSpecifications(false);
     }
   }, [location]);
-
-  const checkApiConnection = async () => {
-    try {
-      await PredictiveService.healthCheck();
-      setApiStatus({
-        isOnline: true,
-        message: "Predictive Analytics API connection established"
-      });
-    } catch (err) {
-      console.error("Predictive API connection error:", err);
-      setApiStatus({
-        isOnline: false,
-        message: "Could not connect to Predictive Analytics API. The service may be offline."
-      });
-    }
-  };
 
   // File handling
   const handleFiles = async (files) => {
@@ -86,30 +78,38 @@ const PredictiveTool = () => {
     }));
 
     setSelectedFiles((prev) => [...prev, ...newFiles]);
-    setIsUploading(true);
+    setIsGenerating(true);
     setUploadProgress(0);
 
     try {
-      const response = await PredictiveService.uploadFile(validFiles[0], setUploadProgress);
-      setFileId(response.file_id);
+      const response = await PredictiveService.generateReport(validFiles[0], setUploadProgress);
+      const filename = response.download_url.split('/').pop();
+      
+      setGeneratedReport({
+        name: filename,
+        size: "Unknown",
+        date: new Date().toLocaleDateString(),
+        url: PredictiveService.getDownloadUrl(filename),
+        type: "word"
+      });
 
       setSelectedFiles((prev) =>
         prev.map((file, index) =>
           index >= prev.length - validFiles.length
-            ? { ...file, status: "uploaded", id: response.file_id }
+            ? { ...file, status: "processed" }
             : file
         )
       );
     } catch (err) {
-      console.error("File upload error:", err);
-      setError(err.message || "Failed to upload files.");
+      console.error("Report generation error:", err);
+      setError(err.message || "Failed to generate report.");
       setSelectedFiles((prev) =>
         prev.map((file, index) =>
           index >= prev.length - validFiles.length ? { ...file, status: "failed" } : file
         )
       );
     } finally {
-      setIsUploading(false);
+      setIsGenerating(false);
       setUploadProgress(100);
     }
   };
@@ -139,58 +139,9 @@ const PredictiveTool = () => {
     fileInputRef.current?.click();
   };
 
-  // Report generation
-  const handleGenerateClick = async () => {
-    if (!fileId || !selectedFiles.length) {
-      setError("Please upload a file before generating a report.");
-      return;
-    }
-
-    setIsGenerating(true);
-    setError(null);
-
-    try {
-      let response;
-      if (reportType === "word") {
-        response = await PredictiveService.generateReport(fileId);
-        setGeneratedReports(prev => ({
-          ...prev,
-          word: {
-            id: fileId,
-            name: response.report_file || "Predictive_Attrition_Report.docx",
-            size: "Unknown",
-            date: new Date().toLocaleDateString(),
-            url: PredictiveService.getDownloadUrl(fileId, response.report_file),
-            type: "word"
-          }
-        }));
-      } else {
-        response = await PredictiveService.generateHtmlReport(fileId);
-        setGeneratedReports(prev => ({
-          ...prev,
-          html: {
-            id: fileId,
-            name: response.report_file || "Predictive_Attrition_Report.html",
-            size: "Unknown",
-            date: new Date().toLocaleDateString(),
-            url: PredictiveService.getHtmlDownloadUrl(fileId, response.report_file),
-            viewUrl: PredictiveService.getHtmlViewUrl(fileId, response.report_file),
-            type: "html"
-          }
-        }));
-      }
-    } catch (err) {
-      console.error("Report generation error:", err);
-      setError(err.message || "Failed to generate predictive report.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   // Download report
   const handleDownloadClick = async () => {
-    const currentReport = generatedReports[reportType];
-    if (!currentReport) {
+    if (!generatedReport) {
       setError("No report available to download.");
       return;
     }
@@ -198,43 +149,18 @@ const PredictiveTool = () => {
     setError(null);
 
     try {
-      if (reportType === "word") {
-        PredictiveService.downloadReport(currentReport.id, currentReport.name);
-      } else {
-        PredictiveService.downloadHtmlReport(currentReport.id, currentReport.name);
-      }
+      PredictiveService.downloadReport(generatedReport.name);
     } catch (err) {
       console.error("Report download error:", err);
       setError(err.message || "Failed to download report.");
     }
   };
 
-  // View HTML report
-  const handleViewClick = () => {
-    const currentReport = generatedReports.html;
-    if (currentReport?.viewUrl) {
-      window.open(currentReport.viewUrl, "_blank");
-    }
-  };
-
   // Remove file
   const handleRemoveFile = (index) => {
     setSelectedFiles((files) => files.filter((_, i) => i !== index));
-    if (selectedFiles[index].id === fileId) {
-      setFileId(null);
-      setGeneratedReports({ word: null, html: null });
-    }
+    setGeneratedReport(null);
   };
-
-  // Change report type
-  const handleReportTypeChange = (type) => {
-    if (selectedFiles.length && !window.confirm("Changing report type will reset the current session. Continue?")) {
-      return;
-    }
-    setReportType(type);
-  };
-
-  const currentReport = generatedReports[reportType];
 
   return (
     <div className="predictive-tool-container">
@@ -262,61 +188,10 @@ const PredictiveTool = () => {
         </div>
       )}
 
-      <div className="report-type-selector">
-        <div className="selector-label">Select Report Format:</div>
-        <div className="selector-options">
-          <button
-            className={`selector-option ${reportType === "word" ? "active" : ""}`}
-            onClick={() => handleReportTypeChange("word")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10 9 9 9 8 9" />
-            </svg>
-            Word (.docx)
-          </button>
-          <button
-            className={`selector-option ${reportType === "html" ? "active" : ""}`}
-            onClick={() => handleReportTypeChange("html")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="14 2 14 8 20 8" />
-              <path d="M20 12H4" />
-              <path d="M4 18h16" />
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            </svg>
-            HTML (.html)
-          </button>
-        </div>
-      </div>
-
       <div className="platform-modules">
         <section className="data-module">
           <div className="module-header">
-            <h3>Data Input — Predictive Analytics ({reportType.toUpperCase()} Format)</h3>
+            <h3>Data Input — Predictive Analytics (DOCX Format)</h3>
             <p className="module-description">Upload Excel file containing HRIS data for predictive attrition analysis</p>
           </div>
 
@@ -366,7 +241,7 @@ const PredictiveTool = () => {
                 className="file-input"
                 onChange={handleFileSelect}
                 accept=".xlsx"
-                disabled={isUploading || !apiStatus.isOnline}
+                disabled={isGenerating || !apiStatus.isOnline}
                 ref={fileInputRef}
               />
             </div>
@@ -388,7 +263,7 @@ const PredictiveTool = () => {
           {selectedFiles.length > 0 && (
             <div className="selected-files-panel">
               <div className="panel-header">Selected Files</div>
-              {isUploading && (
+              {isGenerating && (
                 <div className="upload-progress-indicator">
                   <div className="progress-bar">
                     <div
@@ -422,7 +297,7 @@ const PredictiveTool = () => {
                         <button
                           className="remove-file-btn"
                           onClick={() => handleRemoveFile(index)}
-                          disabled={isUploading}
+                          disabled={isGenerating}
                         >
                           Remove
                         </button>
@@ -444,47 +319,29 @@ const PredictiveTool = () => {
           <div className="control-panel">
             <div className="control-actions">
               <button
-                className={`control-btn analyze-btn ${isGenerating ? "processing" : ""} ${
-                  !fileId || !apiStatus.isOnline ? "disabled" : ""
-                }`}
-                onClick={handleGenerateClick}
-                disabled={isGenerating || !fileId || !apiStatus.isOnline}
-              >
-                {isGenerating ? "Processing..." : "Generate Predictive Report"}
-              </button>
-
-              <button
-                className={`control-btn retrieve-btn ${!currentReport ? "disabled" : ""}`}
+                className={`control-btn retrieve-btn ${!generatedReport ? "disabled" : ""}`}
                 onClick={handleDownloadClick}
-                disabled={!currentReport}
+                disabled={!generatedReport}
               >
                 Download Report
               </button>
-
-              {reportType === "html" && currentReport && (
-                <button className="control-btn view-btn" onClick={handleViewClick}>
-                  View Report
-                </button>
-              )}
             </div>
 
-            {currentReport && (
+            {generatedReport && (
               <div className="analysis-complete">
                 <div className="complete-header">Predictive Analysis Summary</div>
                 <div className="report-metadata">
                   <div className="metadata-item">
                     <span className="metadata-label">Document:</span>
-                    <span className="metadata-value">{currentReport.name}</span>
+                    <span className="metadata-value">{generatedReport.name}</span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Format:</span>
-                    <span className="metadata-value">
-                      {reportType === "word" ? "Microsoft Word" : "HTML Webpage"}
-                    </span>
+                    <span className="metadata-value">Microsoft Word</span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Generated:</span>
-                    <span className="metadata-value">{currentReport.date}</span>
+                    <span className="metadata-value">{generatedReport.date}</span>
                   </div>
                   <div className="metadata-item">
                     <span className="metadata-label">Status:</span>
@@ -505,7 +362,6 @@ const PredictiveTool = () => {
           </div>
         </section>
 
-        {/* Specifications Module */}
         {showSpecifications && (
           <section className="specifications-module">
             <div className="module-header">
@@ -552,4 +408,4 @@ const PredictiveTool = () => {
   );
 };
 
-export default PredictiveTool;
+export default PredictiveDashboard;

@@ -1,9 +1,8 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import authService from "../service/authService";
+import AuthService from "../service/AuthService";
 import "../styles/Auth.css";
-import Head3D from "../components/SimpleNeuralNetwork"; // Import the 3D component
 import AuthLeftSection from "../components/AuthLeftSection";
 import AuthRightSection from "../components/AuthRightSection";
 
@@ -55,7 +54,7 @@ const Login = () => {
     setErrors({}); // Clear any previous errors
     
     try {
-      const response = await authService.loginWithStorage({
+      const response = await AuthService.loginWithStorage({
         email: formData.email,
         password: formData.password,
         rememberMe: formData.rememberMe,
@@ -92,7 +91,7 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const response = await authService.forgotPassword(formData.email);
+      const response = await AuthService.forgotPassword(formData.email);
       
       if (response.success) {
         setErrors({});
@@ -117,7 +116,6 @@ const Login = () => {
   return (
     <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
       <AuthLeftSection>
-        <Head3D />
       </AuthLeftSection>
       <AuthRightSection>
         <div className="auth-header medium-header">

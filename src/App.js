@@ -20,7 +20,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardViewer from "./pages/DashboardViewer";
-import PredictiveDashboad from "./pages/PredictiveDashboad";
+import PredictiveDashboard from "./pages/PredictiveDashboard";
 import UserManagementRoutes from "./wordPress/UserManagementRoutes";
 import RequestDemo from "./pages/RequestDemo";
 
@@ -204,8 +204,8 @@ function App() {
                   <Route path="/tool/excel" element={<ReportToolExcel />} />
                   <Route path="/tool/html" element={<ReportToolHtml />} />
                   <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
-                  <Route path="/tool/predictive-analysis" element={<PredictiveDashboad />} />
-                  <Route path="/tool/analysis" element={<AnalysisTool />} />
+                  <Route path="/tool/predictive-analysis" element={<PredictiveDashboard />} />
+                  <Route path="/analysis" element={<AnalysisTool />} />
 
 
                   {/* Dashboard and Analysis */}

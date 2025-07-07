@@ -13,9 +13,10 @@
 .auth-page.medium-bg {
   display: flex;
   min-height: 100vh;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
   background: #f7fafd;
+  gap: 0;
 }
 
 .auth-container {
@@ -401,15 +402,17 @@
 }
 
 .auth-svg-left {
-  background: linear-gradient(120deg, #e0e7ff 0%, #f0f4ff 100%);
-  border-radius: 18px;
+  background: #10111a;
+  border-radius: 0 0 18px 18px;
   box-shadow: 0 4px 32px 0 rgba(60, 60, 60, 0.08);
-  margin-right: 40px;
-  min-width: 340px;
+  margin-right: 0;
+  min-width: 420px;
   min-height: 420px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  padding: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 900px) {
@@ -514,4 +517,85 @@
   50% {
     opacity: 0.8;
   }
+}
+/* Add these styles to your Auth.css file */
+
+.auth-page {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.auth-svg-left {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  background: #10111a !important;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 4px 32px 0 rgba(60, 60, 60, 0.08);
+}
+
+/* Ensure no extra spacing on the 3D component container */
+.auth-svg-left > * {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fix any potential spacing issues with the right section */
+.auth-svg-left + * {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .auth-page {
+    flex-direction: column;
+  }
+  
+  .auth-svg-left {
+    min-height: 40vh;
+    max-height: 40vh;
+  }
+  
+  .auth-svg-left > * {
+    min-height: 40vh;
+  }
+}
+
+/* Remove any default padding/margin that might be applied globally */
+.auth-svg-left,
+.auth-svg-left *,
+.auth-svg-left canvas {
+  box-sizing: border-box;
+}
+
+/* Ensure the canvas fills the container completely */
+.auth-svg-left canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
 }

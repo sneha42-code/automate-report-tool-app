@@ -2,7 +2,8 @@ import axios from "axios";
 
 class HtmlReportService {
   constructor() {
-    // Environment-aware base URL configuration    this.baseURL = process.env.REACT_APP_API_URL;
+    // Environment-aware base URL configuration
+    this.baseURL = process.env.REACT_APP_API_URL;
       
     this.api = axios.create({
       baseURL: this.baseURL,
@@ -43,7 +44,10 @@ class HtmlReportService {
 
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/html/generate-report/?file_id=${fileId}`, null, { timeout: 60000 }); // 60 seconds timeout
+      const response = await this.api.post("/html/generate-report/", null, {
+        params: { file_id: fileId },
+        timeout: 60000 // 60 seconds timeout
+      });
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
@@ -61,6 +65,11 @@ class HtmlReportService {
 
   downloadReport(fileId, filename) {
     const url = this.getDownloadUrl(fileId, filename);
+    window.open(url, "_blank");
+  }
+
+  viewReport(fileId, filename) {
+    const url = this.getViewUrl(fileId, filename);
     window.open(url, "_blank");
   }
 

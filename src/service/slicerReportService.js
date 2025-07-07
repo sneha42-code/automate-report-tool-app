@@ -10,6 +10,9 @@ class SlicerReportService {
         "Content-Type": "application/json",
       },
     });
+
+    // Log the environment and URL for debugging
+    console.log(`SlicerReportService initialized in ${process.env.NODE_ENV} mode with URL: ${this.baseURL}`);
   }
 
   async uploadFile(file, progressCallback = null) {
@@ -43,11 +46,11 @@ class SlicerReportService {
       const formData = new FormData();
       formData.append("file_id", fileId);
 
-      const response = await this.api.post("/slicer/generate-report", formData, {
+      const response = await this.api.post("/slicer/generate-report/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-         timeout: 60000 ,
+        timeout: 60000,
       });
       return response.data;
     } catch (error) {
@@ -61,7 +64,11 @@ class SlicerReportService {
   }
 
   getViewUrl(fileId, filename) {
-    return `${this.baseURL}/slicer/download/${fileId}/${filename}`;
+    return `${this.baseURL}/slicer/view/${fileId}/${filename}`;
+  }
+
+  getUploadFormUrl() {
+    return `${this.baseURL}/slicer/upload-form/`;
   }
 
   downloadReport(fileId, filename) {
@@ -75,6 +82,15 @@ class SlicerReportService {
     document.body.removeChild(link);
   }
 
+  viewReport(fileId, filename) {
+    const url = this.getViewUrl(fileId, filename);
+    window.open(url, "_blank");
+  }
+
+  openUploadForm() {
+    const url = this.getUploadFormUrl();
+    window.open(url, "_blank");
+  }
 
   _handleError(error) {
     let errorMessage = "An unknown error occurred";

@@ -1,5 +1,6 @@
 /* src/styles/Header.css */
 
+
 @import "./Color.css";
 
 .header,
@@ -34,8 +35,10 @@
 }
 
 .logo-img {
-  height: 40px;
-  margin-right: 0.75rem;
+  height: 56px;
+  max-width: 180px;
+  width: auto;
+  margin-right: 1rem;
 }
 
 .logo-text {

@@ -2,7 +2,8 @@ import axios from "axios";
 
 class ExcelReportService {
   constructor() {
-    // Use environment-specific API URL with fallback    this.baseURL = process.env.REACT_APP_API_URL;
+    // Use environment-specific API URL with fallback
+    this.baseURL = process.env.REACT_APP_API_URL;
       
     this.api = axios.create({
       baseURL: this.baseURL,
@@ -40,9 +41,11 @@ class ExcelReportService {
       throw this._handleError(error);
     }
   }
+
   async generateReport(fileId) {
     try {
-      const response = await this.api.post(`/excel/generate-report/?file_id=${fileId}`, null, {
+      const response = await this.api.post("/excel/generate-report/", null, {
+        params: { file_id: fileId },
         timeout: 30000 // 30 seconds timeout
       });
       return response.data;

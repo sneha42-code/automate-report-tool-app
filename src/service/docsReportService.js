@@ -22,20 +22,6 @@ const apiClient = axios.create({
 // Service functions for report-related API calls
 const DocsReportService = {
   /**
-   * Fetch recent reports
-   * @returns {Promise} Promise with recent reports data
-   */
-  getRecentReports: async () => {
-    try {
-      const response = await apiClient.get("/recent");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching recent reports:", error);
-      throw error;
-    }
-  },
-
-  /**
    * Upload a file to the server
    * @param {File} file - The file to upload
    * @param {Function} progressCallback - Callback for upload progress
@@ -74,7 +60,10 @@ const DocsReportService = {
    */
   generateReport: async (fileId) => {
     try {
-      const response = await apiClient.post(`/docs/generate-report/?file_id=${fileId}`, null, { timeout: 60000 });
+      const response = await apiClient.post("/docs/generate-report/", null, {
+        params: { file_id: fileId },
+        timeout: 60000
+      });
       return response.data;
     } catch (error) {
       console.error("Error generating report:", error);
@@ -100,6 +89,26 @@ const DocsReportService = {
   downloadReport: (fileId, filename) => {
     const url = DocsReportService.getDownloadUrl(fileId, filename);
     window.open(url, "_blank");
+  },
+
+  /**
+   * Handle API errors
+   * @param {Error} error - The error object
+   * @returns {Error} Formatted error object
+   */
+  _handleError: (error) => {
+    let errorMessage = "An unknown error occurred";
+
+    if (error.response) {
+      const serverError = error.response.data.detail || error.response.data.message;
+      errorMessage = serverError || `Server error: ${error.response.status}`;
+    } else if (error.request) {
+      errorMessage = "No response from server. Please check your connection.";
+    } else {
+      errorMessage = error.message;
+    }
+
+    return new Error(errorMessage);
   }
 };
 
