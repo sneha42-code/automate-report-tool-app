@@ -1,9 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.944e76c9.css",
-    "main.js": "/static/js/main.b8883908.js",
+    "main.css": "/static/css/main.dc003d09.css",
+    "main.js": "/static/js/main.fe92e6e5.js",
     "static/js/453.ca7ef2ab.chunk.js": "/static/js/453.ca7ef2ab.chunk.js",
-    "static/media/dashboard.jpg": "/static/media/dashboard.cd53991bd98f1be0fd45.jpg",
     "static/media/efficiency.png": "/static/media/efficiency.21be78c74c5695940b57.png",
     "static/media/strategic-planning.png": "/static/media/strategic-planning.6ef79c6d0b8e6af42fb8.png",
     "static/media/risk-mitigation.png": "/static/media/risk-mitigation.d02208801ca46c1416d3.png",
@@ -15,12 +14,12 @@
     "static/media/logo.svg": "/static/media/logo.742de9ab4508afeb81d335f33c997218.svg",
     "static/media/notfound.svg": "/static/media/notfound.59901da05d672bd51b3b4d36cc633292.svg",
     "index.html": "/index.html",
-    "main.944e76c9.css.map": "/static/css/main.944e76c9.css.map",
-    "main.b8883908.js.map": "/static/js/main.b8883908.js.map",
+    "main.dc003d09.css.map": "/static/css/main.dc003d09.css.map",
+    "main.fe92e6e5.js.map": "/static/js/main.fe92e6e5.js.map",
     "453.ca7ef2ab.chunk.js.map": "/static/js/453.ca7ef2ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.944e76c9.css",
-    "static/js/main.b8883908.js"
+    "static/css/main.dc003d09.css",
+    "static/js/main.fe92e6e5.js"
   ]
 }
