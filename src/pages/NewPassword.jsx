@@ -1,9 +1,8 @@
 // src/pages/NewPassword.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import authService from "../service/authService";
+import AuthService from "../service/AuthService";
 import "../styles/Auth.css";
-import Head3D from "../components/SimpleNeuralNetwork";
 import AuthLeftSection from "../components/AuthLeftSection";
 import AuthRightSection from "../components/AuthRightSection";
 
@@ -73,7 +72,7 @@ const NewPassword = () => {
     setErrors({});
     
     try {
-      const response = await authService.resetPassword({
+      const response = await AuthService.resetPassword({
         token: token,
         newPassword: formData.password,
       });
@@ -105,9 +104,8 @@ const NewPassword = () => {
 
   if (resetSuccess) {
     return (
-      <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+      <div className="auth-page medium-bg" >
         <AuthLeftSection>
-          <Head3D />
         </AuthLeftSection>
         <AuthRightSection>
           <div className="auth-header medium-header">
@@ -128,9 +126,9 @@ const NewPassword = () => {
   }
 
   return (
-    <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+    <div className="auth-page medium-bg" >
       <AuthLeftSection>
-        <Head3D />
+      
       </AuthLeftSection>
       <AuthRightSection>
         <div className="auth-header medium-header">

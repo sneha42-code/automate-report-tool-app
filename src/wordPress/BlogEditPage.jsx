@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import WordPressService from "./wordPressApiService";
-import WordPressAuthService from "./wordPressAuthService";
-import { Edit, Save, X, Plus, Trash2, Image, Quote, List, Type, Heading } from 'lucide-react';
+import WordPressService from "../wordPress/wordPressApiService";
+import WordPressAuthService from "../wordPress/wordPressAuthService";
+import { Edit, Save, X, Plus, Trash2, Image, Quote, List, Type, Heading, AlertCircle } from 'lucide-react';
 import "../styles/BlogEdit.css";
 
 const BlogEditPage = () => {
@@ -38,6 +38,7 @@ const BlogEditPage = () => {
   // Load the post for editing
   useEffect(() => {
     const loadPost = async () => {
+      // FIXED: Enhanced validation and error handling
       if (!slug) {
         setErrors({ general: "No post specified for editing" });
         setLoading(false);
@@ -45,24 +46,40 @@ const BlogEditPage = () => {
       }
 
       if (!WordPressAuthService.isAuthenticated()) {
+        console.log("User not authenticated, redirecting to login");
         navigate("/wplogin");
         return;
       }
 
       try {
         setLoading(true);
+        setErrors({});
+        
+        console.log("Loading post with slug:", slug);
+        
+        // Try to fetch the post
         const fetchedPost = await WordPressService.getPostBySlug(slug);
         
         if (!fetchedPost) {
           throw new Error("Post not found");
         }
 
+        console.log("Fetched post:", fetchedPost);
+
         // Check if user can edit this post
         const currentUser = WordPressAuthService.getCurrentUser();
+        console.log("Current user:", currentUser);
+        
+        if (!currentUser) {
+          throw new Error("Unable to verify user permissions");
+        }
+
         const canEdit = 
           currentUser.roles?.includes('administrator') ||
           currentUser.roles?.includes('editor') ||
           fetchedPost.author?.name === currentUser.displayName;
+
+        console.log("Can edit:", canEdit);
 
         if (!canEdit) {
           setErrors({ general: "You don't have permission to edit this post" });
@@ -96,6 +113,8 @@ const BlogEditPage = () => {
         // Parse content into sections
         const parsedSections = parseContentToSections(fetchedPost.content);
         setContentSections(parsedSections.length > 0 ? parsedSections : [{ type: "paragraph", content: "" }]);
+
+        console.log("Post loaded successfully");
 
       } catch (error) {
         console.error("Error loading post:", error);
@@ -315,6 +334,13 @@ const BlogEditPage = () => {
       return;
     }
 
+    // FIXED: Enhanced authentication check
+    if (!WordPressAuthService.isAuthenticated()) {
+      setErrors({ general: "Please log in to update this post." });
+      navigate("/wplogin");
+      return;
+    }
+
     setIsSaving(true);
     try {
       // Upload featured image if new one is selected
@@ -350,6 +376,8 @@ const BlogEditPage = () => {
         },
       };
 
+      console.log("Updating post with data:", postData);
+
       // Update post
       const updatedPost = await WordPressService.updatePost(post.id, postData);
       
@@ -363,6 +391,7 @@ const BlogEditPage = () => {
 
     } catch (error) {
       setIsSaving(false);
+      console.error("Error updating post:", error);
       setErrors({
         general: error.message || "Failed to update post. Please try again.",
       });
@@ -577,11 +606,34 @@ const BlogEditPage = () => {
     }
   };
 
+  // FIXED: Enhanced loading state
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
         <p>Loading post for editing...</p>
+        {slug && <p>Post slug: {slug}</p>}
+      </div>
+    );
+  }
+
+  // FIXED: Enhanced error state
+  if (errors.general && !post) {
+    return (
+      <div className="blog-edit-container">
+        <div className="error-container">
+          <AlertCircle size={48} color="#dc2626" />
+          <h2>Unable to Load Post</h2>
+          <p>{errors.general}</p>
+          <div className="error-actions">
+            <button onClick={() => navigate("/blog")} className="back-button">
+              ← Back to Blog
+            </button>
+            <button onClick={() => window.location.reload()} className="retry-button">
+              Retry
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

@@ -1,15 +1,10 @@
-/* ReportTool.css */
-@import "./color.css";
+/* ReportToolDocs.css */
+@import "./Color.css";
 
-/* Enterprise Attrition Analytics Platform
- * Formal Business Styling
- */
-
- .tool-platform {
-padding : 0 120px;
+.tool-platform {
+  padding: 0 120px;
 }
 
-/* Base Styles */
 .analytics-platform {
   font-family: "Arial", "Helvetica Neue", Helvetica, sans-serif;
   color: var(--neutral-dark);
@@ -35,7 +30,7 @@ padding : 0 120px;
 .module-header {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-light);
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
 }
 
 .module-header h3 {
@@ -51,7 +46,6 @@ padding : 0 120px;
   color: var(--neutral-medium);
 }
 
-/* Data Input Module */
 .file-input-section {
   padding: 20px;
 }
@@ -62,18 +56,25 @@ padding : 0 120px;
   padding: 24px;
   text-align: center;
   position: relative;
-  background-color: var(--bg-light);
-  transition: border-color 0.2s ease;
+  background-color: var(--bg-off-white);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .file-dropzone:hover {
-  border-color: var(--neutral-medium);
+  border-color: var(--primary-blue);
+  background-color: var(--bg-light);
 }
 
 .dropzone-icon {
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
+}
+
+.dropzone-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-blue);
 }
 
 .dropzone-text {
@@ -86,7 +87,7 @@ padding : 0 120px;
 .dropzone-subtext {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
 }
 
 .file-input {
@@ -99,25 +100,15 @@ padding : 0 120px;
   cursor: pointer;
 }
 
-/* Alerts */
 .validation-alert,
 .system-alert {
   margin: 0 20px 20px;
   padding: 12px 16px;
   border-radius: 4px;
   font-size: 0.9rem;
-}
-
-.validation-alert {
-  background-color: #fff5f5;
   border-left: 4px solid var(--error);
-  color: var(--error);
-}
-
-.system-alert {
-  background-color: #fff5f5;
-  border-left: 4px solid var(--error);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
 }
 
 .alert-header {
@@ -134,15 +125,15 @@ padding : 0 120px;
   margin-bottom: 4px;
 }
 
-/* Selected Files */
 .selected-files-panel {
   margin: 0 20px 20px;
   border: 1px solid var(--border-light);
   border-radius: 4px;
+  box-shadow: var(--shadow-soft);
 }
 
 .panel-header {
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   padding: 10px 16px;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
@@ -153,6 +144,7 @@ padding : 0 120px;
 .upload-progress-indicator {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-white);
 }
 
 .progress-bar {
@@ -172,7 +164,7 @@ padding : 0 120px;
 
 .progress-percentage {
   font-size: 0.8rem;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   text-align: right;
 }
 
@@ -187,8 +179,8 @@ padding : 0 120px;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border-light);
   font-weight: 600;
-  color: var(--neutral-medium);
-  background-color: var(--bg-light);
+  color: var(--neutral-dark);
+  background-color: var(--bg-off-white);
 }
 
 .files-table td {
@@ -202,16 +194,18 @@ padding : 0 120px;
 
 .files-table tr.uploaded .file-status {
   color: var(--success);
+  font-weight: 500;
 }
 
 .files-table tr.failed .file-status {
   color: var(--error);
+  font-weight: 500;
 }
 
 .remove-file-btn {
   background: none;
   border: 1px solid var(--border-light);
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   font-size: 0.8rem;
   padding: 4px 8px;
   border-radius: 3px;
@@ -220,12 +214,11 @@ padding : 0 120px;
 }
 
 .remove-file-btn:hover {
-  background-color: var(--bg-light);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
   border-color: var(--error);
 }
 
-/* Analysis Controls */
 .control-panel {
   padding: 20px;
 }
@@ -247,21 +240,21 @@ padding : 0 120px;
 }
 
 .analyze-btn {
-  background-color: var(--primary-slate);
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--neutral-dark);
 }
 
 .analyze-btn:hover:not(:disabled) {
-  background-color: var(--primary-blue);
+  background-color: var(--primary-blue-dark);
 }
 
 .retrieve-btn {
   background-color: var(--primary-slate);
-  color: white;
+  color: var(--neutral-dark);
 }
 
 .retrieve-btn:hover:not(:disabled) {
-  background-color: var(--primary-blue);
+  background-color: var(--primary-slate-dark);
 }
 
 .control-btn.disabled,
@@ -273,7 +266,7 @@ padding : 0 120px;
 
 .control-btn.processing {
   position: relative;
-  text-indent: -9999px;
+  color: transparent;
 }
 
 .control-btn.processing::after {
@@ -286,8 +279,8 @@ padding : 0 120px;
   margin-top: -8px;
   margin-left: -8px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid var(--neutral-light);
+  border-top-color: var(--neutral-dark);
   animation: spinner 0.8s linear infinite;
 }
 
@@ -297,15 +290,15 @@ padding : 0 120px;
   }
 }
 
-/* Analysis Complete Section */
 .analysis-complete {
   margin-top: 20px;
   border: 1px solid var(--border-light);
   border-radius: 4px;
+  box-shadow: var(--shadow-soft);
 }
 
 .complete-header {
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   padding: 10px 16px;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
@@ -346,14 +339,26 @@ padding : 0 120px;
 
 .report-description {
   padding: 16px;
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   font-size: 0.9rem;
   color: var(--neutral-medium);
 }
 
-/* Specifications Module */
+.report-description p {
+  margin: 0 0 10px 0;
+}
+
+.report-description ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.report-description li {
+  margin-bottom: 4px;
+}
+
 .specifications-module {
   margin-top: 24px;
 }
@@ -366,14 +371,15 @@ padding : 0 120px;
 }
 
 .specification-item {
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   border: 1px solid var(--border-light);
   border-radius: 4px;
+  box-shadow: var(--shadow-soft);
 }
 
 .specification-title {
   padding: 10px 16px;
-  background-color: var(--bg-off-white);
+  background-color: var(--bg-light);
   border-bottom: 1px solid var(--border-light);
   font-size: 0.9rem;
   font-weight: 600;
@@ -394,7 +400,6 @@ padding : 0 120px;
   margin-bottom: 0;
 }
 
-/* Fade In Animation */
 .fade-in {
   opacity: 0;
   transform: translateY(24px);
@@ -408,8 +413,17 @@ padding : 0 120px;
   }
 }
 
-/* Responsive Design */
+@media (max-width: 1200px) {
+  .tool-platform {
+    padding: 0 60px;
+  }
+}
+
 @media (max-width: 768px) {
+  .tool-platform {
+    padding: 0 20px;
+  }
+
   .control-actions {
     flex-direction: column;
   }
@@ -429,6 +443,10 @@ padding : 0 120px;
 }
 
 @media (max-width: 480px) {
+  .tool-platform {
+    padding: 0 10px;
+  }
+
   .module-header h3 {
     font-size: 1rem;
   }
@@ -440,5 +458,38 @@ padding : 0 120px;
 
   .dropzone-text {
     font-size: 0.9rem;
+  }
+
+  .dropzone-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .validation-alert,
+  .system-alert {
+    background-color: var(--error);
+    color: var(--neutral-dark);
+    border-color: var(--border-light);
+  }
+}
+
+@media (prefers-contrast: high) {
+  .validation-alert,
+  .system-alert,
+  .control-btn,
+  .remove-file-btn {
+    border-width: 2px;
+    font-weight: bold;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control-btn,
+  .file-dropzone,
+  .fade-in {
+    animation: none;
+    transition: none;
   }
 }

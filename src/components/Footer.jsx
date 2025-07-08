@@ -1,5 +1,6 @@
 // components/Footer/Footer.js
 import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/Footer.css";
 
 const Footer = () => {
@@ -20,7 +21,7 @@ const Footer = () => {
 
           <div className="footer-section">
             <h2 className="footer-title">Contact Us</h2>
-            <p className="contact-email"> automatereporting12@gmail.com</p>
+            <p className="contact-email">sales@automatereporting.com</p>
           </div>
         </div>
 
@@ -29,9 +30,9 @@ const Footer = () => {
             &copy; {currentYear} Automate Reporting. All rights reserved.
           </div>
           <div className="footer-links">
-            <a href="/terms">Terms of Service</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/cookies">Cookie Policy</a>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/cookies">Cookie Policy</Link>
           </div>
         </div>
       </div>

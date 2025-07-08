@@ -1,9 +1,8 @@
-/* src/styles/MinimalDocumentation.css */
-@import "./color.css";
+/* Documentation.css */
+@import "./Color.css";
 
 .documentation-page {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: var(--neutral-dark);
   max-width: 800px;
   margin: 0 auto;
@@ -21,7 +20,7 @@
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 30px;
-  color: var(--primary-slate);
+  color: var(--neutral-dark);
   text-align: center;
 }
 
@@ -53,26 +52,11 @@
 .doc-section li {
   margin-bottom: 8px;
   line-height: 1.5;
+  color: var(--neutral-medium);
 }
 
-.cta-button {
-  display: inline-block;
-  background-color: var(--primary-slate);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
-  margin-top: 10px;
-  text-align: center;
-  transition: background-color 0.2s;
-}
 
-.cta-button:hover {
-  background-color: var(--primary-blue);
-}
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .documentation-page {
     padding: 15px;
@@ -81,9 +65,35 @@
   .container {
     padding: 20px;
   }
+
+  .documentation-page h1 {
+    font-size: 20px;
+  }
+
+  .doc-section h2 {
+    font-size: 16px;
+  }
 }
 
-/* Print styles */
+@media (prefers-color-scheme: dark) {
+  .cta-button {
+    color: var(--neutral-dark);
+  }
+}
+
+@media (prefers-contrast: high) {
+  .cta-button {
+    border: 2px solid var(--neutral-dark);
+    font-weight: bold;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-button {
+    transition: none;
+  }
+}
+
 @media print {
   .documentation-page {
     box-shadow: none;

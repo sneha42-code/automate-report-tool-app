@@ -1,228 +1,253 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import ReportService from "../service/reportService";
-import AttritionAnalysisService from "../service/attritionAnalysisService";
-import HtmlReportService from "../service/htmlReportService";
-import { validateFiles, formatFileSize } from "../utils/fileValidation";
-import "../styles/AnalaysisTool.css";
-import { checkApiConnection } from "../service/checkApiConnection";
+import React, { useState, useRef, useEffect } from 'react';
+import { checkAllServicesHealth } from '../service/CheckApiConnection';
+import PredictiveService from '../service/PredictiveService';
+import HtmlReportService from '../service/HtmlReportService';
+import DocsReportService from '../service/DocsReportService';
+import SlicerReportService from '../service/SlicerReportService';
+import ExcelReportService from '../service/ExcelReportService'
+import '../styles/AnalaysisTool.css';
 
-const AnalaysisTool = () => {
+const AnalysisTool = () => {
   // State variables
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedService, setSelectedService] = useState('docs');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [generatedReport, setGeneratedReport] = useState(null);
   const [error, setError] = useState(null);
-  const [fileErrors, setFileErrors] = useState([]);
-  const [fileId, setFileId] = useState(null);
-  const [reportType, setReportType] = useState("docs");
-  const [apiStatus, setApiStatus] = useState({
-    isOnline: true,
-    message: "API connection established",
-  });
-  const [isClicking, setIsClicking] = useState(false); // New state to prevent multiple clicks
+  const [fileError, setFileError] = useState(null);
+  const [apiStatus, setApiStatus] = useState({ isOnline: false, message: 'Checking API status...' });
 
   // Ref for file input
   const fileInputRef = useRef(null);
 
-  // Check API connection on mount
-  useEffect(() => {
-    const checkApiConnectionStatus = async () => {
-      const result = await checkApiConnection();
-      setApiStatus({
-        isOnline: result.success,
-        message: result.message,
-      });
-    };
-    checkApiConnectionStatus();
-  }, []);
-
-  // Get service based on report type
-  const getService = () => {
-    const services = {
-      excel: AttritionAnalysisService,
-      html: HtmlReportService,
-      docs: ReportService,
-    };
-    return services[reportType] || ReportService;
+  // Services mapping in specified order: docs, excel, html, slicer, predictive
+  const services = {
+    docs: DocsReportService,
+    excel: ExcelReportService,
+    html: HtmlReportService,
+    slicer: SlicerReportService,
+    predictive: PredictiveService,
   };
 
-  // File handling
-  const handleFiles = async (files) => {
-    if (!apiStatus.isOnline) {
-      setError("Cannot upload files while API is offline.");
+  // Service display names in specified order
+  const serviceNames = {
+    docs: 'Docs Report',
+    excel: 'Excel Report',
+    html: 'HTML Report',
+    slicer: 'Slicer Report',
+    predictive: 'Predictive Analytics',
+  };
+
+  // Check API and services health on mount
+  useEffect(() => {
+    const checkHealth = async () => {
+      const result = await checkAllServicesHealth();
+      setApiStatus({
+        isOnline: result.main.success,
+        message: result.main.success
+          ? 'API connection established'
+          : result.main.message,
+      });
+    };
+    checkHealth();
+  }, []);
+
+  // File validation
+  const validateFile = (file) => {
+    if (!file) return 'No file selected';
+    const validExtension = '.xlsx';
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    if (fileExtension !== validExtension) {
+      return 'Only .xlsx files are supported';
+    }
+    if (selectedService === 'predictive') {
+      return PredictiveService.validateFileFormat(file)
+        ? null
+        : 'Invalid file format for Predictive Analytics';
+    }
+    return null;
+  };
+
+  // Handle file selection
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validationError = validateFile(file);
+    if (validationError) {
+      setFileError(validationError);
+      setSelectedFile(null);
+      return;
+    }
+
+    setFileError(null);
+    setSelectedFile({
+      name: file.name,
+      size: file.size,
+      formattedSize: PredictiveService.formatFileSize(file.size),
+      fileObject: file,
+      status: 'pending',
+    });
+    setGeneratedReport(null);
+  };
+
+  // Handle file upload and report generation
+  const handleGenerateReport = async () => {
+    if (!selectedFile || !apiStatus.isOnline) {
+      setError(
+        !selectedFile
+          ? 'Please select a file'
+          : 'API is offline. Please try again later.'
+      );
       return;
     }
 
     setError(null);
-    setFileErrors([]);
-
-    const validationResult = validateFiles(files);
-    if (!validationResult.isValid) {
-      setFileErrors(validationResult.errors);
-      if (validationResult.validFiles.length === 0) return;
-    }
-
-    const validFiles = validationResult.validFiles;
-    const newFiles = validFiles.map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      formattedSize: formatFileSize(file.size),
-      status: "pending",
-    }));
-
-    setSelectedFiles((prev) => [...prev, ...newFiles]);
     setIsUploading(true);
     setUploadProgress(0);
 
     try {
-      const service = getService();
-      const response = await service.uploadFile(validFiles[0], setUploadProgress);
-      setFileId(response.file_id);
+      const service = services[selectedService];
+      let response;
 
-      setSelectedFiles((prev) =>
-        prev.map((file, index) =>
-          index >= prev.length - validFiles.length
-            ? { ...file, status: "uploaded", id: response.file_id }
-            : file
-        )
-      );
+      if (selectedService === 'predictive') {
+        // PredictiveService handles upload and generation in one call
+        response = await service.generateReport(
+          selectedFile.fileObject,
+          setUploadProgress
+        );
+        const filename = response.download_url.split('/').pop();
+        setGeneratedReport({
+          name: filename,
+          url: response.download_url,
+          date: new Date().toLocaleDateString(),
+          type: 'word',
+        });
+      } else {
+        // Other services: upload file first, then generate report
+        const uploadResponse = await service.uploadFile(
+          selectedFile.fileObject,
+          setUploadProgress
+        );
+        response = await service.generateReport(uploadResponse.file_id);
+        const filename = response.filename || `Report_${Date.now()}.docx`;
+        setGeneratedReport({
+          name: filename,
+          url: service.getDownloadUrl(uploadResponse.file_id, filename),
+          viewUrl:
+            selectedService === 'html' || selectedService === 'slicer'
+              ? service.getViewUrl(uploadResponse.file_id, filename)
+              : null,
+          date: new Date().toLocaleDateString(),
+          type: selectedService === 'excel' ? 'excel' : 'word',
+          fileId: uploadResponse.file_id,
+        });
+      }
+
+      setSelectedFile((prev) => ({ ...prev, status: 'processed' }));
     } catch (err) {
-      console.error("File upload error:", err);
-      setError(err.message || "Failed to upload files.");
-      setSelectedFiles((prev) =>
-        prev.map((file, index) =>
-          index >= prev.length - validFiles.length ? { ...file, status: "failed" } : file
-        )
-      );
+      console.error('Report generation error:', err);
+      setError(err.message || 'Failed to generate report');
+      setSelectedFile((prev) => ({ ...prev, status: 'failed' }));
     } finally {
       setIsUploading(false);
       setUploadProgress(100);
     }
   };
 
-  // Drag and drop handlers
+  // Handle download
+  const handleDownload = () => {
+    if (!generatedReport) {
+      setError('No report available to download');
+      return;
+    }
+
+    setError(null);
+    try {
+      const service = services[selectedService];
+      if (selectedService === 'predictive') {
+        service.downloadReport(generatedReport.name);
+      } else {
+        service.downloadReport(generatedReport.fileId, generatedReport.name);
+      }
+    } catch (err) {
+      console.error('Download error:', err);
+      setError(err.message || 'Failed to download report');
+    }
+  };
+
+  // Handle view (for HTML and Slicer)
+  const handleView = () => {
+    if (!generatedReport?.viewUrl) {
+      setError('Viewing is not supported for this report type');
+      return;
+    }
+
+    setError(null);
+    try {
+      const service = services[selectedService];
+      service.viewReport(generatedReport.fileId, generatedReport.name);
+    } catch (err) {
+      console.error('View error:', err);
+      setError(err.message || 'Failed to view report');
+    }
+  };
+
+  // Handle drag and drop
   const handleDragOver = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.add("drag-over");
+    e.currentTarget.classList.add('drag-over');
   };
 
   const handleDragLeave = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.remove("drag-over");
+    e.currentTarget.classList.remove('drag-over');
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.remove("drag-over");
-    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
-  };
-
-  const handleFileSelect = (e) => {
-    if (e.target.files?.length) {
-      handleFiles(e.target.files);
-      e.target.value = null; // Reset file input to allow re-selection of the same file
-    }
-  };
-
-  // Debounced click handler to prevent multiple dialogs
-  const handleBrowseClick = useCallback((e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    if (!isClicking && fileInputRef.current) {
-      setIsClicking(true);
-      fileInputRef.current.click();
-      // Reset clicking state after a short delay
-      setTimeout(() => setIsClicking(false), 500);
-    }
-  }, [isClicking]);
-
-  // Report generation
-  const handleGenerateClick = async () => {
-    if (!fileId || !selectedFiles.length) {
-      setError("Please upload a file before generating a report.");
-      return;
-    }
-
-    setIsGenerating(true);
-    setError(null);
-
-    try {
-      const service = getService();
-      const response = await service.generateReport(fileId);
-      const reportExtension = { docs: ".docx", excel: ".xlsx", html: ".html" }[reportType];
-
-      setGeneratedReport({
-        id: fileId,
-        name: response.report_file || `Attrition_Report${reportExtension}`,
-        size: "Unknown",
-        date: new Date().toLocaleDateString(),
-        url: service.getDownloadUrl(fileId, response.report_file),
-        type: reportType,
-        ...(reportType === "html" && { viewUrl: service.getViewUrl(fileId, response.report_file) }),
-      });
-    } catch (err) {
-      console.error("Report generation error:", err);
-      setError(err.message || "Failed to generate report.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // Download report
-  const handleDownloadClick = async () => {
-    if (!generatedReport) {
-      setError("No report available to download.");
-      return;
-    }
-
-    setError(null);
-
-    try {
-      const service = getService();
-      if (generatedReport.url && (reportType === "html" || reportType === "excel")) {
-        service.downloadReport(generatedReport.id, generatedReport.name);
-      } else {
-        window.open(generatedReport.url, "_blank");
+    e.currentTarget.classList.remove('drag-over');
+    if (e.dataTransfer.files?.length) {
+      const file = e.dataTransfer.files[0];
+      const validationError = validateFile(file);
+      if (validationError) {
+        setFileError(validationError);
+        setSelectedFile(null);
+        return;
       }
-    } catch (err) {
-      console.error("Report download error:", err);
-      setError(err.message || "Failed to download report.");
+      setFileError(null);
+      setSelectedFile({
+        name: file.name,
+        size: file.size,
+        formattedSize: PredictiveService.formatFileSize(file.size),
+        fileObject: file,
+        status: 'pending',
+      });
+      setGeneratedReport(null);
     }
   };
 
-  // View HTML report
-  const handleViewClick = () => {
-    if (generatedReport?.viewUrl && reportType === "html") {
-      window.open(generatedReport.viewUrl, "_blank");
-    }
+  // Trigger file input click
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
   };
 
-  // Remove file
-  const handleRemoveFile = (index) => {
-    setSelectedFiles((files) => files.filter((_, i) => i !== index));
-    if (selectedFiles[index].id === fileId) setFileId(null);
-  };
-
-  // Change report type
-  const handleReportTypeChange = (type) => {
-    if (selectedFiles.length && !window.confirm("Changing report type will clear uploaded files. Continue?")) {
-      return;
-    }
-    setReportType(type);
-    setSelectedFiles([]);
-    setFileId(null);
+  // Clear file
+  const handleClearFile = () => {
+    setSelectedFile(null);
     setGeneratedReport(null);
+    setFileError(null);
     setError(null);
-    setFileErrors([]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
-    <div className="unified-tool-container">
-      <h1>Analysis & Reporting Tool</h1>
-      <p>Upload your files and generate insightful analysis and reports for any domain.</p>
+    <div className="analysis-tool-container">
+      <h1>Analysis Tool</h1>
+      <p>Upload an Excel file to generate reports using various analytics services.</p>
 
+      {/* API Status */}
       {!apiStatus.isOnline && (
         <div className="api-status-warning">
           <svg
@@ -244,238 +269,203 @@ const AnalaysisTool = () => {
         </div>
       )}
 
-      <div className="report-type-selector">
-        <div className="selector-label">Select Report Format:</div>
-        <div className="selector-options">
-          {["docs", "excel", "html"].map((type) => (
-            <button
-              key={type}
-              className={`selector-option ${reportType === type ? "active" : ""}`}
-              onClick={() => handleReportTypeChange(type)}
+      {/* Service Selection */}
+      <div className="service-selection">
+        <label htmlFor="service-select">Select Service:</label>
+        <select
+          id="service-select"
+          value={selectedService}
+          onChange={(e) => {
+            setSelectedService(e.target.value);
+            setSelectedFile(null);
+            setGeneratedReport(null);
+            setError(null);
+            setFileError(null);
+          }}
+          disabled={isUploading}
+        >
+          {Object.keys(services).map((key) => (
+            <option key={key} value={key}>
+              {serviceNames[key]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* File Input Section */}
+      <div className="file-input-section">
+        <div
+          className="file-dropzone"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleBrowseClick}
+        >
+          <div className="dropzone-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+              <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                stroke="#2D3748"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-              >
-                {type === "html" ? (
-                  <>
-                    <polyline points="14 2 14 8 20 8" />
-                    <path d="M20 12H4" />
-                    <path d="M4 18h16" />
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  </>
-                ) : (
-                  <>
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                    <polyline points="10 9 9 9 8 9" />
-                  </>
-                )}
-              </svg>
-              {type === "docs" ? "Word (.docx)" : type === "excel" ? "Excel (.xlsx)" : "HTML (.html)"}
-            </button>
-          ))}
+              />
+              <path
+                d="M12 16V8"
+                stroke="#2D3748"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M9 11L12 8L15 11"
+                stroke="#2D3748"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <p className="dropzone-text">Drag & drop or click to select Excel file</p>
+          <p className="dropzone-subtext">Excel format (.xlsx) required</p>
+          <input
+            type="file"
+            className="file-input"
+            onChange={handleFileSelect}
+            accept=".xlsx"
+            disabled={isUploading || !apiStatus.isOnline}
+            ref={fileInputRef}
+          />
         </div>
       </div>
 
-      <div className="platform-modules">
-        <section className="data-module">
-          <div className="module-header">
-            <h3>Data Input — Output ({reportType.toUpperCase()} Format)</h3>
-            <p className="module-description">Upload Excel file containing separation data</p>
-          </div>
+      {/* File Errors */}
+      {fileError && (
+        <div className="validation-alert">
+          <div className="alert-header">File Validation Error:</div>
+          <p>{fileError}</p>
+        </div>
+      )}
 
-          <div className="file-input-section">
-            <div
-              className="file-dropzone"
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={handleBrowseClick}
+      {/* System Errors */}
+      {error && <div className="system-alert">{error}</div>}
+
+      {/* Selected File */}
+      {selectedFile && (
+        <div className="selected-files-panel">
+          <div className="panel-header">Selected File</div>
+          {isUploading && (
+            <div className="upload-progress-indicator">
+              <div className="progress-bar">
+                <div
+                  className="progress-completed"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <div className="progress-percentage">{uploadProgress}% Complete</div>
+            </div>
+          )}
+          <table className="files-table">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className={selectedFile.status}>
+                <td className="file-name">{selectedFile.name}</td>
+                <td className="file-size">{selectedFile.formattedSize}</td>
+                <td className="file-status">
+                  <span className={`status-${selectedFile.status}`}>
+                    {selectedFile.status.charAt(0).toUpperCase() +
+                      selectedFile.status.slice(1)}
+                  </span>
+                </td>
+                <td className="file-action">
+                  <button
+                    className="remove-file-btn"
+                    onClick={handleClearFile}
+                    disabled={isUploading}
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Control Panel */}
+      <div className="control-panel">
+        <div className="control-actions">
+          <button
+            className="control-btn generate-btn"
+            onClick={handleGenerateReport}
+            disabled={isUploading || !selectedFile || !apiStatus.isOnline}
+          >
+            Generate Report
+          </button>
+          <button
+            className={`control-btn download-btn ${
+              !generatedReport ? 'disabled' : ''
+            }`}
+            onClick={handleDownload}
+            disabled={!generatedReport}
+          >
+            Download Report
+          </button>
+          {(selectedService === 'html' || selectedService === 'slicer') && (
+            <button
+              className={`control-btn view-btn ${
+                !generatedReport?.viewUrl ? 'disabled' : ''
+              }`}
+              onClick={handleView}
+              disabled={!generatedReport?.viewUrl}
             >
-              <div className="dropzone-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                    stroke="#2D3748"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12 16V8"
-                    stroke="#2D3748"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M9 11L12 8L15 11"
-                    stroke="#2D3748"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <p className="dropzone-text">Drag & drop or click to select Excel file</p>
-              <p className="dropzone-subtext">Excel format (.xlsx) required</p>
-              <input
-                type="file"
-                className="file-input"
-                onChange={handleFileSelect}
-                accept=".xlsx"
-                disabled={isUploading || !apiStatus.isOnline}
-                ref={fileInputRef}
-              />
-            </div>
-          </div>
-
-          {fileErrors.length > 0 && (
-            <div className="validation-alert">
-              <div className="alert-header">File Validation Errors:</div>
-              <ul className="alert-list">
-                {fileErrors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
-            </div>
+              View Report
+            </button>
           )}
+        </div>
 
-          {error && <div className="system-alert">{error}</div>}
-
-          {selectedFiles.length > 0 && (
-            <div className="selected-files-panel">
-              <div className="panel-header">Selected Files</div>
-              {isUploading && (
-                <div className="upload-progress-indicator">
-                  <div className="progress-bar">
-                    <div
-                      className="progress-completed"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
-                  </div>
-                  <div className="progress-percentage">{uploadProgress}% Complete</div>
-                </div>
-              )}
-              <table className="files-table">
-                <thead>
-                  <tr>
-                    <th>Filename</th>
-                    <th>Size</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedFiles.map((file, index) => (
-                    <tr key={index} className={file.status}>
-                      <td className="file-name">{file.name}</td>
-                      <td className="file-size">{file.formattedSize}</td>
-                      <td className="file-status">
-                        <span className={`status-${file.status}`}>
-                          {file.status.charAt(0).toUpperCase() + file.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="file-action">
-                        <button
-                          className="remove-file-btn"
-                          onClick={() => handleRemoveFile(index)}
-                          disabled={isUploading}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-
-        <section className="analysis-module">
-          <div className="module-header">
-            <h3>Analysis Controls</h3>
-            <p className="module-description">Generate and download reports</p>
-          </div>
-
-          <div className="control-panel">
-            <div className="control-actions">
-              <button
-                className={`control-btn analyze-btn ${isGenerating ? "processing" : ""} ${
-                  !fileId || !apiStatus.isOnline ? "disabled" : ""
-                }`}
-                onClick={handleGenerateClick}
-                disabled={isGenerating || !fileId || !apiStatus.isOnline}
-              >
-                {isGenerating ? "Processing..." : "Generate Report"}
-              </button>
-
-              <button
-                className={`control-btn retrieve-btn ${!generatedReport ? "disabled" : ""}`}
-                onClick={handleDownloadClick}
-                disabled={!generatedReport}
-              >
-                Download Report
-              </button>
-
-              {reportType === "html" && generatedReport && (
-                <button className="control-btn view-btn" onClick={handleViewClick}>
-                  View Report
-                </button>
-              )}
-            </div>
-
-            {generatedReport && (
-              <div className="analysis-complete">
-                <div className="complete-header">Analysis Summary</div>
-                <div className="report-metadata">
-                  <div className="metadata-item">
-                    <span className="metadata-label">Document:</span>
-                    <span className="metadata-value">{generatedReport.name}</span>
-                  </div>
-                  <div className="metadata-item">
-                    <span className="metadata-label">Format:</span>
-                    <span className="metadata-value">
-                      {reportType === "docs"
-                        ? "Microsoft Word"
-                        : reportType === "excel"
-                        ? "Microsoft Excel"
-                        : "HTML Webpage"}
-                    </span>
-                  </div>
-                  <div className="metadata-item">
-                    <span className="metadata-label">Generated:</span>
-                    <span className="metadata-value">{generatedReport.date}</span>
-                  </div>
-                  <div className="metadata-item">
-                    <span className="metadata-label">Status:</span>
-                    <span className="metadata-value status-complete">Complete</span>
-                  </div>
-                </div>
+        {/* Report Summary */}
+        {generatedReport && (
+          <div className="analysis-complete">
+            <div className="complete-header">Report Summary</div>
+            <div className="report-metadata">
+              <div className="metadata-item">
+                <span className="metadata-label">Document:</span>
+                <span className="metadata-value">{generatedReport.name}</span>
               </div>
-            )}
+              <div className="metadata-item">
+                <span className="metadata-label">Format:</span>
+                <span className="metadata-value">
+                  {generatedReport.type === 'excel' ? 'Excel' : 'Microsoft Word'}
+                </span>
+              </div>
+              <div className="metadata-item">
+                <span className="metadata-label">Generated:</span>
+                <span className="metadata-value">{generatedReport.date}</span>
+              </div>
+              <div className="metadata-item">
+                <span className="metadata-label">Status:</span>
+                <span className="metadata-value status-complete">Complete</span>
+              </div>
+            </div>
           </div>
-        </section>
+        )}
       </div>
     </div>
   );
 };
 
-export default AnalaysisTool;
+export default AnalysisTool;

@@ -1,10 +1,9 @@
-// components/Header/Header.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "../styles/Header.css";
 import logoImg from "../image/logo.svg";
 import WordPressAuthService from "../wordPress/wordPressAuthService";
-import authService from "../service/authService";
+import authService from "../service/AuthService";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,10 +20,15 @@ const Header = () => {
   const mobileMenuRef = useRef(null);
   const location = useLocation();
 
-  // Check if current path is blog-related
-  const isBlogRelated = location.pathname.startsWith('/blog') || 
+  // Enhanced blog context detection
+  const isBlogContext = location.pathname.startsWith('/blog') || 
                        location.pathname.startsWith('/admin') ||
                        location.pathname === '/wplogin';
+
+  // Check if we're specifically in a blog management area (not just viewing)
+  const isBlogManagementContext = location.pathname.startsWith('/blog/create') ||
+                                 location.pathname.startsWith('/blog/edit') ||
+                                 location.pathname.startsWith('/admin');
 
   // Check authentication statuses
   useEffect(() => {
@@ -88,11 +92,143 @@ const Header = () => {
     setActiveDropdown(null);
   };
 
-  // Determine which auth system to use based on context
-  const useWordPressAuth = isBlogRelated;
-  const contextIsLoggedIn = useWordPressAuth ? isWpLoggedIn : isLoggedIn;
-  const contextUser = useWordPressAuth ? wpCurrentUser : currentUser;
-  const contextLogout = useWordPressAuth ? handleWpLogout : handleRegularLogout;
+  // WordPress Login Button Component
+  const WordPressLoginButton = () => (
+    <NavLink 
+      to="/wplogin" 
+      className="btn btn-outline"
+      onClick={handleNavLinkClick}
+    >
+      WP Login
+    </NavLink>
+  );
+
+  // WordPress User Dropdown Component
+  const WordPressUserDropdown = () => (
+    <li className={`nav-item dropdown ${activeDropdown === 1 ? "open" : ""}`}>
+      <span 
+        className="nav-link dropdown-toggle"
+        onClick={() => toggleDropdown(1)}
+      >
+        <span className="user-avatar">
+          <img 
+            src={wpCurrentUser?.avatar || '/default-avatar.png'} 
+            alt={wpCurrentUser?.displayName || wpCurrentUser?.name || 'User'}
+            style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }}
+          />
+          {wpCurrentUser?.displayName || wpCurrentUser?.name || 'User'}
+          <span className="auth-indicator" title="WordPress Account">WP</span>
+        </span>
+      </span>
+      <ul className="dropdown-menu">
+        <li>
+          <NavLink to="/admin/profile" className="dropdown-item" onClick={handleNavLinkClick}>
+            Profile
+          </NavLink>
+        </li>
+        
+        {/* Admin/Editor specific options */}
+        {(wpCurrentUser?.roles?.includes('administrator') || 
+          wpCurrentUser?.roles?.includes('editor') ||
+          Object.keys(wpCurrentUser?.capabilities || {}).includes('edit_users')) && (
+          <li>
+            <NavLink to="/admin/users" className="dropdown-item" onClick={handleNavLinkClick}>
+              User Management
+            </NavLink>
+          </li>
+        )}
+        
+        <li>
+          <NavLink to="/blog/create" className="dropdown-item" onClick={handleNavLinkClick}>
+            Create Post
+          </NavLink>
+        </li>
+        
+        {/* Show edit option only when viewing a specific blog post */}
+        {location.pathname.startsWith('/blog/') && 
+         !location.pathname.startsWith('/blog/create') && 
+         !location.pathname.startsWith('/blog/edit') && 
+         location.pathname !== '/blog' && (
+          <li>
+            <NavLink 
+              to={`/blog/edit/${location.pathname.split('/').pop()}`} 
+              className="dropdown-item" 
+              onClick={handleNavLinkClick}
+            >
+              Edit This Post
+            </NavLink>
+          </li>
+        )}
+
+        <li><hr className="dropdown-divider" /></li>
+
+        <li>
+          <button 
+            onClick={handleWpLogout}
+            className="dropdown-item logout-btn"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              width: '100%', 
+              textAlign: 'left',
+              color: 'inherit',
+              cursor: 'pointer'
+            }}
+          >
+            Logout (WordPress)
+          </button>
+        </li>
+      </ul>
+    </li>
+  );
+
+  // Regular User Dropdown Component
+  const RegularUserDropdown = () => (
+    <li className={`nav-item dropdown ${activeDropdown === 1 ? "open" : ""}`}>
+      <span 
+        className="nav-link dropdown-toggle"
+        onClick={() => toggleDropdown(1)}
+      >
+        <span className="user-avatar">
+          <img 
+            src={currentUser?.avatar || '/default-avatar.png'} 
+            alt={currentUser?.fullName || currentUser?.name || 'User'}
+            style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }}
+          />
+          {currentUser?.fullName || currentUser?.name || 'User'}
+        </span>
+      </span>
+      <ul className="dropdown-menu">
+        <li>
+          <NavLink to="/dashboard" className="dropdown-item" onClick={handleNavLinkClick}>
+            Dashboard
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/settings" className="dropdown-item" onClick={handleNavLinkClick}>
+            Settings
+          </NavLink>
+        </li>
+        <li><hr className="dropdown-divider" /></li>
+        <li>
+          <button 
+            onClick={handleRegularLogout}
+            className="dropdown-item logout-btn"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              width: '100%', 
+              textAlign: 'left',
+              color: 'inherit',
+              cursor: 'pointer'
+            }}
+          >
+            Logout
+          </button>
+        </li>
+      </ul>
+    </li>
+  );
 
   return (
     <header className="header header-fullwidth">
@@ -135,7 +271,7 @@ const Header = () => {
                   className="nav-link dropdown-toggle"
                   onClick={() => toggleDropdown(0)}
                 >
-                  Tools
+                  Product
                 </span>
                 <ul className="dropdown-menu">
                   <li>
@@ -158,17 +294,12 @@ const Header = () => {
                       Slicer analysis tool
                     </NavLink>
                   </li>
+                   <li>
+                    <NavLink to="/tool/predictive-analysis" className="dropdown-item" onClick={handleNavLinkClick}>
+                      Predictive analysis tool
+                    </NavLink>
+                  </li>
                 </ul>
-              </li>
-              
-              <li className="nav-item">
-                <NavLink
-                  to="/predictive-analysis"
-                  className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                  onClick={handleNavLinkClick}
-                >
-                  Predictive Analysis
-                </NavLink>
               </li>
               
               <li className="nav-item">
@@ -180,124 +311,36 @@ const Header = () => {
                   Blog
                 </NavLink>
               </li>
-                 
-              <li className="nav-item">
-                <NavLink
-                  to="/documentation"
-                  className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                  onClick={handleNavLinkClick}
-                >
-                  Documentation
-                </NavLink>
-              </li>
 
-              {/* Smart Authentication Section */}
-              {contextIsLoggedIn && (
-                <li className={`nav-item dropdown ${activeDropdown === 1 ? "open" : ""}`}>
-                  <span 
-                    className="nav-link dropdown-toggle"
-                    onClick={() => toggleDropdown(1)}
-                  >
-                    <span className="user-avatar">
-                      <img 
-                        src={contextUser?.avatar || '/default-avatar.png'} 
-                        alt={contextUser?.displayName || contextUser?.name || contextUser?.fullName || 'User'}
-                        style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }}
-                      />
-                      {contextUser?.displayName || contextUser?.name || contextUser?.fullName || 'User'}
-                      {useWordPressAuth && (
-                        <span className="auth-indicator" title="WordPress Account">WP</span>
-                      )}
-                    </span>
-                  </span>
-                  <ul className="dropdown-menu">
-                    {/* Context-aware header */}
-                
-                    {/* WordPress-specific options (when in blog context) */}
-                    {useWordPressAuth && isWpLoggedIn && (
-                      <>
-                        <li>
-                          <NavLink to="/admin/profile" className="dropdown-item" onClick={handleNavLinkClick}>
-                            WP Admin Profile
-                          </NavLink>
-                        </li>
-                        {(wpCurrentUser?.roles?.includes('administrator') || 
-                          wpCurrentUser?.roles?.includes('editor') ||
-                          Object.keys(wpCurrentUser?.capabilities || {}).includes('edit_users')) && (
-                          <li>
-                            <NavLink to="/admin/users" className="dropdown-item" onClick={handleNavLinkClick}>
-                              User Management
-                            </NavLink>
-                          </li>
-                        )}
-                        <li>
-                          <NavLink to="/blog/create" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Create Post
-                          </NavLink>
-                        </li>
-                        <li>
-                          <NavLink to="/blog/edit" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Edit Posts
-                          </NavLink>
-                        </li>
-                      </>
-                    )}
-
-                    {/* Regular app options (when not in blog context) */}
-                    {!useWordPressAuth && isLoggedIn && (
-                      <>
-                        <li>
-                          <NavLink to="/dashboard" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Dashboard
-                          </NavLink>
-                        </li>
-                        <li>
-                          <NavLink to="/settings" className="dropdown-item" onClick={handleNavLinkClick}>
-                            Settings
-                          </NavLink>
-                        </li>
-                      </>
-                    )}
-
-                    <li><hr className="dropdown-divider" /></li>
-
-                    <li>
-                      <button 
-                        onClick={contextLogout}
-                        className="dropdown-item logout-btn"
-                        style={{ 
-                          background: 'none', 
-                          border: 'none', 
-                          width: '100%', 
-                          textAlign: 'left',
-                          color: 'inherit',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Logout {useWordPressAuth ? '(WordPress)' : ''}
-                      </button>
-                    </li>
-                  </ul>
+              {/* CONDITIONAL USER INTERFACE LOGIC */}
+              
+              {/* WordPress Context: Show WP login/user based on auth status */}
+              {isBlogContext && !isWpLoggedIn && (
+                <li className="nav-item wp-login-item">
+                  <WordPressLoginButton />
                 </li>
               )}
+              
+              {isBlogContext && isWpLoggedIn && (
+                <WordPressUserDropdown />
+              )}
 
-              {/* Regular Login - Only show when NOT in blog areas and NOT logged in */}
-              {!useWordPressAuth && !isLoggedIn && (
-                <li className="nav-item">
-                  <NavLink
-                    to="/login"
-                    className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                    onClick={handleNavLinkClick}
-                  >
-                    Login
-                  </NavLink>
-                </li>
+              {/* Regular App Context: Show regular user menu when not in blog areas */}
+              {!isBlogContext && isLoggedIn && (
+                <RegularUserDropdown />
               )}
             </ul>
 
-            {/* Get Started Button - Only show when NOT in blog areas and NOT logged in */}
-            {!useWordPressAuth && !isLoggedIn && (
+            {/* Header Actions - Only show for main app when NOT logged in and NOT in blog context */}
+            {!isBlogContext && !isLoggedIn && (
               <div className="header-actions">
+                <NavLink 
+                  to="/book-demo" 
+                  className="btn btn-secondary"
+                  onClick={handleNavLinkClick}
+                >
+                  Book a Demo
+                </NavLink>
                 <NavLink 
                   to="/signup" 
                   className="btn btn-primary"

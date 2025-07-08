@@ -1,29 +1,30 @@
-// src/service/PredictiveService.jsx
 import axios from "axios";
 
 class PredictiveService {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL;
+    this.baseURL = process.env.REACT_APP_API_URL || "http://localhost:8000";
     this.api = axios.create({
       baseURL: this.baseURL,
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    console.log(`PredictiveService initialized in ${process.env.NODE_ENV} mode with URL: ${this.baseURL}`);
   }
 
   /**
-   * Upload file for predictive analytics
+   * Upload file and generate predictive report
    * @param {File} file - The file to upload
    * @param {Function} progressCallback - Callback for upload progress
-   * @returns {Promise} Promise with upload response data
+   * @returns {Promise} Promise with report generation response
    */
-  async uploadFile(file, progressCallback = null) {
+  async generateReport(file, progressCallback = null) {
     try {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await this.api.post("/upload-predictive/", formData, {
+      const response = await this.api.post("/generate-report/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -39,123 +40,152 @@ class PredictiveService {
 
       return response.data;
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("Error generating report:", error);
       throw this._handleError(error);
     }
   }
 
   /**
-   * Generate predictive report (Word document)
-   * @param {string} fileId - The ID of the uploaded file
-   * @returns {Promise} Promise with report generation response
-   */
-  async generateReport(fileId) {
-    try {
-      const response = await this.api.post(`/generate-predictive-report/?file_id=${fileId}`, null,{ timeout: 60000 });
-      return response.data;
-    } catch (error) {
-      console.error("Error generating predictive report:", error);
-      throw this._handleError(error);
-    }
-  }
-
-  /**
-   * Generate predictive HTML report
-   * @param {string} fileId - The ID of the uploaded file
-   * @returns {Promise} Promise with HTML report generation response
-   */
-  async generateHtmlReport(fileId) {
-    try {
-      const response = await this.api.post(`/generate-predictive-html/?file_id=${fileId}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error generating predictive HTML report:", error);
-      throw this._handleError(error);
-    }
-  }
-
-  /**
-   * Get download URL for a predictive report (Word document)
-   * @param {string} fileId - The ID of the report file
+   * Get download URL for a predictive report
    * @param {string} filename - The name of the report file
    * @returns {string} Download URL
    */
-  getDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download-predictive/?file_id=${fileId}&filename=${filename}`;
+  getDownloadUrl(filename) {
+    return `${this.baseURL}/download/${filename}`;
   }
 
   /**
-   * Get download URL for a predictive HTML report
-   * @param {string} fileId - The ID of the report file
-   * @param {string} filename - The name of the report file
-   * @returns {string} Download URL
-   */
-  getHtmlDownloadUrl(fileId, filename) {
-    return `${this.baseURL}/download-predictive-html/${fileId}/${filename}`;
-  }
-
-  /**
-   * Get view URL for a predictive HTML report
-   * @param {string} fileId - The ID of the report file
-   * @param {string} filename - The name of the report file
-   * @returns {string} View URL
-   */
-  getHtmlViewUrl(fileId, filename) {
-    return `${this.baseURL}/view-predictive/${fileId}/${filename}`;
-  }
-
-  /**
-   * Download predictive report (Word document)
-   * @param {string} fileId - The ID of the report file
+   * Download predictive report
    * @param {string} filename - The name of the report file
    */
-  downloadReport(fileId, filename) {
-    const url = this.getDownloadUrl(fileId, filename);
-    window.open(url, "_blank");
+  downloadReport(filename) {
+    const url = this.getDownloadUrl(filename);
+    this._downloadFile(url, filename);
+  }
+
+  // /**
+  //  * Check health of predictive analytics service
+  //  * @returns {Promise} Promise with health check response
+  //  */
+  // async checkHealth() {
+  //   try {
+  //     const response = await this.api.get("/api/v1/health-predictive");
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Error checking predictive service health:", error);
+  //     throw this._handleError(error);
+  //   }
+  // }
+
+  /**
+   * Get supported file formats
+   * @returns {Array} Array of supported file extensions
+   */
+  getSupportedFormats() {
+    return ['.xlsx'];
   }
 
   /**
-   * Download predictive HTML report
-   * @param {string} fileId - The ID of the report file
-   * @param {string} filename - The name of the report file
+   * Validate file format
+   * @param {File} file - The file to validate
+   * @returns {boolean} True if file format is supported
    */
-  downloadHtmlReport(fileId, filename) {
-    const url = this.getHtmlDownloadUrl(fileId, filename);
-    window.open(url, "_blank");
+  validateFileFormat(file) {
+    const supportedFormats = this.getSupportedFormats();
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    return supportedFormats.includes(fileExtension);
   }
 
   /**
-   * Check health of predictive analytics service
-   * @returns {Promise} Promise with health check response
+   * Get required columns for predictive analysis
+   * @returns {Array} Array of required column names
    */
-  async healthCheck() {
-    try {
-      const response = await this.api.get("/health-predictive");
-      return response.data;
-    } catch (error) {
-      console.error("Error checking predictive service health:", error);
-      throw this._handleError(error);
-    }
+  getRequiredColumns() {
+    return [
+      'Employee Name',
+      'Gender', 
+      'Function',
+      'Job Location',
+      'Grade',
+      'Action Date',
+      'Date of Joining',
+      'Action Type'
+    ];
+  }
+
+  /**
+   * Format file size for display
+   * @param {number} bytes - File size in bytes
+   * @returns {string} Formatted file size
+   */
+  formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  /**
+   * Generic file download helper
+   * @param {string} url - Download URL
+   * @param {string} filename - Suggested filename
+   * @private
+   */
+  _downloadFile(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   /**
    * Handle API errors
    * @param {Error} error - The error object
    * @returns {Error} Formatted error object
+   * @private
    */
   _handleError(error) {
     let errorMessage = "An unknown error occurred";
+    let errorCode = null;
 
     if (error.response) {
-      const serverError = error.response.data.detail || error.response.data.message;
+      const serverError = error.response.data?.detail || error.response.data?.message;
       errorMessage = serverError || `Server error: ${error.response.status}`;
+      errorCode = error.response.status;
+      
+      switch (error.response.status) {
+        case 400:
+          errorMessage = serverError || "Invalid request. Please check your file format.";
+          break;
+        case 404:
+          errorMessage = "Report not found. Please generate the report first.";
+          break;
+        case 413:
+          errorMessage = "File too large. Please upload a smaller file.";
+          break;
+        case 500:
+          errorMessage = "Server error. Please try again later.";
+          break;
+        case 503:
+          errorMessage = "Service temporarily unavailable. Please try again later.";
+          break;
+      }
     } else if (error.request) {
-      errorMessage = "No response from server. Please check your connection.";
+      errorMessage = "No response from server. Please check your connection and try again.";
+      errorCode = 'NETWORK_ERROR';
     } else {
       errorMessage = error.message;
     }
 
-    return new Error(errorMessage);
+    const customError = new Error(errorMessage);
+    customError.code = errorCode;
+    customError.originalError = error;
+    
+    return customError;
   }
 }
 

@@ -1,7 +1,6 @@
 /* src/styles/BlogMain.css */
-@import "./color.css";
+@import "./Color.css";
 
-/* General container */
 .blog-management {
   max-width: 1200px;
   margin: 0 auto;
@@ -10,7 +9,6 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Blog management header */
 .blog-management-header {
   display: flex;
   justify-content: space-between;
@@ -29,14 +27,14 @@
 
 .add-post-button {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
+  padding: 10px 20px;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 20px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s;
   white-space: nowrap;
 }
 
@@ -44,12 +42,10 @@
   background-color: var(--primary-blue-dark);
 }
 
-/* Enhanced blog container */
 .enhanced-blog-container {
   max-width: 100%;
 }
 
-/* Blog header */
 .enhanced-blog-header {
   margin-bottom: 3rem;
   text-align: center;
@@ -71,7 +67,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Search and filter */
 .search-filter-container {
   display: flex;
   flex-direction: column;
@@ -109,29 +104,28 @@
 }
 
 .category-btn {
+  padding: 6px 12px;
   background-color: var(--bg-off-white);
-  color: var(--neutral-medium);
-  border: 1px solid var(--border-light);
-  padding: 0.5rem 1rem;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  color: var(--neutral-dark);
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 14px;
+  margin: 0 4px;
+  transition: all 0.3s;
   white-space: nowrap;
 }
 
 .category-btn:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .category-btn.active {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
-  border-color: var(--primary-blue);
+  color: var(--neutral-dark);
 }
 
-/* Featured post */
 .enhanced-featured-post {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -172,7 +166,7 @@
 
 .featured-label {
   background-color: var(--primary-slate);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -220,7 +214,7 @@
 
 .category-tag:hover {
   background-color: var(--primary-slate-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .post-author {
@@ -250,7 +244,7 @@
 
 .read-article-btn {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 20px;
@@ -265,14 +259,12 @@
   background-color: var(--primary-blue-dark);
 }
 
-/* Blog layout */
 .enhanced-blog-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
 }
 
-/* Main content */
 .blog-main-content {
   display: flex;
   flex-direction: column;
@@ -392,23 +384,42 @@
 }
 
 .read-more-btn {
+  padding: 8px 16px;
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 14px;
+  margin-left: auto;
+  transition: background-color 0.3s;
+  font-weight: 500;
+  box-shadow: var(--shadow-soft);
 }
 
 .read-more-btn:hover {
   background-color: var(--primary-blue-dark);
 }
 
-/* Pagination */
+.edit-btn {
+  background-color: var(--warning);
+  color: var(--neutral-dark);
+  margin-left: 10px;
+  box-shadow: var(--shadow-soft);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.edit-btn:hover {
+  background-color: var(--warning);
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -431,7 +442,7 @@
 
 .pagination-btn:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .pagination-btn:disabled {
@@ -459,16 +470,15 @@
 
 .page-number:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .page-number.active {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border-color: var(--primary-blue);
 }
 
-/* Sidebar */
 .blog-sidebar {
   display: flex;
   flex-direction: column;
@@ -564,7 +574,6 @@
   font-weight: 600;
 }
 
-/* Empty state */
 .blog-empty {
   text-align: center;
   padding: 4rem 2rem;
@@ -585,7 +594,7 @@
 
 .create-first-post-btn {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 20px;
@@ -599,7 +608,6 @@
   background-color: var(--primary-blue-dark);
 }
 
-/* No results */
 .no-results {
   text-align: center;
   padding: 4rem 2rem;
@@ -631,10 +639,9 @@
 
 .reset-filters-btn:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
-/* Mobile-first responsive adjustments */
 @media (max-width: 768px) {
   .blog-management {
     padding: 1.5rem 1rem;
@@ -802,7 +809,6 @@
     gap: 0.25rem;
   }
 
-  /* Ensure text doesn't overflow on very small screens */
   .article-title button,
   .article-excerpt,
   .featured-title,
@@ -813,7 +819,6 @@
   }
 }
 
-/* Extra small screens */
 @media (max-width: 360px) {
   .blog-management {
     padding: 0.75rem 0.5rem;
@@ -837,7 +842,6 @@
   }
 }
 
-/* Improve touch targets for mobile */
 @media (max-width: 768px) {
   .category-btn,
   .read-more-btn,
@@ -857,4 +861,46 @@
     display: flex;
     align-items: center;
   }
+}
+
+/* Add these to your BlogMain.css */
+.article-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-btn {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-btn:hover {
+  background: #e0e0e0;
+}
+
+.draft-indicator {
+  background: #ffa500;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.featured-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.edit-featured-btn {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }

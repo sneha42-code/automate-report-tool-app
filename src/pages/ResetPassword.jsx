@@ -1,9 +1,8 @@
 // src/pages/ResetPassword.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import authService from "../service/authService";
+import AuthService from "../service/AuthService";
 import "../styles/Auth.css";
-import Head3D from "../components/SimpleNeuralNetwork";
 import AuthLeftSection from "../components/AuthLeftSection";
 import AuthRightSection from "../components/AuthRightSection";
 
@@ -30,7 +29,7 @@ const ResetPassword = () => {
     setError("");
     
     try {
-      const response = await authService.forgotPassword(email);
+      const response = await AuthService.forgotPassword(email);
       
       if (response.success) {
         setSubmitted(true);
@@ -47,9 +46,9 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+    <div className="auth-page medium-bg" >
       <AuthLeftSection>
-        <Head3D />
+       
       </AuthLeftSection>
       <AuthRightSection>
         <div className="auth-header medium-header">

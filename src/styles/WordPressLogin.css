@@ -1,9 +1,6 @@
 /* WordPressLogin.css */
+@import "./Color.css";
 
-/* Import colors */
-@import "./color.css";
-
-/* Base styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,17 +13,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Login container */
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-off-white) 100%);
+  background: var(--bg-light);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
 }
 
-/* Form card */
 .form-card {
   background: var(--bg-white);
   border-radius: 12px;
@@ -37,7 +32,6 @@ body {
   animation: formEnter 0.3s ease-out;
 }
 
-/* Form heading */
 .form-heading {
   font-size: 24px;
   font-weight: 700;
@@ -52,7 +46,6 @@ body {
   color: var(--primary-blue);
 }
 
-/* Input group */
 .input-group {
   position: relative;
   margin-bottom: 24px;
@@ -63,7 +56,7 @@ body {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   width: 20px;
   height: 20px;
 }
@@ -75,13 +68,13 @@ body {
   border-radius: 8px;
   font-size: 14px;
   color: var(--neutral-dark);
-  background: var(--bg-white);
+  background: var(--bg-off-white);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-input:focus {
   border-color: var(--primary-blue);
-  box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.3);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
   outline: none;
 }
 
@@ -95,10 +88,9 @@ body {
 }
 
 .form-input-error:focus {
-  box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.3);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
 }
 
-/* Error and success messages */
 .error-message {
   background: var(--bg-white);
   border-left: 4px solid var(--error);
@@ -143,7 +135,6 @@ body {
   font-size: 14px;
 }
 
-/* Label */
 .form-label {
   display: block;
   font-size: 14px;
@@ -152,19 +143,17 @@ body {
   margin-bottom: 8px;
 }
 
-/* Error text */
 .error-text {
   color: var(--error);
   font-size: 12px;
   margin-top: 4px;
 }
 
-/* Submit button */
 .submit-button {
   width: 100%;
   padding: 12px;
   background: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -181,7 +170,7 @@ body {
 }
 
 .submit-button:disabled {
-  background: var(--primary-blue-light);
+  background: var(--neutral-light);
   cursor: not-allowed;
 }
 
@@ -191,18 +180,16 @@ body {
   height: 20px;
 }
 
-/* Spinner */
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid var(--bg-white);
+  border: 2px solid var(--neutral-dark);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 10px;
 }
 
-/* Checkbox */
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -224,10 +211,9 @@ body {
 .checkbox-label {
   margin-left: 8px;
   font-size: 14px;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
 }
 
-/* Select */
 .dropdown-select {
   width: 100%;
   padding: 12px 16px;
@@ -235,7 +221,7 @@ body {
   border-radius: 8px;
   font-size: 14px;
   color: var(--neutral-dark);
-  background: var(--bg-white);
+  background: var(--bg-off-white);
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -247,11 +233,10 @@ body {
 
 .dropdown-select:focus {
   border-color: var(--primary-blue);
-  box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.3);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
   outline: none;
 }
 
-/* Toggle mode */
 .toggle-mode-btn {
   color: var(--primary-slate);
   font-weight: 600;
@@ -270,14 +255,12 @@ body {
   cursor: not-allowed;
 }
 
-/* Helper text */
 .helper-text {
   font-size: 12px;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   margin-top: 6px;
 }
 
-/* Animations */
 @keyframes formEnter {
   from {
     opacity: 0;
@@ -304,7 +287,6 @@ body {
   }
 }
 
-/* Responsive styles */
 @media (max-width: 600px) {
   .form-card {
     padding: 24px;
@@ -326,7 +308,6 @@ body {
   }
 }
 
-/* Accessibility: Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .form-card,
   .error-message,
@@ -339,10 +320,9 @@ body {
   }
 }
 
-/* Accessibility: High contrast */
 @media (prefers-contrast: high) {
   .form-input {
-    border-color: #000;
+    border-color: var(--neutral-dark);
   }
 
   .submit-button {
@@ -351,24 +331,24 @@ body {
 
   .error-message {
     background: var(--error);
-    border-color: #7f0000;
-    color: #fff;
+    border-color: var(--error);
+    color: var(--neutral-dark);
   }
 
   .error-message svg,
   .error-message p {
-    color: #fff;
+    color: var(--neutral-dark);
   }
 
   .success-message {
     background: var(--success);
-    border-color: #14532d;
-    color: #fff;
+    border-color: var(--success);
+    color: var(--neutral-dark);
   }
 
   .success-message svg,
   .success-message p {
-    color: #fff;
+    color: var(--neutral-dark);
   }
 
   .toggle-mode-btn {

@@ -1,4 +1,4 @@
-@import "./color.css";
+@import "./Color.css";
 
 .blog-edit-container {
   max-width: 1200px;
@@ -22,7 +22,7 @@
   color: var(--neutral-dark);
   font-size: 2rem;
   font-weight: 700;
-  font-family: 'Georgia', serif;
+  font-family: 'Arial', sans-serif;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -52,7 +52,7 @@
 
 .cancel-button:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .error-banner, .success-banner {
@@ -69,8 +69,8 @@
 
 .error-banner {
   background-color: var(--error);
-  color: var(--bg-white);
-  border: 1px solid var(--error-light);
+  color: var(--neutral-dark);
+  border: 1px solid var(--border-light);
 }
 
 .error-banner::before {
@@ -80,8 +80,8 @@
 
 .success-banner {
   background-color: var(--success);
-  color: var(--bg-white);
-  border: 1px solid var(--success-light);
+  color: var(--neutral-dark);
+  border: 1px solid var(--border-light);
 }
 
 .blog-edit-form {
@@ -90,7 +90,7 @@
   gap: 2rem;
   background: var(--bg-white);
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-soft);
   overflow: hidden;
 }
 
@@ -140,6 +140,7 @@
   transition: border-color 0.2s ease;
   width: 100%;
   box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
 }
 
 .form-input:focus, .section-input:focus, .section-textarea:focus {
@@ -248,6 +249,7 @@
   gap: 1rem;
   position: relative;
   transition: all 0.3s ease;
+  font-family: 'Arial', sans-serif;
 }
 
 .content-section.error {
@@ -297,7 +299,7 @@
 
 .remove-btn {
   background-color: var(--error);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.5rem;
   border-radius: 6px;
@@ -311,7 +313,7 @@
 }
 
 .remove-btn:hover {
-  background-color: var(--error-dark);
+  background-color: var(--error);
 }
 
 .image-file-input {
@@ -349,7 +351,7 @@
 
 .remove-list-item {
   background-color: var(--error);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.5rem;
   border-radius: 50%;
@@ -363,12 +365,12 @@
 }
 
 .remove-list-item:hover {
-  background-color: var(--error-dark);
+  background-color: var(--error);
 }
 
 .add-list-item {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 16px;
@@ -411,7 +413,7 @@
 
 .add-section-btn:hover {
   background-color: var(--primary-blue-light);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
 }
 
 .form-section {
@@ -423,7 +425,7 @@
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-soft);
 }
 
 .form-section h3 {
@@ -445,7 +447,7 @@
 
 .publish-button, .save-draft-button {
   background-color: var(--primary-blue);
-  color: var(--bg-white);
+  color: var(--neutral-dark);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 20px;
@@ -487,11 +489,11 @@
   width: 16px;
   height: 16px;
   border: 2px solid transparent;
-  border-top: 2px solid var(--bg-white);
+  border-top: 2px solid var(--neutral-dark);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   left: 50%;
-  top: center;
+  top: 50%;
   transform: translate(-50%, -50%);
 }
 
@@ -729,15 +731,15 @@
 
 @media (prefers-color-scheme: dark) {
   .error-banner {
-    background-color: #7f1d1d;
-    color: #fecaca;
-    border-color: #ef4444;
+    background-color: var(--error);
+    color: var(--neutral-dark);
+    border-color: var(--border-light);
   }
 
   .success-banner {
-    background-color: #14532d;
-    color: #bbf7d0;
-    border-color: #22c55e;
+    background-color: var(--success);
+    color: var(--neutral-dark);
+    border-color: var(--border-light);
   }
 }
 
@@ -755,4 +757,47 @@
     animation: none;
     transition: none;
   }
+}
+
+.blog-edit-container,
+.blog-edit-header,
+.blog-edit-header h1,
+.header-actions,
+.cancel-button,
+.error-banner, .success-banner,
+.blog-edit-form,
+.form-layout,
+.main-form-content,
+.side-form-content,
+.form-group,
+.form-group label,
+.form-input, .section-input, .section-textarea,
+.current-featured-image, .existing-image,
+.image-note,
+.image-preview,
+.content-builder,
+.content-sections,
+.content-section,
+.section-controls,
+.section-type,
+.remove-btn,
+.image-file-input,
+.image-caption-input, .quote-attribution-input,
+.list-item-container,
+.list-item-input,
+.remove-list-item,
+.add-list-item,
+.add-section-controls,
+.add-section-btn,
+.form-section,
+.form-section h3,
+.publishing-actions,
+.publish-button, .save-draft-button,
+.loading-container,
+.loading-spinner {
+  font-family: 'Arial', sans-serif !important;
+}
+
+.excerpt-input {
+  font-family: 'Arial', sans-serif !important;
 }

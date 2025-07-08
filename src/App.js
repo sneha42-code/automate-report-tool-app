@@ -1,4 +1,4 @@
-// src/App.js - Modified for GitHub Pages
+// src/App.js - Fixed version
 import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import WordPressAuthService from "./wordPress/wordPressAuthService";
@@ -20,11 +20,16 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import DashboardViewer from "./pages/DashboardViewer";
-import PredictiveDashboad from "./pages/PredictiveDashboad";
+import PredictiveDashboard from "./pages/PredictiveDashboard";
 import UserManagementRoutes from "./wordPress/UserManagementRoutes";
+import RequestDemo from "./pages/RequestDemo";
+import Terms from "./pages/TermsOfService";
+import Privacy from "./pages/PrivacyPolicy";
+import Cookie from "./pages/CookiePolicy";
 
 import { Helmet } from "react-helmet";
 import "./App.css";
+import AnalysisTool from "./pages/AnalaysisTool";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -174,25 +179,28 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path="/blog/edit"
+                  
+                  {/* FIXED: Protected Blog Edit Route - BEFORE dynamic slug */}
+                  <Route 
+                    path="/blog/edit/:slug" 
                     element={
                       <ProtectedRoute>
                         <BlogEditPage />
                       </ProtectedRoute>
-                    }
+                    } 
                   />
-
 
                   {/* Dynamic blog post route - MUST BE LAST */}
                   <Route path="/blog/:slug" element={<BlogView />} />
 
-                  {/* WordPress Authentication */}
+                  {/* WordPress Authentication - FIXED: consistent route */}
                   <Route path="/wplogin" element={<WordPressLogin />} />
                   <Route path="/wpLogin" element={<Navigate to="/wplogin" replace />} />
 
                   {/* User Management */}
                   <Route path="/admin/*" element={<UserManagementRoutes />} />
+
+                  <Route path="/product-tools" element={<AnalysisTool />} />
 
                   {/* Tools */}
                   <Route path="/tool/docs" element={<ReportToolDocs />} />
@@ -200,18 +208,26 @@ function App() {
                   <Route path="/tool/excel" element={<ReportToolExcel />} />
                   <Route path="/tool/html" element={<ReportToolHtml />} />
                   <Route path="/tool/slicer" element={<SlicerAnalysisTool />} />
+                  <Route path="/tool/predictive-analysis" element={<PredictiveDashboard />} />
+                  <Route path="/analysis" element={<AnalysisTool />} />
 
                   {/* Dashboard and Analysis */}
                   <Route path="/dashboard/view/:fileId/:filename" element={<DashboardViewer />} />
-                  <Route path="/predictive-analysis" element={<PredictiveDashboad />} />
 
                   {/* Documentation */}
                   <Route path="/documentation" element={<Documentation />} />
-
+                  <Route path="/book-demo" element={<RequestDemo />} />
+                  
                   {/* Auth pages */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
+
+                  {/* Request Demo */}
+                  <Route path="/request-demo" element={<RequestDemo />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/cookies" element={<Cookie />} />
 
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />

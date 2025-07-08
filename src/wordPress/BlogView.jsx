@@ -369,8 +369,8 @@ const BlogView = () => {
                 </div>
               )}
             </button>
-            <button className="bookmark-button">
-              <span className="bookmark-icon">Save</span>
+             <button className="bookmark-button" onClick={() => navigate(`/blog/edit/${post.slug}`)}>
+              <span className="bookmark-icon">Edit</span>
             </button>
           </div>
         </aside>

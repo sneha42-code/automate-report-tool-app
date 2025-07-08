@@ -6,8 +6,8 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import AttritionAnalysisService from "../service/attritionAnalysisService";
-import { checkApiConnection } from "../service/checkApiConnection";
+import AttritionAnalysisService from "../service/ExcelReportService";
+import { checkApiConnection } from "../service/CheckApiConnection";
 
 const EnhancedReportTool = () => {
   const location = useLocation();

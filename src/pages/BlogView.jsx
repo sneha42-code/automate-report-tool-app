@@ -23,6 +23,22 @@ const BlogView = () => {
 
   return (
     <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+        <button
+          onClick={() => navigate(`/blog/edit/${post.slug}`)}
+          style={{
+            backgroundColor: '#2196F3',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            padding: '8px 16px',
+            cursor: 'pointer',
+            fontWeight: 600
+          }}
+        >
+          Edit
+        </button>
+      </div>
       <h1>{post.title}</h1>
       <div>{post.content}</div>
       <div>

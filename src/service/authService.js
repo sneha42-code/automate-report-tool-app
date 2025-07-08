@@ -627,7 +627,7 @@ export const initializeAuth = () => {
 };
 
 // ===== EXPORT DEFAULT =====
-const authService = {
+const AuthService = {
   // Authentication state
   isAuthenticated,
   getCurrentUser,
@@ -659,4 +659,4 @@ const authService = {
   initializeAuth
 };
 
-export default authService;
+export default AuthService;
