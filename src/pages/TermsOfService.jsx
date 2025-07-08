@@ -1,4 +1,4 @@
-import "../styles/footerLink.css";
+import "../styles/FooterLink.css";
 const TermsOfService = () => {
   return (
     <div className="container mx-auto p-6">

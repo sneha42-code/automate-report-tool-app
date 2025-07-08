@@ -1,9 +1,6 @@
-/* PredictiveTool.css - Predictive Analytics Tool Styles */
+/* PredictiveDashboard.css - Predictive Analytics Tool Styles */
 @import "./Color.css";
 
-/* ===================================
-   Base Predictive Tool Container
-   =================================== */
 .predictive-tool-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -14,7 +11,7 @@
 .predictive-tool-container h1 {
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--primary-slate);
+  color: var(--neutral-dark);
   margin-bottom: 0.5rem;
   text-align: center;
 }
@@ -26,16 +23,13 @@
   margin-bottom: 2rem;
 }
 
-/* ===================================
-   API Status Warning
-   =================================== */
 .api-status-warning {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background-color: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fbbf24;
+  background-color: var(--error);
+  color: var(--neutral-dark);
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   padding: 1rem 1.5rem;
   margin-bottom: 2rem;
@@ -44,26 +38,23 @@
 
 .api-status-warning svg {
   flex-shrink: 0;
-  color: #f59e0b;
+  color: var(--warning);
 }
 
-/* ===================================
-   Report Type Selector - Enhanced for Predictive
-   =================================== */
 .report-type-selector {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-off-white);
   border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   box-shadow: var(--shadow-soft);
-  color: white;
+  color: var(--neutral-dark);
 }
 
 .selector-label {
   font-size: 1.1rem;
   font-weight: 600;
-  color: white;
+  color: var(--neutral-dark);
   margin-bottom: 1rem;
 }
 
@@ -81,29 +72,28 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--bg-light);
+  border: 2px solid var(--border-light);
   border-radius: 6px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: white;
+  color: var(--neutral-dark);
   cursor: pointer;
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
 }
 
 .selector-option:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--primary-blue-light);
+  border-color: var(--primary-blue);
   transform: translateY(-2px);
 }
 
 .selector-option.active {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-color: white;
-  color: var(--primary-slate);
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--neutral-dark);
   font-weight: 600;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-medium);
 }
 
 .selector-option svg {
@@ -112,9 +102,6 @@
   flex-shrink: 0;
 }
 
-/* ===================================
-   Platform Modules - Predictive Enhanced
-   =================================== */
 .platform-modules {
   display: flex;
   flex-direction: column;
@@ -132,7 +119,7 @@
 
 .module-header {
   padding: 1.25rem 1.5rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: var(--bg-off-white);
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -149,9 +136,6 @@
   color: var(--neutral-medium);
 }
 
-/* ===================================
-   File Input Section - Enhanced
-   =================================== */
 .file-input-section {
   padding: 1.5rem;
 }
@@ -162,21 +146,21 @@
   padding: 2.5rem;
   text-align: center;
   position: relative;
-  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  background: var(--bg-off-white);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .file-dropzone:hover {
-  border-color: var(--primary-slate);
-  background: linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%);
+  border-color: var(--primary-blue);
+  background: var(--bg-light);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  box-shadow: var(--shadow-medium);
 }
 
 .file-dropzone.drag-over {
   border-color: var(--primary-blue);
-  background: linear-gradient(135deg, #e8f0ff 0%, #dde7ff 100%);
+  background: var(--primary-blue-light);
   transform: scale(1.02);
 }
 
@@ -189,8 +173,8 @@
 .dropzone-icon svg {
   width: 48px;
   height: 48px;
-  color: var(--primary-slate);
-  filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.2));
+  color: var(--primary-blue);
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.2));
 }
 
 .dropzone-text {
@@ -216,9 +200,6 @@
   cursor: pointer;
 }
 
-/* ===================================
-   Analysis Controls - Enhanced for Predictive
-   =================================== */
 .control-panel {
   padding: 1.5rem;
 }
@@ -245,39 +226,39 @@
 }
 
 .analyze-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background: var(--primary-blue);
+  color: var(--neutral-dark);
+  box-shadow: var(--shadow-soft);
 }
 
 .analyze-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  background: var(--primary-blue-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 .retrieve-btn {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+  background: var(--primary-slate);
+  color: var(--neutral-dark);
+  box-shadow: var(--shadow-soft);
 }
 
 .retrieve-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #3d8bfe 0%, #00d4fe 100%);
+  background: var(--primary-slate-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 .view-btn {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+  background: var(--success);
+  color: var(--neutral-dark);
+  box-shadow: var(--shadow-soft);
 }
 
 .view-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #31d669 0%, #26f5c5 100%);
+  background: var(--success);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(67, 233, 123, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 .control-btn.disabled,
@@ -304,8 +285,8 @@
   margin-top: -10px;
   margin-left: -10px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid var(--neutral-light);
+  border-top-color: var(--neutral-dark);
   animation: spinner 0.8s linear infinite;
 }
 
@@ -315,19 +296,16 @@
   }
 }
 
-/* ===================================
-   Analysis Complete Section - Enhanced
-   =================================== */
 .analysis-complete {
   border: 1px solid var(--border-light);
   border-radius: 8px;
   overflow: hidden;
-  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  background: var(--bg-white);
 }
 
 .complete-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--primary-blue);
+  color: var(--neutral-dark);
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
@@ -371,7 +349,7 @@
 
 .report-description {
   padding: 1rem;
-  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  background: var(--bg-off-white);
   font-size: 0.9rem;
   color: var(--neutral-medium);
 }
@@ -390,9 +368,6 @@
   line-height: 1.5;
 }
 
-/* ===================================
-   Specifications Module - Predictive Enhanced
-   =================================== */
 .specifications-module {
   background-color: var(--bg-white);
   border: 1px solid var(--border-light);
@@ -410,8 +385,8 @@
 }
 
 .specification-item {
-  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: var(--bg-off-white);
+  border: 1px solid var(--border-light);
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -419,14 +394,14 @@
 
 .specification-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--primary-blue);
 }
 
 .specification-title {
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--primary-blue);
+  color: var(--neutral-dark);
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
   font-weight: 600;
@@ -447,28 +422,23 @@
   margin-bottom: 0;
 }
 
-/* ===================================
-   Alert Messages - Enhanced
-   =================================== */
 .validation-alert,
 .system-alert {
   margin: 1rem 1.5rem;
   padding: 1rem 1.25rem;
   border-radius: 6px;
   font-size: 0.875rem;
-  border-left: 4px solid;
+  border-left: 4px solid var(--error);
 }
 
 .validation-alert {
-  background-color: #fef2f2;
-  border-left-color: var(--error);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
 }
 
 .system-alert {
-  background-color: #fef2f2;
-  border-left-color: var(--error);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
 }
 
 .alert-header {
@@ -486,9 +456,6 @@
   margin-bottom: 0.25rem;
 }
 
-/* ===================================
-   Selected Files Panel - Enhanced
-   =================================== */
 .selected-files-panel {
   margin: 1rem 1.5rem;
   border: 1px solid var(--border-light);
@@ -498,7 +465,7 @@
 }
 
 .panel-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: var(--bg-off-white);
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
@@ -506,9 +473,6 @@
   color: var(--neutral-dark);
 }
 
-/* ===================================
-   Upload Progress - Enhanced
-   =================================== */
 .upload-progress-indicator {
   padding: 1rem;
   border-bottom: 1px solid var(--border-light);
@@ -526,10 +490,10 @@
 
 .progress-completed {
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-blue);
   border-radius: 4px;
   transition: width 0.3s ease;
-  box-shadow: 0 1px 3px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
 }
 
 .progress-percentage {
@@ -539,9 +503,6 @@
   font-weight: 500;
 }
 
-/* ===================================
-   Files Table - Enhanced
-   =================================== */
 .files-table {
   width: 100%;
   border-collapse: collapse;
@@ -553,8 +514,8 @@
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-light);
   font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--neutral-dark);
+  background: var(--bg-off-white);
 }
 
 .files-table td {
@@ -591,10 +552,6 @@
   color: var(--error);
 }
 
-.files-table .file-action {
-  text-align: right;
-}
-
 .remove-file-btn {
   background: none;
   border: 1px solid var(--border-light);
@@ -607,8 +564,8 @@
 }
 
 .remove-file-btn:hover {
-  background-color: var(--bg-light);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
   border-color: var(--error);
 }
 
@@ -617,9 +574,6 @@
   cursor: not-allowed;
 }
 
-/* ===================================
-   Responsive Design
-   =================================== */
 @media (max-width: 768px) {
   .predictive-tool-container {
     padding: 1rem;
@@ -678,5 +632,44 @@
   .dropzone-icon svg {
     width: 36px;
     height: 36px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .api-status-warning,
+  .validation-alert,
+  .system-alert {
+    background-color: var(--error);
+    color: var(--neutral-dark);
+    border-color: var(--border-light);
+  }
+
+  .selector-option.active {
+    background-color: var(--primary-blue);
+    color: var(--neutral-dark);
+  }
+}
+
+@media (prefers-contrast: high) {
+  .api-status-warning,
+  .validation-alert,
+  .system-alert {
+    border-width: 2px;
+    font-weight: bold;
+  }
+
+  .control-btn,
+  .selector-option {
+    border-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control-btn,
+  .selector-option,
+  .specification-item,
+  .file-dropzone {
+    transition: none;
+    animation: none;
   }
 }

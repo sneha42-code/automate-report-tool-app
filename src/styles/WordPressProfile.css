@@ -1,11 +1,12 @@
 /* WordPressProfile.css - Unified with WordPressLogin.css for a consistent look */
+@import "./Color.css";
 
 .min-h-screen {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-off-white) 100%);
+  background: var(--bg-light);
 }
 
 .bg-white {
@@ -34,7 +35,7 @@
 .rounded-full {
   border-radius: 9999px;
   overflow: hidden;
-  background-color: #D1D5DB;
+  background-color: var(--bg-off-white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,11 +50,11 @@
 .text-xl {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4B5563;
+  color: var(--neutral-dark);
 }
 
 .text-gray-500, .text-gray-600 {
-  color: #6B7280;
+  color: var(--neutral-medium);
 }
 
 .text-sm {
@@ -61,8 +62,8 @@
 }
 
 .bg-blue-100 {
-  background-color: #DBEAFE;
-  color: #1E40AF;
+  background-color: var(--primary-blue-light);
+  color: var(--neutral-dark);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -77,16 +78,16 @@ ul {
 
 li {
   font-size: 0.8rem;
-  color: #6B7280;
+  color: var(--neutral-medium);
   margin-bottom: 0.2rem;
 }
 
 .bg-red-500 {
-  background-color: #EF4444;
+  background-color: var(--error);
 }
 
 .text-white {
-  color: #ffffff;
+  color: var(--neutral-dark);
 }
 
 .px-4 {
@@ -108,7 +109,7 @@ li {
 }
 
 .hover\:bg-red-600:hover {
-  background-color: #DC2626;
+  background-color: var(--error);
 }
 
 .transition-colors {
@@ -118,7 +119,7 @@ li {
 }
 
 .border-t {
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid var(--border-light);
 }
 
 .pt-4 {
@@ -130,7 +131,7 @@ li {
 }
 
 p {
-  color: #6B7280;
+  color: var(--neutral-medium);
   text-align: center;
   font-size: 0.95rem;
 }
@@ -145,5 +146,28 @@ p {
   }
   .text-3xl {
     font-size: 20px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bg-blue-100 {
+    background-color: var(--primary-blue);
+    color: var(--neutral-dark);
+  }
+  .hover\:bg-red-600:hover {
+    background-color: var(--error);
+  }
+}
+
+@media (prefers-contrast: high) {
+  .bg-blue-100,
+  .bg-red-500 {
+    border: 2px solid var(--neutral-dark);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover\:bg-red-600:hover {
+    transition: none;
   }
 }

@@ -23,6 +23,10 @@ import DashboardViewer from "./pages/DashboardViewer";
 import PredictiveDashboard from "./pages/PredictiveDashboard";
 import UserManagementRoutes from "./wordPress/UserManagementRoutes";
 import RequestDemo from "./pages/RequestDemo";
+import Terms from "./pages/TermsOfService";
+import Privacy from "./pages/PrivacyPolicy";
+import  Cookie   from "./pages/CookiePolicy";
+
 
 import { Helmet } from "react-helmet";
 import "./App.css";
@@ -222,6 +226,9 @@ function App() {
 
                   {/* Request Demo */}
                   <Route path="/request-demo" element={<RequestDemo />} />
+                  <Route path="/terms" element={<Terms />} />
+           <Route path="/privacy"element={<Privacy/>}></Route>
+            <Route path="/cookies"element ={<Cookie/>}></Route>
 
                   {/* Fallback */}
                   <Route path="*" element={<NotFound />} />

@@ -1,12 +1,14 @@
+@import "./Color.css";
+
 .footerlink-container, .container {
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem 1.5rem;
-  background: var(--bg-white, #fff);
+  background: var(--bg-white);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-soft);
   font-family: 'Arial', sans-serif;
-  color: var(--neutral-dark, #222);
+  color: var(--neutral-dark);
   text-align: left;
 }
 
@@ -15,7 +17,7 @@
 .container h1,
 .container h2 {
   font-family: 'Arial', sans-serif;
-  color: var(--primary-blue, #1a237e);
+  color: var(--primary-blue);
   margin-bottom: 0.75rem;
 }
 
@@ -38,8 +40,7 @@
   font-size: 1rem;
   line-height: 1.7;
   margin-bottom: 1rem;
-  color: var(--neutral-medium, #444);
-  text-align: left;
+  color: var(--neutral-medium);
 }
 
 .footerlink-container section,

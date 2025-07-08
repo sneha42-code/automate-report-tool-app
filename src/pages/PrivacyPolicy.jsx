@@ -1,4 +1,4 @@
-import "../styles/footerLink.css";
+import "../styles/FooterLink.css";
 const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto p-6">

@@ -1,38 +1,55 @@
-/* Modern, clean, light theme for Analysis Tool */
+/* Minimal and professional styling for Analysis Tool */
 
-.unified-tool-container {
-  min-height: 100vh;
-  padding: 2rem 1rem 2rem 1rem;
-  background: #f7f8fa;
-  color: #23272f;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+@import "./Color.css";
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-light); /* Darker section background from Color.css */
+    color: var(--neutral-dark); /* Light text color for dark backgrounds */
+    margin: 0;
+    padding: 0;
 }
 
-.unified-tool-container > * {
-  max-width: 700px;
-  width: 100%;
+.analysis-tool-container {
+    padding: 20px;
+    background-color: var(--bg-white); /* Deep navy/black background */
+    border-radius: 8px;
+    box-shadow: var(--shadow-medium); /* Medium shadow for depth */
+    max-width: 1200px;
+    margin: auto;
 }
 
-.data-module, .analysis-module, .specifications-module {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
-  margin-bottom: 1.5rem;
-  padding: 1.5rem 1.2rem;
-  color: #23272f;
-  border: none;
+.analysis-tool-header {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-blue); /* Vibrant tech blue */
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-@media (max-width: 700px) {
-  .unified-tool-container, .data-module, .analysis-module, .specifications-module {
-    padding: 1rem 0.3rem;
-    border-radius: 6px;
-  }
-  .unified-tool-container > * {
-    max-width: 100vw;
-  }
+.analysis-tool-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.analysis-tool-button {
+    background-color: var(--primary-slate); /* Muted slate blue-gray */
+    color: var(--neutral-dark); /* Light text color */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.analysis-tool-button:hover {
+    background-color: var(--primary-slate-light); /* Lighter slate for hover */
+}
+
+.analysis-tool-footer {
+    text-align: center;
+    font-size: 14px;
+    color: var(--neutral-medium); /* Medium text color */
+    margin-top: 20px;
 }

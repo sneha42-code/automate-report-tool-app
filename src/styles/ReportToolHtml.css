@@ -1,15 +1,10 @@
-/* EnhancedReportTool.css */
+/* ReportToolHtml.css */
 @import "./Color.css";
-
-/* Enterprise Attrition Analytics Platform
- * Formal Business Styling
- */
 
 .tool-platform {
   padding: 0 120px;
 }
 
-/* Base Styles */
 .analytics-platform {
   font-family: "Arial", "Helvetica Neue", Helvetica, sans-serif;
   color: var(--neutral-dark);
@@ -36,7 +31,7 @@
 .module-header {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-light);
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
 }
 
 .module-header h3 {
@@ -52,20 +47,18 @@
   color: var(--neutral-medium);
 }
 
-/* API Status Indicator */
 .api-status-warning {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  background-color: #fff5f5;
-  border-left: 4px solid #e53e3e;
+  background-color: var(--error);
+  border-left: 4px solid var(--error);
   margin-bottom: 24px;
-  color: #e53e3e;
+  color: var(--neutral-dark);
   font-size: 0.9rem;
 }
 
-/* Data Input Module */
 .file-input-section {
   padding: 20px;
 }
@@ -76,19 +69,19 @@
   padding: 32px;
   text-align: center;
   position: relative;
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .file-dropzone:hover {
-  border-color: var(--primary-slate);
-  background-color: #f8fafc;
+  border-color: var(--primary-blue);
+  background-color: var(--bg-light);
 }
 
 .file-dropzone.drag-over {
   border-color: var(--primary-blue);
-  background-color: #f0f7ff;
+  background-color: var(--primary-blue-light);
 }
 
 .dropzone-icon {
@@ -100,6 +93,7 @@
 .dropzone-icon svg {
   width: 48px;
   height: 48px;
+  color: var(--primary-blue);
 }
 
 .dropzone-text {
@@ -112,7 +106,7 @@
 .dropzone-subtext {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
 }
 
 .file-input {
@@ -125,25 +119,23 @@
   cursor: pointer;
 }
 
-/* Alerts */
 .validation-alert,
 .system-alert {
   margin: 0 20px 20px;
   padding: 12px 16px;
   border-radius: 4px;
   font-size: 0.9rem;
+  border-left: 4px solid var(--error);
 }
 
 .validation-alert {
-  background-color: #fff5f5;
-  border-left: 4px solid var(--error);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
 }
 
 .system-alert {
-  background-color: #fff5f5;
-  border-left: 4px solid var(--error);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
 }
 
 .alert-header {
@@ -160,7 +152,6 @@
   margin-bottom: 4px;
 }
 
-/* Selected Files */
 .selected-files-panel {
   margin: 0 20px 20px;
   border: 1px solid var(--border-light);
@@ -168,7 +159,7 @@
 }
 
 .panel-header {
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   padding: 10px 16px;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.95rem;
@@ -198,7 +189,7 @@
 
 .progress-percentage {
   font-size: 0.8rem;
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   text-align: right;
 }
 
@@ -213,8 +204,8 @@
   padding: 10px 16px;
   border-bottom: 1px solid var(--border-light);
   font-weight: 600;
-  color: var(--neutral-medium);
-  background-color: var(--bg-light);
+  color: var(--neutral-dark);
+  background-color: var(--bg-off-white);
 }
 
 .files-table td {
@@ -244,7 +235,7 @@
 .remove-file-btn {
   background: none;
   border: 1px solid var(--border-light);
-  color: var(--neutral-light);
+  color: var(--neutral-medium);
   font-size: 0.8rem;
   padding: 4px 8px;
   border-radius: 3px;
@@ -253,8 +244,8 @@
 }
 
 .remove-file-btn:hover {
-  background-color: var(--bg-light);
-  color: var(--error);
+  background-color: var(--error);
+  color: var(--neutral-dark);
   border-color: var(--error);
 }
 
@@ -263,7 +254,6 @@
   cursor: not-allowed;
 }
 
-/* Analysis Controls */
 .control-panel {
   padding: 20px;
 }
@@ -289,23 +279,23 @@
 }
 
 .analyze-btn {
-  background-color: var(--primary-slate);
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--neutral-dark);
   min-width: 180px;
 }
 
 .analyze-btn:hover:not(:disabled) {
-  background-color: var(--primary-blue);
+  background-color: var(--primary-blue-dark);
 }
 
 .retrieve-btn {
   background-color: var(--primary-slate);
-  color: white;
+  color: var(--neutral-dark);
   min-width: 180px;
 }
 
 .retrieve-btn:hover:not(:disabled) {
-  background-color: var(--primary-blue);
+  background-color: var(--primary-slate-dark);
 }
 
 .control-btn.disabled,
@@ -330,8 +320,8 @@
   margin-top: -10px;
   margin-left: -10px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 3px solid var(--neutral-light);
+  border-top-color: var(--neutral-dark);
   animation: spinner 0.8s linear infinite;
 }
 
@@ -341,7 +331,6 @@
   }
 }
 
-/* Analysis Complete Section */
 .analysis-complete {
   margin-top: 20px;
   border: 1px solid var(--border-light);
@@ -349,7 +338,7 @@
 }
 
 .complete-header {
-  background-color: var(--bg-light);
+  background-color: var(--bg-off-white);
   padding: 12px 16px;
   border-bottom: 1px solid var(--border-light);
   font-size: 1rem;
@@ -371,7 +360,85 @@
   margin-bottom: 0;
 }
 
-/* Responsive Design */
+.metadata-label {
+  width: 100px;
+  font-weight: 500;
+  color: var(--neutral-medium);
+  font-size: 0.9rem;
+}
+
+.metadata-value {
+  color: var(--neutral-dark);
+  font-size: 0.9rem;
+}
+
+.status-complete {
+  color: var(--success);
+  font-weight: 500;
+}
+
+.report-description {
+  padding: 16px;
+  background-color: var(--bg-off-white);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--neutral-medium);
+}
+
+.report-description p {
+  margin: 0 0 10px 0;
+}
+
+.report-description ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.report-description li {
+  margin-bottom: 4px;
+}
+
+.specifications-module {
+  margin-top: 24px;
+}
+
+.specifications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.specification-item {
+  background-color: var(--bg-off-white);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+}
+
+.specification-title {
+  padding: 10px 16px;
+  background-color: var(--bg-light);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--neutral-dark);
+}
+
+.specification-content {
+  padding: 16px;
+}
+
+.specification-content p {
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  color: var(--neutral-medium);
+}
+
+.specification-content p:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 1200px) {
   .tool-platform {
     padding: 0 60px;
@@ -425,82 +492,29 @@
   }
 }
 
-.metadata-label {
-  width: 100px;
-  font-weight: 500;
-  color: var(--neutral-medium);
-  font-size: 0.9rem;
+@media (prefers-color-scheme: dark) {
+  .api-status-warning,
+  .validation-alert,
+  .system-alert {
+    background-color: var(--error);
+    color: var(--neutral-dark);
+    border-color: var(--border-light);
+  }
 }
 
-.metadata-value {
-  color: var(--neutral-dark);
-  font-size: 0.9rem;
+@media (prefers-contrast: high) {
+  .api-status-warning,
+  .validation-alert,
+  .system-alert,
+  .control-btn {
+    border-width: 2px;
+    font-weight: bold;
+  }
 }
 
-.status-complete {
-  color: var(--success);
-  font-weight: 500;
-}
-
-.report-description {
-  padding: 16px;
-  background-color: var(--bg-light);
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  font-size: 0.9rem;
-  color: var(--neutral-medium);
-}
-
-.report-description p {
-  margin: 0 0 10px 0;
-}
-
-.report-description ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.report-description li {
-  margin-bottom: 4px;
-}
-
-/* Specifications Module */
-.specifications-module {
-  margin-top: 24px;
-}
-
-.specifications-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-  padding: 20px;
-}
-
-.specification-item {
-  background-color: var(--bg-light);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-}
-
-.specification-title {
-  padding: 10px 16px;
-  background-color: var(--bg-off-white);
-  border-bottom: 1px solid var(--border-light);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--neutral-dark);
-}
-
-.specification-content {
-  padding: 16px;
-}
-
-.specification-content p {
-  margin: 0 0 8px 0;
-  font-size: 0.85rem;
-  color: var(--neutral-medium);
-}
-
-.specification-content p:last-child {
-  margin-bottom: 0;
+@media (prefers-reduced-motion: reduce) {
+  .control-btn,
+  .file-dropzone {
+    transition: none;
+  }
 }
