@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import WordPressService from "./wordPressApiService";
-import WordPressAuthService from "./wordPressAuthService";
+import WordPressService from "../wordPress/wordPressApiService";
+import WordPressAuthService from "../wordPress/wordPressAuthService";
 import "../styles/BlogMain.css";
 
 // Function to decode HTML entities
@@ -51,10 +51,47 @@ const BlogManagement = () => {
 
   const handleCreatePost = () => {
     if (!WordPressAuthService.isAuthenticated()) {
-      navigate("/wpLogin");
+      navigate("/wplogin");
       return;
     }
     navigate("/blog/create");
+  };
+
+  // FIXED: Enhanced edit post handler with proper validation
+  const handleEditPost = (post) => {
+    // Check authentication first
+    if (!WordPressAuthService.isAuthenticated()) {
+      navigate("/wplogin");
+      return;
+    }
+
+    // Check if user has permission to edit
+    const currentUser = WordPressAuthService.getCurrentUser();
+    if (!currentUser) {
+      navigate("/wplogin");
+      return;
+    }
+
+    const canEdit = 
+      currentUser?.roles?.includes('administrator') ||
+      currentUser?.roles?.includes('editor') ||
+      post.author?.name === currentUser?.displayName;
+
+    if (!canEdit) {
+      alert("You don't have permission to edit this post");
+      return;
+    }
+
+    // Check if post has a valid slug
+    if (!post.slug) {
+      console.error("Post slug is missing:", post);
+      alert("Cannot edit this post: missing identifier");
+      return;
+    }
+
+    // Navigate to edit page
+    console.log("Navigating to edit page for slug:", post.slug);
+    navigate(`/blog/edit/${post.slug}`);
   };
 
   return (
@@ -73,12 +110,13 @@ const BlogManagement = () => {
         posts={posts}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
+        onEditPost={handleEditPost}
       />
     </div>
   );
 };
 
-const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
+const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory, onEditPost }) => {
   const [featuredPost, setFeaturedPost] = useState(null);
   const [sortedPosts, setSortedPosts] = useState([]);
   const [recentPosts, setRecentPosts] = useState([]);
@@ -171,6 +209,22 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
     if (postSlug) {
       navigate(`/blog/${postSlug}`);
     }
+  };
+
+  // FIXED: Permission checking functions
+  const canUserEdit = () => {
+    if (!WordPressAuthService.isAuthenticated()) return false;
+    const currentUser = WordPressAuthService.getCurrentUser();
+    return currentUser?.roles?.includes('administrator') || 
+           currentUser?.roles?.includes('editor');
+  };
+
+  const canEditPost = (post) => {
+    if (!WordPressAuthService.isAuthenticated()) return false;
+    const currentUser = WordPressAuthService.getCurrentUser();
+    return currentUser?.roles?.includes('administrator') ||
+           currentUser?.roles?.includes('editor') ||
+           post.author?.name === currentUser?.displayName;
   };
 
   if (posts.length === 0) {
@@ -293,12 +347,22 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                 </div>
               </div>
 
-              <button
-                onClick={() => handlePostNavigation(featuredPost.slug)}
-                className="read-article-btn"
-              >
-                Read Full Article
-              </button>
+              <div className="featured-actions">
+                <button
+                  onClick={() => handlePostNavigation(featuredPost.slug)}
+                  className="read-article-btn"
+                >
+                  Read Full Article
+                </button>
+                {canEditPost(featuredPost) && (
+                  <button
+                    onClick={() => onEditPost(featuredPost)}
+                    className="edit-featured-btn"
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
             </div>
           </section>
         )}
@@ -336,6 +400,9 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                         <span className="reading-time">
                           {post.readingTime || "4"} min read
                         </span>
+                        {post.status === 'draft' && (
+                          <span className="draft-indicator">Draft</span>
+                        )}
                       </div>
 
                       <h3 className="article-title">
@@ -395,18 +462,27 @@ const EnhancedBlog = ({ posts = [], activeCategory, setActiveCategory }) => {
                           </span>
                         </div>
 
-                        <button
-                          onClick={() => handlePostNavigation(post.slug)}
-                          className="read-more-btn"
-                        >
-                          Read More
-                        </button>
-                        <button
-                          onClick={() => navigate(`/blog/edit/${post.slug}`)}
-                          className="edit-btn"
-                        >
-                          Edit
-                        </button>
+                        <div className="article-actions">
+                          <button
+                            onClick={() => handlePostNavigation(post.slug)}
+                            className="read-more-btn"
+                          >
+                            Read More
+                          </button>
+                          {/* FIXED: Enhanced edit button with validation */}
+                          {canEditPost(post) && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onEditPost(post);
+                              }}
+                              className="edit-btn"
+                            >
+                              Edit
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </article>

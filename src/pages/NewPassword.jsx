@@ -104,7 +104,7 @@ const NewPassword = () => {
 
   if (resetSuccess) {
     return (
-      <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+      <div className="auth-page medium-bg" >
         <AuthLeftSection>
         </AuthLeftSection>
         <AuthRightSection>
@@ -126,7 +126,7 @@ const NewPassword = () => {
   }
 
   return (
-    <div className="auth-page medium-bg" style={{ display: 'flex', minHeight: '100vh', alignItems: 'stretch', justifyContent: 'center', background: '#f7fafd' }}>
+    <div className="auth-page medium-bg" >
       <AuthLeftSection>
       
       </AuthLeftSection>
