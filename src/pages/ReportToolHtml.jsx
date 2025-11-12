@@ -6,8 +6,8 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import HtmlReportService from "../service/HtmlReportService";
-import { checkApiConnection } from "../service/CheckApiConnection";
+import HtmlReportService from "../service/htmlReportService";
+import { checkApiConnection } from "../service/checkApiConnection";
 
 const ReportToolHtml = () => {
   const location = useLocation();

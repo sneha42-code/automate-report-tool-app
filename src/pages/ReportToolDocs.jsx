@@ -5,8 +5,8 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import ReportService from "../service/DocsReportService";
-import { checkApiConnection } from "../service/CheckApiConnection";
+import ReportService from "../service/docsReportService";
+import { checkApiConnection } from "../service/checkApiConnection";
 
 /**
  * ReportTool component for uploading files, generating reports, and downloading them.

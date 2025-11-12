@@ -6,7 +6,7 @@ import {
   validateFiles,
   formatFileSize,
 } from "../utils/fileValidation";
-import SlicerReportService from "../service/SlicerReportService";
+import SlicerReportService from "../service/slicerReportService";
 
 const SlicerAnalysisTool = () => {
   const location = useLocation();

@@ -1,7 +1,7 @@
 // src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../service/AuthService";
+import AuthService from "../service/authService";
 import "../styles/Auth.css";
 import AuthLeftSection from "../components/AuthLeftSection";
 import AuthRightSection from "../components/AuthRightSection";

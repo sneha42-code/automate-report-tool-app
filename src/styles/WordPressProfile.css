@@ -1,5 +1,5 @@
 /* WordPressProfile.css - Unified with WordPressLogin.css for a consistent look */
-@import "./Color.css";
+@import "./color.css";
 
 .min-h-screen {
   min-height: 100vh;

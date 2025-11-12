@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { checkAllServicesHealth } from '../service/CheckApiConnection';
-import PredictiveService from '../service/PredictiveService';
-import HtmlReportService from '../service/HtmlReportService';
-import DocsReportService from '../service/DocsReportService';
-import SlicerReportService from '../service/SlicerReportService';
-import ExcelReportService from '../service/ExcelReportService'
+import { checkAllServicesHealth } from '../service/checkApiConnection';
+import PredictiveService from '../service/predictiveService';
+import HtmlReportService from '../service/htmlReportService';
+import DocsReportService from '../service/docsReportService';
+import SlicerReportService from '../service/slicerReportService';
+import ExcelReportService from '../service/excelReportService'
 import '../styles/AnalaysisTool.css';
 
 const AnalysisTool = () => {

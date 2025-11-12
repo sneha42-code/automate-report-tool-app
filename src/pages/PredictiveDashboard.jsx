@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import PredictiveService from "../service/PredictiveService";
+import PredictiveService from "../service/predictiveService";
 import { validateFiles, formatFileSize } from "../utils/fileValidation";
 import "../styles/PredictiveDashboard.css";
 

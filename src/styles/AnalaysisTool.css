@@ -1,10 +1,10 @@
 /* Minimal and professional styling for Analysis Tool */
 
-@import "./Color.css";
+@import "./color.css";
 
 body {
     font-family: Arial, sans-serif;
-    background-color: var(--bg-light); /* Darker section background from Color.css */
+    background-color: var(--bg-light); /* Darker section background from color.css */
     color: var(--neutral-dark); /* Light text color for dark backgrounds */
     margin: 0;
     padding: 0;
