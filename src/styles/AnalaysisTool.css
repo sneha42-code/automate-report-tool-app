@@ -1,4 +1,3 @@
-/* Minimal and professional styling for Analysis Tool */
 
 @import "./color.css";
 
@@ -8,48 +7,393 @@ body {
     color: var(--neutral-dark); /* Light text color for dark backgrounds */
     margin: 0;
     padding: 0;
+    line-height: 1.6;
 }
 
 .analysis-tool-container {
-    padding: 20px;
-    background-color: var(--bg-white); /* Deep navy/black background */
-    border-radius: 8px;
-    box-shadow: var(--shadow-medium); /* Medium shadow for depth */
-    max-width: 1200px;
-    margin: auto;
+    max-width: 1000px; /* Slightly narrower for better readability */
+    margin: 40px auto;
+    padding: 24px;
+    background-color: var(--bg-white); /* White container */
+    border-radius: 12px; /* Softer corners */
+    box-shadow: var(--shadow-medium); /* Subtle shadow */
 }
 
-.analysis-tool-header {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--primary-blue); /* Vibrant tech blue */
-    margin-bottom: 20px;
+.analysis-tool-container h1 {
+    font-size: 28px; /* Slightly larger for emphasis */
+    font-weight: 700;
+    color: var(--primary-blue); /* Vibrant blue */
     text-align: center;
+    margin-bottom: 12px;
 }
 
-.analysis-tool-content {
+.analysis-tool-container p {
+    font-size: 16px;
+    color: var(--neutral-medium); /* Softer text */
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* API Status Warning */
+.api-status-warning {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--error-light); /* Soft red */
+    color: var(--neutral-dark);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    border-left: 4px solid var(--error-dark); /* Accent border */
 }
 
-.analysis-tool-button {
-    background-color: var(--primary-slate); /* Muted slate blue-gray */
-    color: var(--neutral-dark); /* Light text color */
+.api-status-warning svg {
+    stroke: var(--error-dark);
+    flex-shrink: 0;
+}
+
+/* Service Selection */
+.service-selection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.service-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--neutral-dark);
+}
+
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip::after {
+    content: attr(title);
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--neutral-dark);
+    color: var(--bg-white);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.service-selection select {
+    padding: 10px 16px;
+    font-size: 15px;
+    border: 1px solid var(--neutral-light);
+    border-radius: 6px;
+    background-color: var(--bg-white);
+    color: var(--neutral-dark);
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    flex-grow: 1;
+}
+
+.service-selection select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px var(--primary-blue-light);
+}
+
+.service-selection select:disabled {
+    background-color: var(--neutral-light);
+    cursor: not-allowed;
+}
+
+/* File Input Section */
+.file-input-section {
+    margin-bottom: 24px;
+}
+
+.file-dropzone {
+    border: 2px dashed var(--neutral-medium); /* Softer dashed border */
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    background-color: var(--bg-light);
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.file-dropzone.drag-over {
+    border-color: var(--primary-blue);
+    background-color: var(--primary-blue-light);
+}
+
+.file-dropzone .dropzone-icon svg {
+    stroke: var(--primary-blue);
+    margin-bottom: 12px;
+}
+
+.dropzone-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--neutral-dark);
+    margin: 10px 0 6px;
+}
+
+.dropzone-subtext {
+    font-size: 13px;
+    color: var(--neutral-medium);
+    margin: 0;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Validation and System Alerts */
+.validation-alert,
+.system-alert {
+    background-color: var(--error-light);
+    color: var(--neutral-dark);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    border-left: 4px solid var(--error-dark);
+}
+
+.validation-alert .alert-header {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Spinner for Loading */
+.spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+}
+
+.spinner-icon {
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Selected Files Panel */
+.selected-files-panel {
+    margin-bottom: 24px;
+}
+
+.panel-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutral-dark);
+    margin-bottom: 12px;
+}
+
+/* Upload Progress Indicator */
+.upload-progress-indicator {
+    margin-bottom: 16px;
+}
+
+.progress-bar {
+    background-color: var(--neutral-light);
+    border-radius: 6px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-completed {
+    background-color: var(--primary-blue);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-percentage {
+    font-size: 14px;
+    color: var(--neutral-dark);
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* Files Table */
+.files-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+}
+
+.files-table th,
+.files-table td {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid var(--neutral-light);
+}
+
+.files-table th {
+    background-color: var(--bg-light);
+    color: var(--neutral-dark);
+    font-weight: 600;
+}
+
+.files-table .file-name {
+    color: var(--neutral-dark);
+    font-weight: 500;
+}
+
+.files-table .file-size {
+    color: var(--neutral-medium);
+}
+
+.files-table .file-status .status-pending {
+    color: var(--warning-dark);
+    font-weight: 500;
+}
+
+.files-table .file-status .status-processed {
+    color: var(--success-dark);
+    font-weight: 500;
+}
+
+.files-table .file-status .status-failed {
+    color: var(--error-dark);
+    font-weight: 500;
+}
+
+.files-table .remove-file-btn {
+    background-color: var(--error-light);
+    color: var(--neutral-dark);
     border: none;
-    padding: 10px 20px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.analysis-tool-button:hover {
-    background-color: var(--primary-slate-light); /* Lighter slate for hover */
+.files-table .remove-file-btn:hover {
+    background-color: var(--error-dark);
+    color: var(--bg-white);
 }
 
-.analysis-tool-footer {
-    text-align: center;
+.files-table .remove-file-btn:disabled {
+    background-color: var(--neutral-light);
+    cursor: not-allowed;
+}
+
+/* Control Panel */
+.control-panel {
+    margin-bottom: 20px;
+}
+
+.control-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.control-btn {
+    padding: 10px 20px;
     font-size: 14px;
-    color: var(--neutral-medium); /* Medium text color */
-    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate-btn {
+    background-color: var(--primary-blue);
+    color: var(--bg-white);
+}
+
+.generate-btn:hover:not(:disabled) {
+    background-color: var(--primary-blue-light);
+}
+
+.download-btn {
+    background-color: var(--primary-slate);
+    color: var(--bg-white);
+}
+
+.download-btn:hover:not(:disabled) {
+    background-color: var(--primary-slate-light);
+}
+
+.view-btn {
+    background-color: var(--success-dark);
+    color: var(--bg-white);
+}
+
+.view-btn:hover:not(:disabled) {
+    background-color: var(--success-light);
+}
+
+.control-btn:disabled {
+    background-color: var(--neutral-light);
+    cursor: not-allowed;
+}
+
+/* Report Summary */
+.analysis-complete {
+    background-color: var(--bg-light);
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.complete-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutral-dark);
+    margin-bottom: 10px;
+}
+
+.report-metadata {
+    display: grid;
+    gap: 8px;
+}
+
+.metadata-item {
+    display: flex;
+    gap: 10px;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: var(--neutral-dark);
+}
+
+.metadata-value {
+    color: var(--neutral-medium);
+}
+
+.metadata-value.status-complete {
+    color: var(--success-dark);
 }

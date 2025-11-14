@@ -70,7 +70,6 @@ class WordPressService {
         params: { 
           slug: slug,
           _embed: true,
-          status: 'publish,draft,private'
         }
       });
 

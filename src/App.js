@@ -26,6 +26,7 @@ import RequestDemo from "./pages/RequestDemo";
 import Terms from "./pages/TermsOfService";
 import Privacy from "./pages/PrivacyPolicy";
 import Cookie from "./pages/CookiePolicy";
+import ResumeGPT from "./pages/ResumeGPT";
 
 import { Helmet } from "react-helmet";
 import "./App.css";
@@ -222,7 +223,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-
+       <Route path="/resumegpt" element={<ResumeGPT />} />
                   {/* Request Demo */}
                   <Route path="/request-demo" element={<RequestDemo />} />
                   <Route path="/terms" element={<Terms />} />

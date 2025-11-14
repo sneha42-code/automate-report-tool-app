@@ -128,7 +128,7 @@ const Background = () => {
   return (
     <mesh ref={meshRef} scale={[100, 100, 100]}>
       <sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial side={THREE.BackSide} color={new THREE.Color('#080c1a')} />
+      <meshBasicMaterial side={THREE.BackSide} color={new THREE.color('#080c1a')} />
     </mesh>
   );
 };
