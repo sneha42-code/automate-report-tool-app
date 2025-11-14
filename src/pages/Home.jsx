@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import { animateCounters } from "../utils/animateCounters";
-import BrainCircuitVisualization from "../components/BrainCircuitVisualization";
 import analyticsIcon from "../image/analytics-icon.png";
 import demographicsIcon from "../image/demographics-icon.png";
 import trendsIcon from "../image/trends-icon.png";
@@ -16,6 +15,94 @@ const Home = () => {
   const observerRef = useRef(null);
   const heroAnimationRef = useRef(null);
   const navigate = useNavigate();
+
+  // Initialize Simple Tech Background
+  const initializeSimpleTechBackground = () => {
+    const container = document.querySelector('.animated-background');
+    if (!container) return;
+    
+    container.innerHTML = '';
+
+    // Create particles
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+      container.appendChild(particle);
+    }
+
+    // Create flowing lines
+    for (let i = 0; i < 8; i++) {
+      const line = document.createElement('div');
+      line.className = 'line horizontal';
+      line.style.top = Math.random() * 100 + '%';
+      line.style.animationDelay = Math.random() * 8 + 's';
+      container.appendChild(line);
+    }
+
+    for (let i = 0; i < 6; i++) {
+      const line = document.createElement('div');
+      line.className = 'line vertical';
+      line.style.left = Math.random() * 100 + '%';
+      line.style.animationDelay = Math.random() * 6 + 's';
+      container.appendChild(line);
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const line = document.createElement('div');
+      line.className = 'line diagonal';
+      line.style.left = Math.random() * 100 + '%';
+      line.style.top = Math.random() * 100 + '%';
+      line.style.animationDelay = Math.random() * 7 + 's';
+      container.appendChild(line);
+    }
+
+    // Create hexagons
+    for (let i = 0; i < 5; i++) {
+      const hexagon = document.createElement('div');
+      hexagon.className = 'hexagon';
+      hexagon.style.left = Math.random() * 100 + '%';
+      hexagon.style.top = Math.random() * 100 + '%';
+      hexagon.style.animationDelay = Math.random() * 4 + 's';
+      container.appendChild(hexagon);
+    }
+
+    // Create data streams
+    for (let i = 0; i < 6; i++) {
+      const stream = document.createElement('div');
+      stream.className = 'data-stream';
+      stream.style.top = Math.random() * 100 + '%';
+      stream.style.animationDelay = Math.random() * 3 + 's';
+      stream.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      container.appendChild(stream);
+    }
+
+    // Create circuit lines
+    for (let i = 0; i < 4; i++) {
+      const line = document.createElement('div');
+      line.className = 'circuit-line';
+      line.style.width = Math.random() * 200 + 100 + 'px';
+      line.style.height = '1px';
+      line.style.left = Math.random() * 80 + '%';
+      line.style.top = Math.random() * 100 + '%';
+      line.style.animationDelay = Math.random() * 5 + 's';
+      container.appendChild(line);
+    }
+
+    for (let i = 0; i < 3; i++) {
+      const line = document.createElement('div');
+      line.className = 'circuit-line';
+      line.style.width = '1px';
+      line.style.height = Math.random() * 200 + 100 + 'px';
+      line.style.left = Math.random() * 100 + '%';
+      line.style.top = Math.random() * 80 + '%';
+      line.style.animationDelay = Math.random() * 5 + 's';
+      container.appendChild(line);
+    }
+  };
 
   useEffect(() => {
     // Hero section animations trigger immediately
@@ -32,20 +119,22 @@ const Home = () => {
     // Trigger hero animations after a short delay
     heroAnimationRef.current = setTimeout(triggerHeroAnimations, 100);
 
+    // Initialize Simple Tech background animation
+    setTimeout(initializeSimpleTechBackground, 200);
+
     // Intersection Observer for scroll-based fade-in animations
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("fade-in-visible");
-            // Unobserve after animation to improve performance
             observerRef.current.unobserve(entry.target);
           }
         });
       },
       { 
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px' // Start animation slightly before element is fully visible
+        rootMargin: '0px 0px -50px 0px'
       }
     );
 
@@ -69,71 +158,81 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* Hero Section - Fixed Animation Triggers */}
-      <header className="hero-section">
+      {/* Hero Section */}
+      <header className="hero-section version1">{/* removed background switching */}
         <div className="hero-background">
-          <BrainCircuitVisualization />
+          <div className="animated-background"></div>
           <div className="hero-overlay"></div>
         </div>
         <div className="container hero-content">
           <h1 className="hero-title">
-            Transform HR with AI Analytics
+            AI-Powered HR Analytics
           </h1>
           <p className="hero-subtitle">
-            Optimize workforce planning with advanced attrition insights
+            Transform your workforce decisions with intelligent analytics
           </p>
           <div className="hero-actions">
             <button
               className="get-started-btn hero-action-btn"
               onClick={() => navigate("/signup")}
             >
-              Try Now
+              Get Started
             </button>
             <button
               className="cta-button hero-action-btn"
               onClick={() => navigate("/book-demo")}
             >
-              Schedule Demo
+              Book Demo
             </button>
           </div>
         </div>
       </header>
 
-      {/* Tool Section */}
-      <section className="tool-section">
+      {/* Main Action Section */}
+      <section className="action-section">
         <div className="container">
-          <div className="tool-header fade-in">
-            <h2>Explore Our Analytics Platform</h2>
-            <p>Unlock powerful workforce insights in minutes</p>
-          </div>
-          <div className="tool-card fade-in">
-            <NavLink to="/analysis" className="btn btn-primary btn-demo-request">
-              Launch Analysis Tool
-            </NavLink>
+          <h2 className="section-title fade-in">Start Your AI Journey</h2>
+          <p className="section-subtitle fade-in">Choose your path to workforce optimization</p>
+          
+          <div className="actions-grid">
+            <div className="action-card fade-in">
+              
+              <h3 className="action-title">Analysis Tool</h3>
+              <p className="action-description">Launch our comprehensive workforce analytics platform. Analyze attrition patterns, identify trends, and get actionable insights instantly.</p>
+              <NavLink to="/analysis" className="action-btn">Launch Tool</NavLink>
+            </div>
+            
+            <div className="action-card fade-in">
+             
+              <h3 className="action-title">Query for Person</h3>
+              <p className="action-description">Search and analyze individual employee data. Get detailed insights on performance, engagement, and retention risk factors.</p>
+              <button className="action-btn" onClick={() => navigate("/signup")}>Search People</button>
+            </div>
+            
+            <div className="action-card fade-in">
+              
+              <h3 className="action-title">Resume GPT</h3>
+              <p className="action-description">AI-powered resume analysis and candidate matching. Screen resumes, extract key skills, and find the perfect fit for your roles.</p>
+              <button className="action-btn" onClick={() => navigate("/signup")}>Analyze Resume</button>
+            </div>
+            
+            <div className="action-card fade-in">
+          
+              <h3 className="action-title">Get Started</h3>
+              <p className="action-description">Begin your free trial with full access to all features. No credit card required. Start optimizing your workforce today.</p>
+              <button className="action-btn" onClick={() => navigate("/signup")}>Start Free Trial</button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-content fade-in">
-            <h2>Ready to Optimize Your Workforce?</h2>
-            <p>Get started with our AI-driven analytics today</p>
-            <button
-              className="cta-button-large"
-              onClick={() => navigate("/signup")}
-            >
-              Start Free Trial
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Capabilities Section */}
+      {/* Optional: Keep existing sections if needed */}
+      {/* You can uncomment these if you want to keep some of the original sections */}
+      
+      {/* Capabilities Section - Simplified */}
       <section className="capabilities-section">
         <div className="container">
-          <h2 className="section-title fade-in">Why Choose Us</h2>
+          <h2 className="section-title fade-in">Platform Capabilities</h2>
           <div className="capabilities-grid">
             <div className="capability-card fade-in">
               <div className="capability-icon">
@@ -166,109 +265,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Statistics Section - Currently Commented Out 
-      <section className="stats-section">
-        <div className="container">
-          <h2 className="section-title fade-in">Our Impact</h2>
-          <div className="stats-grid">
-            <div className="stat-item fade-in">
-              <div className="stat-number" data-target="95">
-                0
-              </div>
-              <div className="stat-suffix">%</div>
-              <div className="stat-label">Prediction Accuracy</div>
-            </div>
-            <div className="stat-item fade-in">
-              <div className="stat-number" data-target="500">
-                0
-              </div>
-              <div className="stat-suffix">+</div>
-              <div className="stat-label">Clients Served</div>
-            </div>
-            <div className="stat-item fade-in">
-              <div className="stat-number" data-target="50">
-                0
-              </div>
-              <div className="stat-suffix">%</div>
-              <div className="stat-label">Cost Savings</div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
-      {/* Value Section */}
-      <section className="value-section">
-        <div className="container">
-          <h2 className="section-title fade-in">Business Benefits</h2>
-          <div className="value-grid">
-            <div className="value-card fade-in">
-              <div className="value-image">
-                <img src={efficiency} alt="Operational Efficiency" />
-              </div>
-              <div className="value-content">
-                <h3>Operational Efficiency</h3>
-                <p>Streamline workforce planning</p>
-              </div>
-            </div>
-            <div className="value-card fade-in">
-              <div className="value-image">
-                <img src={costManagement} alt="Cost Management" />
-              </div>
-              <div className="value-content">
-                <h3>Cost Management</h3>
-                <p>Minimize turnover expenses</p>
-              </div>
-            </div>
-            <div className="value-card fade-in">
-              <div className="value-image">
-                <img src={strategicPlanning} alt="Strategic Planning" />
-              </div>
-              <div className="value-content">
-                <h3>Strategic Planning</h3>
-                <p>Make data-driven decisions</p>
-              </div>
-            </div>
-            <div className="value-card fade-in">
-              <div className="value-image">
-                <img src={riskMitigation} alt="Risk Mitigation" />
-              </div>
-              <div className="value-content">
-                <h3>Risk Mitigation</h3>
-                <p>Prevent talent loss</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonial Section - Currently Commented Out
-      <section className="testimonial-section">
-        <div className="container">
-          <h2 className="section-title fade-in">What Our Clients Say</h2>
-          <div className="testimonial-grid">
-            <div className="testimonial-card fade-in">
-              <p>
-                "This platform transformed our HR strategy with actionable
-                insights."
-              </p>
-              <div className="testimonial-author">
-                <span>Jane Doe</span>
-                <span>HR Director, TechCorp</span>
-              </div>
-            </div>
-            <div className="testimonial-card fade-in">
-              <p>
-                "The analytics tool saved us millions in turnover costs."
-              </p>
-              <div className="testimonial-author">
-                <span>John Smith</span>
-                <span>CEO, Innovate Inc.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
     </div>
   );
 };
