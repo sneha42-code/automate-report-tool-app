@@ -1,5 +1,5 @@
 /* PredictiveDashboard.css - Predictive Analytics Tool Styles */
-@import "./Color.css";
+@import "./color.css";
 
 .predictive-tool-container {
   max-width: 1400px;

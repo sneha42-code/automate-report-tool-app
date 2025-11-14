@@ -1,5 +1,5 @@
 /* Import color variables */
-@import "./Color.css";
+@import "./color.css";
 
 body {
     font-family: 'Inter', 'Arial', sans-serif; /* Modern, approachable font */

@@ -1,7 +1,7 @@
 // src/pages/DashboardViewer.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import SlicerReportService from "../service/SlicerReportService";
+import SlicerReportService from "../service/slicerReportService";
 import "../styles/DashboardViewer.css";
 
 const DashboardViewer = () => {

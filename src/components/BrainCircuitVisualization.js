@@ -19,7 +19,7 @@ const NeuralHumanHead = () => {
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a15);
+    scene.background = new THREE.color(0x0a0a15);
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -408,7 +408,7 @@ const NeuralHumanHead = () => {
     for (let i = 0; i < orbCount; i++) {
       const orbGeometry = new THREE.SphereGeometry(0.01, 6, 6); // Smaller for more orbs
       const orbMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color().setHSL(0.5 + Math.random() * 0.3, 1, 0.8),
+        color: new THREE.color().setHSL(0.5 + Math.random() * 0.3, 1, 0.8),
         transparent: true,
         opacity: 0.8
       });
